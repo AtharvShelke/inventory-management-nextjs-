@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@uploadthing/react": "^7.1.0",
     "dotenv": "^16.4.5",
     "lucide-react": "^0.452.0",
     "mongodb": "^6.9.0",

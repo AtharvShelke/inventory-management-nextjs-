@@ -11,7 +11,7 @@ export const POST = async(request) => {
         console.log(error);
         NextResponse.json({
             error,
-            message:"Failed to create a category"
+            message:"Failed to create a adjustments"
         }, {
             status:500
         })

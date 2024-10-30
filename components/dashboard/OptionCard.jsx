@@ -13,15 +13,15 @@ export default function OptionCard({ optionData }) {
                 {description}
             </p>
             {enabled ? (
-                <Link href={href} className="py-1 px-2 bg-blue-500 rounded-sm inline-flex items-center space-x-2 text-slate-50 ">
+                <Link href={href} className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
 
-                {linkTitle}
-            </Link>
-        ) : (
-        <button className="py-1 rounded-sm bg-blue-500 px-3 inline-flex text-white">
-                Enable
-            </button>
-        )}
+                    {linkTitle}
+                </Link>
+            ) : (
+                <button className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                    Enable
+                </button>
+            )}
 
 
         </div>

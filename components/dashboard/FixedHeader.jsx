@@ -9,7 +9,7 @@ export default function FixedHeader({newLink}) {
         <div className="flex gap-4">
             {/* New */}
             
-            <Link href={newLink} className="py-1 px-2 bg-blue-500 rounded-md flex items-center space-x-2 text-slate-50 ">
+            <Link href={newLink} className="py-1 px-2 bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800  flex items-center space-x-2 text-white font-semibold ">
               <Plus className='w-4 h-4' />
               <span>New</span>
             </Link>

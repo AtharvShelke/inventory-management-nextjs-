@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 
 export const POST = async(request) => {
     try {
-        const {title} = await request.json();
-        const brand = {title};
-        console.log(brand)
-        return NextResponse.json(brand)
-    } catch (error) {
+        
+        const data = await request.json();
+        console.log(data)
+
+        return NextResponse.json(data)
+    }  catch (error) {
         console.log(error);
         NextResponse.json({
             error,

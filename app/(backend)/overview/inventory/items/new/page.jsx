@@ -1,11 +1,14 @@
 'use client';
 import FormHeader from '@/components/dashboard/FormHeader'
+import ImageInput from '@/components/FormInputs/ImageInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
 import { UploadButton } from '@/lib/uploadthing';
-import { Plus, X } from 'lucide-react'
+import { UploadDropzone } from '@uploadthing/react';
+import { Pencil, Plus, X } from 'lucide-react'
+import Image from 'next/image';
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
@@ -71,8 +74,8 @@ export default function NewItem() {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    data.imageUrl=imageUrl;
-    console.log('data: ',data)
+    data.imageUrl = imageUrl;
+    console.log('data: ', data)
     setLoading(true);
     const baseUrl = 'http://localhost:3000'
     try {
@@ -229,22 +232,11 @@ export default function NewItem() {
                 register={register}
                 errors={errors}
               />
-              <div className="sm:col-span-2">
-                <UploadButton
-                  endpoint="imageUploader"
-                  onClientUploadComplete={(res) => {
-                    setImageUrl(res[0].url)
-                    
-                    console.log("Files: ", res);
-                    alert("Upload Completed");
-                  }}
-                  onUploadError={(error) => {
-                    // Do something with the error.
-                    alert(`ERROR! ${error.message}`);
-                  }}
-                 
-                />
-              </div>
+              <ImageInput 
+                label="Item Image"
+                imageUrl={imageUrl}
+                setImageUrl={setImageUrl}
+                endpoint='imageUploader'/>
             </div>
             <SubmitButton isLoading={loading} title={'Item'} />
           </form>

@@ -5,6 +5,7 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
+import { makePostRequest } from '@/lib/apiRequest';
 import { UploadButton } from '@/lib/uploadthing';
 import { UploadDropzone } from '@uploadthing/react';
 import { Pencil, Plus, X } from 'lucide-react'
@@ -12,6 +13,7 @@ import Image from 'next/image';
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 export default function NewItem() {
   const [imageUrl, setImageUrl] = useState('');
@@ -76,25 +78,27 @@ export default function NewItem() {
   const onSubmit = async (data) => {
     data.imageUrl = imageUrl;
     console.log('data: ', data)
-    setLoading(true);
-    const baseUrl = 'http://localhost:3000'
-    try {
-      const response = await fetch(`${baseUrl}/api/items`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
-      if (response.ok) {
-        console.log(response)
-        setLoading(false)
-        reset();
-      }
-    } catch (error) {
-      setLoading(false)
-      console.log(error)
-    }
+    makePostRequest(reset, setLoading, 'items', 'Item', data);
+    // setLoading(true);
+    // const baseUrl = 'http://localhost:3000'
+    // try {
+    //   const response = await fetch(`${baseUrl}/api/items`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify(data)
+    //   })
+    //   if (response.ok) {
+    //     console.log(response)
+    //     setLoading(false)
+    //     toast.success('Item Added Successfully')
+    //     reset();
+    //   }
+    // } catch (error) {
+    //   setLoading(false)
+    //   console.log(error)
+    // }
   }
   return (
     <>

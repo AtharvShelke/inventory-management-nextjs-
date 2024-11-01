@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  Item        Item[]
+}
+
+model Unit {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  abbreviation String
+  Item         Item[]
+}
+
+model Brand {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  Item  Item[]
+}
+
+model Warehouse {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  location      String?
+  warehouseType String
+  description   String?
+
+  AddStockAdjustment      AddStockAdjustment[]
+  TransferStockAdjustment TransferStockAdjustment[] @relation("SendingWarehouse")
+  IncomingTransfers       TransferStockAdjustment[] @relation("ReceivingWarehouse")
+  Item                    Item[]
+}
+
+model AddStockAdjustment {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  referenceNumber String
+  addStockQty     String
+  description     String?
+  warehouse       Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId     String    @db.ObjectId // Reference to the warehouse
+  item            Item      @relation(fields: [itemId], references: [id])
+  itemId          String    @db.ObjectId // Reference to the item
+}
+
+model TransferStockAdjustment {
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
+  referenceNumber      String
+  transferStockQty     String
+  description          String?
+  sendingWarehouse     Warehouse @relation("SendingWarehouse", fields: [sendingWarehouseId], references: [id])
+  sendingWarehouseId   String    @db.ObjectId // Reference to the sending warehouse
+  receivingWarehouse   Warehouse @relation("ReceivingWarehouse", fields: [receivingWarehouseId], references: [id])
+  receivingWarehouseId String    @db.ObjectId // Reference to the receiving warehouse
+  item                 Item      @relation(fields: [itemId], references: [id])
+  itemId               String    @db.ObjectId // Reference to the item
+}
+
+model Item {
+  id                      String                    @id @default(auto()) @map("_id") @db.ObjectId
+  title                   String
+  description             String?
+  category                Category                  @relation(fields: [categoryId], references: [id])
+  categoryId              String                    @db.ObjectId
+  sku                     String                    @unique
+  barcode                 String? // Optional
+  qty                     String
+  unit                    Unit                      @relation(fields: [unitId], references: [id])
+  unitId                  String                    @db.ObjectId
+  brand                   Brand                     @relation(fields: [brandId], references: [id])
+  brandId                 String                    @db.ObjectId
+  buyingPrice             String
+  sellingPrice            String
+  supplier                Supplier                  @relation(fields: [supplierId], references: [id])
+  supplierId              String                    @db.ObjectId
+  reorderPoString         String
+  imageUrl                String // Required field for image URL
+  weight                  String? // Optional
+  dimensions              String? // Optional
+  taxRate                 String
+  warehouse               Warehouse                 @relation(fields: [warehouseId], references: [id]) // Relation with Warehouse
+  warehouseId             String                    @db.ObjectId // Added warehouseId for the warehouse relation
+  TransferStockAdjustment TransferStockAdjustment[]
+  AddStockAdjustment      AddStockAdjustment[]
+}
+
+model Supplier {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  phone         String?
+  email         String?
+  address       String?
+  contactPerson String?
+  supplierCode  String  @unique
+  paymentTerms  String?
+  taxId         String?
+  description   String?
+  Item          Item[]
+}

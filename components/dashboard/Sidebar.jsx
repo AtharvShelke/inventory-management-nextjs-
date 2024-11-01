@@ -39,6 +39,10 @@ export default function Sidebar() {
             title:'Warehouse',
             href:'/overview/inventory/warehouse/new'
         },
+        {
+            title:'Supplier',
+            href:'/overview/inventory/supplier/new'
+        },
         
     ]
     const sideBarLinks = [

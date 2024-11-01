@@ -1,7 +1,7 @@
 import FixedHeader from '@/components/dashboard/FixedHeader'
 
 import OptionCard from '@/components/dashboard/OptionCard'
-import { Archive, Boxes, Group, HandCoins, Package, Package2, PackageOpen, ReceiptIndianRupee, Shirt, Truck, WarehouseIcon } from 'lucide-react'
+import { Archive, Boxes, Group, HandCoins, Package, Package2, PackageOpen, ReceiptIndianRupee, Shirt, Truck, User2, Users, WarehouseIcon } from 'lucide-react'
 import React from 'react'
 import Warehouse from './warehouse/page'
 
@@ -9,7 +9,7 @@ export default function Inventory() {
   const itemsCardOptions = [
     {
       title: 'Items',
-      icon: <Package strokeWidth={'0.5px'} className='w-28 h-28' />,
+      Icon: Package,
       description: 'New Item',
 
       href: '/overview/inventory/items/new',
@@ -17,7 +17,7 @@ export default function Inventory() {
       enabled: true,
     }, {
       title: 'Categories',
-      icon: <Boxes strokeWidth={'0.5px'} className='w-28 h-28' />,
+      Icon: Boxes,
       description: 'New Category',
 
       href: '/overview/inventory/categories/new',
@@ -25,7 +25,7 @@ export default function Inventory() {
       enabled: true,
     }, {
       title: 'Brands',
-      icon: <Group strokeWidth={'0.5px'} className='w-28 h-28' />,
+      Icon: Group,
       description: 'New Brand',
 
       href: '/overview/inventory/brands/new',
@@ -33,7 +33,7 @@ export default function Inventory() {
       enabled: true,
     }, {
       title: 'Warehouse',
-      icon: <WarehouseIcon strokeWidth={'0.5px'} className='w-28 h-28' />,
+      Icon: WarehouseIcon,
       description: 'New Warehouse',
 
       href: '/overview/inventory/warehouse/new',
@@ -42,7 +42,7 @@ export default function Inventory() {
     },
     {
       title: 'Units',
-      icon: <PackageOpen strokeWidth={'0.5px'} className='w-28 h-28' />,
+      Icon: PackageOpen,
       description: 'New Unit',
 
       href: '/overview/inventory/units/new',
@@ -50,8 +50,17 @@ export default function Inventory() {
       enabled: true,
     },
     {
+      title: 'Suppliers',
+      Icon: Users,
+      description: 'New Supplier',
+
+      href: '/overview/inventory/supplier/new',
+      linkTitle: 'New Supplier',
+      enabled: true,
+    },
+    {
       title: 'Inventory Adjustments',
-      icon: <Truck strokeWidth={'0.5px'} className='w-28 h-28' />,
+      Icon: Truck,
       description: 'Transfer Stock from the main warehouse',
 
       href: '/overview/inventory/inventoryadjustment/new',

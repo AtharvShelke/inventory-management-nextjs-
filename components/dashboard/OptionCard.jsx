@@ -2,12 +2,12 @@ import React from 'react'
 import Link from 'next/link'
 
 export default function OptionCard({ optionData }) {
-    const { title, icon, description, href, linkTitle, enabled } = optionData;
+    const { title, Icon, description, href, linkTitle, enabled } = optionData;
     return (
         <div className="shadow-md bg-white flex flex-col items-center justify-center gap-4 py-4 rounded">
             <h2 className='text-xl font-semibold'>{title}</h2>
             <div>
-                {icon}
+            <Icon strokeWidth={'0.5px'} className='w-28 h-28' />
             </div>
             <p className="line-clamp-1">
                 {description}

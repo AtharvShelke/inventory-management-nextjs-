@@ -5,15 +5,14 @@ export const POST = async(request) => {
     try {
         
         const data = await request.json();
-        console.log(data)
-        const warehouse = await db.warehouse.create({data})
-        console.log(warehouse)
-        return NextResponse.json(data)
+        const supplier = await db.supplier.create({data})
+        console.log(supplier)
+        return NextResponse.json(supplier)
     }  catch (error) {
         console.log(error);
         NextResponse.json({
             error,
-            message:"Failed to create a warehouse"
+            message:"Failed to create a unit"
         }, {
             status:500
         })

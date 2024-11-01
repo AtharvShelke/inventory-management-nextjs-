@@ -1,3 +1,4 @@
+import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export const POST = async(request) => {
@@ -5,8 +6,9 @@ export const POST = async(request) => {
         
         const data = await request.json();
         console.log(data)
-
-        return NextResponse.json(data)
+        const item = await db.item.create({data})
+        console.log(item)
+        return NextResponse.json(item)
     } catch (error) {
         console.log(error);
         NextResponse.json({

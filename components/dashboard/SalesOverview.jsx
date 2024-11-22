@@ -45,10 +45,10 @@ export default function SalesOverview() {
 
     ]
     return (
-        <div className='bg-blue-100 border-b border-slate-200 p-8 grid grid-cols-12 gap-8'>
+        <div className=' bg-blue-100 border-b border-slate-200 p-8 grid grid-cols-12 gap-8'>
             {/* Sales Activity */}
             <div className="col-span-8">
-                <h2 className='mb-6 text-xl'>Sales Activity</h2>
+                <h2 className='mb-6 text-xl font-semibold'>Sales Activity</h2>
                 <div className="grid grid-cols-4 gap-4">
 
                     {

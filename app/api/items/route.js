@@ -5,9 +5,9 @@ export const POST = async(request) => {
     try {
         
         const data = await request.json();
-        console.log(data)
+        
         const item = await db.item.create({data})
-        console.log(item)
+        
         return NextResponse.json(item)
     } catch (error) {
         console.log(error);
@@ -19,4 +19,30 @@ export const POST = async(request) => {
         })
     }
    
+}
+export const GET = async(request) => {
+    try {
+        const item = await db.item.findMany({
+            orderBy:{
+                createdAt:'desc' //latest item
+            },
+            include:{
+                
+                supplier:true,
+                
+            }
+        });
+       
+        return NextResponse.json(item);
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({
+            error,
+            message:"Failed to fetch the item"
+
+        },{
+            status:500
+        }
+    )
+    }
 }

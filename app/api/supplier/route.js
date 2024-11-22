@@ -19,3 +19,23 @@ export const POST = async(request) => {
     }
    
 }
+export const GET = async(request) => {
+    try {
+        const supplier = await db.supplier.findMany({
+            orderBy:{
+                createdAt:'desc' //latest supplier
+            }
+        });
+        return NextResponse.json(supplier);
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({
+            error,
+            message:"Failed to fetch the supplier"
+
+        },{
+            status:500
+        }
+    )
+    }
+}

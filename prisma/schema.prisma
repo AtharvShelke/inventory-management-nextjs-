@@ -10,37 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Category {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String?
-  Item        Item[]
-}
-
-model Unit {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  title        String
-  abbreviation String
-  Item         Item[]
-}
-
-model Brand {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  Item  Item[]
-}
-
 model Warehouse {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  location      String?
-  warehouseType String
-  description   String?
-
-  AddStockAdjustment      AddStockAdjustment[]
-  TransferStockAdjustment TransferStockAdjustment[] @relation("SendingWarehouse")
-  IncomingTransfers       TransferStockAdjustment[] @relation("ReceivingWarehouse")
-  Item                    Item[]
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  title              String
+  location           String?
+  warehouseType      String
+  description        String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  AddStockAdjustment AddStockAdjustment[]
+  Item               Item[]
 }
 
 model AddStockAdjustment {
@@ -55,56 +34,81 @@ model AddStockAdjustment {
 }
 
 model TransferStockAdjustment {
-  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
-  referenceNumber      String
-  transferStockQty     String
-  description          String?
-  sendingWarehouse     Warehouse @relation("SendingWarehouse", fields: [sendingWarehouseId], references: [id])
-  sendingWarehouseId   String    @db.ObjectId // Reference to the sending warehouse
-  receivingWarehouse   Warehouse @relation("ReceivingWarehouse", fields: [receivingWarehouseId], references: [id])
-  receivingWarehouseId String    @db.ObjectId // Reference to the receiving warehouse
-  item                 Item      @relation(fields: [itemId], references: [id])
-  itemId               String    @db.ObjectId // Reference to the item
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  referenceNumber  String
+  transferStockQty String
+  description      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  item             Item     @relation(fields: [itemId], references: [id])
+  itemId           String   @db.ObjectId // Reference to the item
 }
 
 model Item {
-  id                      String                    @id @default(auto()) @map("_id") @db.ObjectId
-  title                   String
-  description             String?
-  category                Category                  @relation(fields: [categoryId], references: [id])
-  categoryId              String                    @db.ObjectId
-  sku                     String                    @unique
-  barcode                 String? // Optional
-  qty                     String
-  unit                    Unit                      @relation(fields: [unitId], references: [id])
-  unitId                  String                    @db.ObjectId
-  brand                   Brand                     @relation(fields: [brandId], references: [id])
-  brandId                 String                    @db.ObjectId
-  buyingPrice             String
-  sellingPrice            String
-  supplier                Supplier                  @relation(fields: [supplierId], references: [id])
-  supplierId              String                    @db.ObjectId
-  reorderPoString         String
-  imageUrl                String // Required field for image URL
-  weight                  String? // Optional
-  dimensions              String? // Optional
-  taxRate                 String
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+
+  qty          String
+  buyingPrice  String
+  sellingPrice String
+  supplier     Supplier @relation(fields: [supplierId], references: [id])
+  supplierId   String   @db.ObjectId
+
+  imageUrl   String?
+  taxRate    String
+  dimensions String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt // Optional
+
   warehouse               Warehouse                 @relation(fields: [warehouseId], references: [id]) // Relation with Warehouse
   warehouseId             String                    @db.ObjectId // Added warehouseId for the warehouse relation
   TransferStockAdjustment TransferStockAdjustment[]
   AddStockAdjustment      AddStockAdjustment[]
+  InvoiceItem             InvoiceItem[]
 }
 
 model Supplier {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   phone         String?
   email         String?
   address       String?
   contactPerson String?
-  supplierCode  String  @unique
+  supplierCode  String   @unique
   paymentTerms  String?
   taxId         String?
   description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   Item          Item[]
+}
+
+model Invoice {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  customerName String
+  date         DateTime      @default(now())
+  description  String?
+  invoiceItems InvoiceItem[]
+  totalCost    String
+  totalSale    String
+  totalProfit  String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+}
+
+model InvoiceItem {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId    String   @db.ObjectId
+  item         Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId       String   @db.ObjectId
+  
+  qty          String // Quantity of the item
+  buyingPrice  String // Price per item from Item model at purchase
+  sellingPrice String // Price per item from Item model at sale
+  profit       String // Calculated profit per item based on (sellingPrice - buyingPrice) * qty
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

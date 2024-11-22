@@ -3,9 +3,9 @@ import React from 'react'
 
 export default function SearchInput() {
     return (
-        <form>
+        <form >
             <label htmlFor="simple-search" className="sr-only">Search</label>
-            <div className="relative w-full">
+            <div className="relative w-96">
                 <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                     <Search className='"w-4 h-4 text-gray-500 ' />
                 </div>

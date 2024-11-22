@@ -20,3 +20,24 @@ export const POST = async(request) => {
     }
    
 }
+
+export const GET = async(request) => {
+    try {
+        const warehouse = await db.warehouse.findMany({
+            orderBy:{
+                createdAt:'desc' //latest warehouse
+            }
+        });
+        return NextResponse.json(warehouse);
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({
+            error,
+            message:"Failed to fetch the warehouse"
+
+        },{
+            status:500
+        }
+    )
+    }
+}

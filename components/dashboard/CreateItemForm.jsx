@@ -4,23 +4,32 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
-import { makePostRequest } from '@/lib/apiRequest';
+import { makePostRequest, updateRequest } from '@/lib/apiRequest';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 
-export default function CreateItemForm({warehouses, suppliers}) {
-  const [imageUrl, setImageUrl] = useState('');
+export default function CreateItemForm({warehouses, suppliers, initialData, isUpdate}) {
+  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
+  const router = useRouter();
   const [loading, setLoading] = useState(false)
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues:initialData
+  });
   const onSubmit = async (data) => {
     data.imageUrl = imageUrl;
     console.log('data: ', data)
-    makePostRequest(reset, setLoading, 'items', 'Item', data);
+    if (isUpdate) {
+      updateRequest(reset, setLoading, `items/${initialData.id}`, 'Item', data);
+    }else{
+      makePostRequest(reset, setLoading, 'items', 'Item', data);
+    }
+    router.push('/overview/items')
   }
   return (
     <>  
@@ -107,7 +116,7 @@ export default function CreateItemForm({warehouses, suppliers}) {
                 setImageUrl={setImageUrl}
                 endpoint='imageUploader'/>
             </div>
-            <SubmitButton isLoading={loading} title={'Item'} />
+            <SubmitButton isLoading={loading} title={isUpdate?"Updated Item":"New Item"} />
           </form>
         </div>
       </section>

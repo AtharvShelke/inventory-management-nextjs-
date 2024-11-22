@@ -4,13 +4,14 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
-import { makePostRequest } from '@/lib/apiRequest';
-import { useState } from 'react';
+import { makePostRequest, updateRequest } from '@/lib/apiRequest';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 
-export default function NewSupplier() {
+export default function NewSupplier({initialData={}, isUpdate=false}) {
   const selectOptions = [
     {
       label: "Main",
@@ -21,7 +22,7 @@ export default function NewSupplier() {
       value: "branch"
     },
   ]
-
+  const router = useRouter();
   const [loading, setLoading] = useState(false)
   const {
     register,
@@ -29,15 +30,23 @@ export default function NewSupplier() {
     reset,
 
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues:initialData
+  });
   const onSubmit = async (data) => {
     console.log(data)
-    makePostRequest(reset, setLoading, 'supplier','Supplier', data);
+    
+    if (isUpdate) {
+      updateRequest(reset, setLoading, `supplier/${initialData.id}`, 'Supplier', data);
+    }else{
+      makePostRequest(reset, setLoading, 'supplier', 'Supplier', data);
+    }
+    router.push('/overview/supplier')
   }
   return (
     <>
       {/* header */}
-      <FormHeader title='New Supplier' href="/overview/inventory" />
+      <FormHeader title={isUpdate?"Update Supplier":"New Supplier"} href="/overview/inventory" />
       {/* Form */}
       <section className='my-8'>
         <div className="py-8 px-4 mx-auto max-w-3xl lg:py-16 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
@@ -102,7 +111,7 @@ export default function NewSupplier() {
                 errors={errors} />
               
             </div>
-            <SubmitButton isLoading={loading} title={'Supplier'} />
+            <SubmitButton isLoading={loading} title={isUpdate?"Updated Supplier":"New Supplier"} />
           </form>
         </div>
       </section>

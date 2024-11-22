@@ -13,7 +13,7 @@ export default async function Warehouse() {
     <>
       <FixedHeader title={'warehouse'} newLink={'/overview/warehouse/new'} wantButton={false} />
       <div className="my-4 p-8">
-        <DataTable data={warehouse} columns={columns}/>
+        <DataTable data={warehouse} columns={columns} resourceName={'warehouse'}/>
       </div>
 
     </>

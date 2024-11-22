@@ -2,3 +2,11 @@ make changes according to call recording
 add edit and delete functionality to each table
 add authentication and authorization
 work on home page
+need to work on client page
+
+editing in inventory adjustment pending
+edit in items completed
+edit in supplier completed
+edit warehouse completed
+
+delete functionality not working idk why status code 405

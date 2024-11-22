@@ -24,7 +24,7 @@ export default async function Items() {
     <>
       <FixedHeader title={'Items'} newLink={'/overview/items/new'} />
       <div className="my-4 p-8">
-        <DataTable data={updatedItems} columns={columns} />
+        <DataTable data={updatedItems} columns={columns} resourceName={'items'}/>
       </div>
 
     </>

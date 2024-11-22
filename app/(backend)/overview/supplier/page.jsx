@@ -13,7 +13,7 @@ export default async function supplier() {
     <>
       <FixedHeader title={'supplier'} newLink={'/overview/supplier/new'} wantButton={false} />
       <div className="my-4 p-8">
-        <DataTable data={supplier} columns={columns}/>
+        <DataTable data={supplier} columns={columns} resourceName={'supplier'}/>
       </div>
 
     </>

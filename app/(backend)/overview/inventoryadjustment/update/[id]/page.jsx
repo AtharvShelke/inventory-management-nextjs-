@@ -1,12 +1,13 @@
 
 
 import FormHeader from '@/components/dashboard/FormHeader';
-import InventoryAdjustment from '@/components/dashboard/InventoryAdjustment';
+import InventoryAdjustmentAdd from '@/components/dashboard/InventoryAdjustmentAdd';
 import { getRequest } from '@/lib/apiRequest';
 
 import React from 'react';
 
 export default async function UpdateAdjustment({params:{id}}) {
+    const data = await getRequest(`inventoryadjusment/add/${id}`);
     
   const [warehouses, items] = await Promise.all([
     getRequest('warehouse'),
@@ -17,7 +18,7 @@ export default async function UpdateAdjustment({params:{id}}) {
     return (
         <>
             <FormHeader title='Inventory Adjustment' href="/overview/inventory" />
-            <InventoryAdjustment warehouses={warehouses} items={items}/>
+            <InventoryAdjustmentAdd warehouses={warehouses} items={items} initialData={data} isUpdate={true}/>
         </>
     );
 }

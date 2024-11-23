@@ -12,14 +12,10 @@ export default function Header() {
       <div className="flex">
         {/* plus */}
         <div className=' flex flex-row'>
-          <div className="px-2 border-r border-gray-300 flex items-center">
-            <button className="rounded-lg flex items-center">
-              <History className='w-5 h-5' />
-            </button>
-          </div>
+          
          
 
-          <div className="pl-2 border-r border-gray-300 flex items-center">
+          <div className="pl-2 border-l border-gray-300 flex items-center">
             <button className="rounded-lg flex items-center">
               <span>Atharv</span>
               <ChevronDown className='h-4' />

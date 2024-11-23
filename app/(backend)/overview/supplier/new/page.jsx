@@ -46,7 +46,7 @@ export default function NewSupplier({initialData={}, isUpdate=false}) {
   return (
     <>
       {/* header */}
-      <FormHeader title={isUpdate?"Update Supplier":"New Supplier"} href="/overview/inventory" />
+      <FormHeader title={isUpdate?"Update Supplier":"New Supplier"} href="/overview/supplier" />
       {/* Form */}
       <section className='my-8'>
         <div className="py-8 px-4 mx-auto max-w-3xl lg:py-16 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">

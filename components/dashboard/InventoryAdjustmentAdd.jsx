@@ -9,18 +9,20 @@ import { makePostRequest } from '@/lib/apiRequest';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-export default function AddAdjustmentForm({ warehouses, items }) {
-//    console.log('items in add ajustment:', items);
+export default function AddAdjustmentForm({ warehouses, items, initialData = {}, isUpdate = false }) {
+    //    console.log('items in add ajustment:', items);
     const [loading, setLoading] = useState(false);
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm();
+    } = useForm(
+        { defaultValues: initialData }
+    );
 
     const onSubmit = async (data) => {
-       
+
         makePostRequest(reset, setLoading, 'inventoryadjustment/add', 'Stock', data);
     };
 

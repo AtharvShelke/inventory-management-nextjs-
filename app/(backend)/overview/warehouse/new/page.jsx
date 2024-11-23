@@ -49,7 +49,7 @@ export default function NewWarehouse({ initialData = {}, isUpdate = false }) {
   return (
     <>
       {/* header */}
-      <FormHeader title={isUpdate ? "Update warehouse" : "New warehouse"} href="/overview/inventory" />
+      <FormHeader title={isUpdate ? "Update warehouse" : "New warehouse"} href="/overview/warehouse" />
       {/* Form */}
       <section className='my-8'>
         <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">

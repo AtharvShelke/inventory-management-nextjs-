@@ -16,7 +16,7 @@ export default async function NewAdjustments() {
 
     return (
         <>
-            <FormHeader title='Inventory Adjustment' href="/overview/inventory" />
+            <FormHeader title='Inventory Adjustment' href="/overview/inventoryadjustment" />
             <InventoryAdjustment warehouses={warehouses} items={items}/>
         </>
     );

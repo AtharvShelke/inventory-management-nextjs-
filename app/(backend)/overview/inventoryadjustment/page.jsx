@@ -47,11 +47,11 @@ export default async function Adjustment() {
       <FixedHeader title={'Adjustment'} newLink={'/overview/inventoryadjustment/new'} />
       <div className="my-4 p-8">
         <h2 className='py-4 text-xl font-semibold'>Purchase Stock</h2>
-        <DataTable data={updatedAddStockAdjustments} columns={columnsAdd} resourceName={'inventoryadjustment'}/>
+        <DataTable data={updatedAddStockAdjustments} columns={columnsAdd} resourceName={'inventoryadjustment/add'}/>
       </div>
       <div className="my-4 p-8">
         <h2 className='py-4 text-xl font-semibold'>Sale Stock</h2>
-        <DataTable data={updatedTransferStockAdjustments} columns={columnTransfer} resourceName={'inventoryadjustment'}/>
+        <DataTable data={updatedTransferStockAdjustments} columns={columnTransfer} resourceName={'inventoryadjustment/transfer'}/>
       </div>
 
     </>

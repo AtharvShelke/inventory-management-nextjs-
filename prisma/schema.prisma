@@ -18,7 +18,7 @@ model Warehouse {
   description        String?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
-  AddStockAdjustment AddStockAdjustment[]
+  AddStockAdjustment AddStockAdjustment[] 
   Item               Item[]
 }
 
@@ -27,12 +27,11 @@ model AddStockAdjustment {
   referenceNumber String
   addStockQty     String
   description     String?
-  warehouse       Warehouse @relation(fields: [warehouseId], references: [id])
-  warehouseId     String    @db.ObjectId // Reference to the warehouse
-  item            Item      @relation(fields: [itemId], references: [id])
-  itemId          String    @db.ObjectId // Reference to the item
+  warehouse       Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade) // Enable cascading delete
+  warehouseId     String    @db.ObjectId
+  item            Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId          String    @db.ObjectId
 }
-
 model TransferStockAdjustment {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   referenceNumber  String
@@ -40,9 +39,10 @@ model TransferStockAdjustment {
   description      String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  item             Item     @relation(fields: [itemId], references: [id])
-  itemId           String   @db.ObjectId // Reference to the item
+  item             Item     @relation(fields: [itemId], references: [id], onDelete: Cascade) // Enable cascading delete
+  itemId           String   @db.ObjectId
 }
+
 
 model Item {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -95,16 +95,15 @@ model Invoice {
   totalProfit  String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  
 }
 
 model InvoiceItem {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId    String   @db.ObjectId
-  item         Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  itemId       String   @db.ObjectId
-  
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId String  @db.ObjectId
+  item      Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId    String  @db.ObjectId
+
   qty          String // Quantity of the item
   buyingPrice  String // Price per item from Item model at purchase
   sellingPrice String // Price per item from Item model at sale

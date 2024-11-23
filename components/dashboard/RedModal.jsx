@@ -2,21 +2,22 @@ import { deleteRequest } from '@/lib/apiRequest';
 import { Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-export default function RedModal({endpoint}) {
+export default function RedModal({ endpoint }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const closeModal = () => setIsModalOpen(false);
   const router = useRouter();
-const onSubmit = () => {
+  const onSubmit = () => {
+    console.log(endpoint)
     deleteRequest(endpoint, endpoint);
-    router.push(`/overview/${endpoint}`)
+    router.push(`/overview/${endpoint.split('/')[0]}`)
     closeModal();
-}
+  }
   return (
     <>
       {/* Button to toggle modal */}
-      
+
       <button
         onClick={toggleModal}
         className="font-medium text-red-600 dark:text-blue-500 flex items-center space-x-1"

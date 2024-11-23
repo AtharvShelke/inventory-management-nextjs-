@@ -24,7 +24,7 @@ export default function DataTable({ data, columns, resourceName }) {
                     {data.map((item, rowIndex) => (
                         <tr
                             key={rowIndex}
-                            
+
                             className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                         >
                             {columns.map((columnName, colIndex) => (
@@ -37,7 +37,10 @@ export default function DataTable({ data, columns, resourceName }) {
                                     <Pencil className="w-4 h-4" />
                                     <span>Edit</span>
                                 </Link>
-                               <RedModal endpoint={resourceName}/>
+                                <RedModal
+                                    endpoint={`${resourceName}/${item.id}`}
+                                    onDelete={() => setData(data.filter((i) => i.id !== item.id))}
+                                />
                             </td>
                         </tr>
                     ))}

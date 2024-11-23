@@ -10,6 +10,6 @@ edit in supplier completed
 edit warehouse completed
 
 delete functionality not working idk why status code 405
-delete functionality done for all except inventory adjustment
+delete functionality done for all
 
 

@@ -18,7 +18,7 @@ model Warehouse {
   description        String?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
-  AddStockAdjustment AddStockAdjustment[] 
+  AddStockAdjustment AddStockAdjustment[]
   Item               Item[]
 }
 
@@ -32,6 +32,7 @@ model AddStockAdjustment {
   item            Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId          String    @db.ObjectId
 }
+
 model TransferStockAdjustment {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   referenceNumber  String
@@ -42,7 +43,6 @@ model TransferStockAdjustment {
   item             Item     @relation(fields: [itemId], references: [id], onDelete: Cascade) // Enable cascading delete
   itemId           String   @db.ObjectId
 }
-
 
 model Item {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -110,4 +110,14 @@ model InvoiceItem {
   profit       String // Calculated profit per item based on (sellingPrice - buyingPrice) * qty
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model User {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String?
+  email String? @unique
+
+  password  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

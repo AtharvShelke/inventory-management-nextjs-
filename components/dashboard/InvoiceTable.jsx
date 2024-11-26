@@ -1,8 +1,9 @@
+'use client'
 import { ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-
-export default function InvoiceTable({ data, columns }) {
+import RedModal from './RedModal';
+export default function InvoiceTable({ data, columns, resourceName }) {
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -37,10 +38,10 @@ export default function InvoiceTable({ data, columns }) {
                                     <span>Open</span>
                                 </Link>
                                 
-                                <button className="font-medium text-red-600 dark:text-blue-500 flex items-center space-x-1">
-                                    <Trash2 className="w-4 h-4" />
-                                    <span>Delete</span>
-                                </button>
+                                <RedModal
+                                    endpoint={`${resourceName}/${item.id}`}
+                                    onDelete={() => setData(data.filter((i) => i.id !== item.id))}
+                                />
                             </td>
                         </tr>
                     ))}

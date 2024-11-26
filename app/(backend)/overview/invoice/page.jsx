@@ -23,7 +23,7 @@ export default async function Invoice() {
     <>
       <FixedHeader title={'Invoice'} newLink={'/overview/invoice/new'} />
       <div className="my-4 p-8">
-        <InvoiceTable data={formattedInvoices} columns={columns}  />
+        <InvoiceTable data={formattedInvoices} columns={columns}  resourceName={'invoice'}/>
       </div>
     </>
   )

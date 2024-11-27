@@ -1,39 +1,39 @@
 'use client';
-import FormHeader from '@/components/dashboard/FormHeader'
+import FormHeader from '@/components/dashboard/FormHeader';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
 import { makePostRequest } from '@/lib/apiRequest';
-
-import React, { useState } from 'react'
+import React, { useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 export default function TransferInventoryForm({ warehouse, items }) {
-  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = async (data) => {
-    console.log(data);
+  // Memoize items to avoid unnecessary re-renders
+  const itemOptions = useMemo(() => items, [items]);
+
+  // Optimized onSubmit function
+  const onSubmit = useCallback(async (data) => {
     try {
       await makePostRequest(reset, setLoading, 'inventoryadjustment/transfer', 'Transfer Stock', {
         referenceNumber: data.referenceNumber,
         itemId: data.itemId,
         transferStockQty: data.transferStockQty,
         description: data.description,
-        
       });
     } catch (error) {
       console.error(error);
-      toast.error('Error transferring stock: ' + error.message);
+      toast.error(`Error transferring stock: ${error.message}`);
     }
-  };
+  }, [reset]);
 
   return (
     <section className='my-8'>
@@ -42,36 +42,35 @@ export default function TransferInventoryForm({ warehouse, items }) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
             <TextInput
-              label={"Reference Number"}
-              name={"referenceNumber"}
+              label="Reference Number"
+              name="referenceNumber"
               register={register}
               errors={errors}
-              className='sm:col-span-2' 
+              className="sm:col-span-2"
             />
             <SelectInput
               register={register}
-              className='w-full'
-              name={'itemId'}
-              label={'Select the Item To Send'}
-              options={items}
+              className="w-full"
+              name="itemId"
+              label="Select the Item To Send"
+              options={itemOptions}  // Memoized options
             />
             <TextInput
-              label={"Quantity of Stock Transfer"}
-              name={"transferStockQty"}
+              label="Quantity of Stock Transfer"
+              name="transferStockQty"
               register={register}
               errors={errors}
-              className='w-full' 
-              type='number'
+              className="w-full"
+              type="number"
             />
-            
             <TextareaInput
-              label={"Adjustment Notes"}
-              name={"description"}
+              label="Adjustment Notes"
+              name="description"
               register={register}
-              errors={errors} 
+              errors={errors}
             />
           </div>
-          <SubmitButton isLoading={loading} title={'Warehouse'} />
+          <SubmitButton isLoading={isSubmitting} title="Warehouse" />
         </form>
       </div>
     </section>

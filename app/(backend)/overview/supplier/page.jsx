@@ -1,21 +1,50 @@
-import DataTable from '@/components/dashboard/DataTable'
-import FixedHeader from '@/components/dashboard/FixedHeader'
-import FormHeader from '@/components/dashboard/FormHeader'
-import { getRequest } from '@/lib/apiRequest'
-import React from 'react'
+'use client';
 
-export default async function supplier() {
-  const supplier = await getRequest('supplier');
-  
- const columns = ['title', 'phone', 'email']
+import { useEffect, useState } from 'react';
+import DataTable from '@/components/dashboard/DataTable';
+import FixedHeader from '@/components/dashboard/FixedHeader';
+import { getRequest } from '@/lib/apiRequest';
+
+export default function Supplier() {
+  const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const data = await getRequest('supplier');
+        setSuppliers(data);
+      } catch (err) {
+        setError('Failed to fetch supplier data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuppliers();
+  }, []);
+
+  const columns = ['title', 'phone', 'email'];
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    
     <>
-      <FixedHeader title={'supplier'} newLink={'/overview/supplier/new'} wantButton={false} />
+      <FixedHeader title={'Supplier'} newLink={'/overview/supplier/new'} wantButton={false} />
       <div className="my-4 p-8">
-        <DataTable data={supplier} columns={columns} resourceName={'supplier'}/>
+        {suppliers.length ? (
+          <DataTable data={suppliers} columns={columns} resourceName={'supplier'} />
+        ) : (
+          <div>No suppliers available</div>
+        )}
       </div>
-
     </>
-  )
+  );
 }

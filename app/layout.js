@@ -3,11 +3,13 @@ import "../styles/main.scss";
 import { Toaster } from "react-hot-toast";
 import AuthProvider from "@/context/AuthProvider";
 
+// Import fonts with localFont
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -22,10 +24,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
+          {/* Notification toaster at top-center */}
           <Toaster position="top-center" reverseOrder={false} />
           {children}
         </AuthProvider>

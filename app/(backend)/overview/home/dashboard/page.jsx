@@ -1,6 +1,6 @@
-'use client'
+
 import SalesOverview from '@/components/dashboard/SalesOverview'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 
 export default function Dashboard() {

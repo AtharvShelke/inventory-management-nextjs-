@@ -3,20 +3,28 @@
 import db from '@/lib/db';
 import { NextResponse } from 'next/server';
 
+// Utility function to extract the ID from the URL
+const extractIdFromPath = (pathname) => {
+    const match = pathname.match(/\/api\/inventoryadjustment\/add\/([^/]+)/);
+    return match ? match[1] : null;
+};
+
+// Helper function to handle error responses
+const handleErrorResponse = (message, status = 500, error = null) => {
+    console.error(error);
+    return NextResponse.json({ error, message }, { status });
+};
+
 // GET request to fetch an addStockAdjustment by id
 export const GET = async (req) => {
-    const pathname = req.nextUrl.pathname;
+    const id = extractIdFromPath(req.nextUrl.pathname);
 
-
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/inventoryadjustment\/add\/([^/]+)/);
-    const id = match ? match[1] : null;
+    if (!id) {
+        return handleErrorResponse("Invalid ID", 400);
+    }
 
     try {
-        const addStockAdjustment = await db.addStockAdjustment.findUnique({
-            where: { id: id }, // Find the invoice by the dynamic `id`
-            
-        });
+        const addStockAdjustment = await db.addStockAdjustment.findUnique({ where: { id } });
 
         if (!addStockAdjustment) {
             return NextResponse.json({ message: "addStockAdjustment not found" }, { status: 404 });
@@ -24,27 +32,16 @@ export const GET = async (req) => {
 
         return NextResponse.json(addStockAdjustment);
     } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to fetch invoice",
-            },
-            {
-                status: 500,
-            }
-        );
+        return handleErrorResponse("Failed to fetch addStockAdjustment", 500, error);
     }
-}
-export const PUT = async (req) => {
-    const pathname = req.nextUrl.pathname;
+};
 
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/inventoryadjustment\/add\/([^/]+)/);
-    const id = match ? match[1] : null;
+// PUT request to update an addStockAdjustment
+export const PUT = async (req) => {
+    const id = extractIdFromPath(req.nextUrl.pathname);
 
     if (!id) {
-        return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+        return handleErrorResponse("Invalid ID", 400);
     }
 
     try {
@@ -57,58 +54,36 @@ export const PUT = async (req) => {
             return NextResponse.json({ message: "addStockAdjustment not found" }, { status: 404 });
         }
 
-        const updatedaddStockAdjustment = await db.addStockAdjustment.update({
+        const updatedAddStockAdjustment = await db.addStockAdjustment.update({
             where: { id },
-            data: updateData, // Fix: Pass updateData as the 'data' field
+            data: updateData,
         });
 
-        return NextResponse.json(updatedaddStockAdjustment);
+        return NextResponse.json(updatedAddStockAdjustment);
     } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to update addStockAdjustment",
-            },
-            {
-                status: 500,
-            }
-        );
+        return handleErrorResponse("Failed to update addStockAdjustment", 500, error);
     }
 };
+
+// DELETE request to delete an addStockAdjustment
 export const DELETE = async (req) => {
-    const pathname = req.nextUrl.pathname;
-  
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/inventoryadjustment\/add\/([^/]+)/);
-    const id = match ? match[1] : null;
-  
+    const id = extractIdFromPath(req.nextUrl.pathname);
+
     if (!id) {
-      return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+        return handleErrorResponse("Invalid ID", 400);
     }
-  
+
     try {
-      // Check if the supplier exists before attempting to delete
-      const addStockAdjustment = await db.addStockAdjustment.findUnique({ where: { id } });
-  
-      if (!addStockAdjustment) {
-        return NextResponse.json({ message: "addStockAdjustment not found" }, { status: 404 });
-      }
-  
-      // Delete the addStockAdjustment
-      await db.addStockAdjustment.delete({ where: { id } });
-  
-      return NextResponse.json({ message: "addStockAdjustment deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        {
-          error,
-          message: "Failed to delete addStockAdjustment",
-        },
-        {
-          status: 500,
+        const addStockAdjustment = await db.addStockAdjustment.findUnique({ where: { id } });
+
+        if (!addStockAdjustment) {
+            return NextResponse.json({ message: "addStockAdjustment not found" }, { status: 404 });
         }
-      );
+
+        await db.addStockAdjustment.delete({ where: { id } });
+
+        return NextResponse.json({ message: "addStockAdjustment deleted successfully" });
+    } catch (error) {
+        return handleErrorResponse("Failed to delete addStockAdjustment", 500, error);
     }
-  };
+};

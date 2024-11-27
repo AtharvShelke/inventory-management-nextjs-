@@ -1,19 +1,28 @@
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export const GET = async (req) => {
-    const pathname = req.nextUrl.pathname;
-
-
-    // Extract the dynamic 'id' from the pathname using a regular expression
+// Helper function to extract ID from URL
+const extractIdFromPath = (pathname) => {
     const match = pathname.match(/\/api\/items\/([^/]+)/);
-    const id = match ? match[1] : null;
+    return match ? match[1] : null;
+};
+
+// Helper function for error handling
+const handleError = (error, message, status = 500) => {
+    console.error(error);
+    return NextResponse.json({ error: error.message || error, message }, { status });
+};
+
+// GET request to fetch item by ID
+export const GET = async (req) => {
+    const id = extractIdFromPath(req.nextUrl.pathname);
+
+    if (!id) {
+        return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+    }
 
     try {
-        const item = await db.item.findUnique({
-            where: { id: id }, // Find the invoice by the dynamic `id`
-            
-        });
+        const item = await db.item.findUnique({ where: { id } });
 
         if (!item) {
             return NextResponse.json({ message: "Item not found" }, { status: 404 });
@@ -21,24 +30,13 @@ export const GET = async (req) => {
 
         return NextResponse.json(item);
     } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to fetch invoice",
-            },
-            {
-                status: 500,
-            }
-        );
+        return handleError(error, "Failed to fetch item");
     }
-}
-export const PUT = async (req) => {
-    const pathname = req.nextUrl.pathname;
+};
 
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/items\/([^/]+)/);
-    const id = match ? match[1] : null;
+// PUT request to update item by ID
+export const PUT = async (req) => {
+    const id = extractIdFromPath(req.nextUrl.pathname);
 
     if (!id) {
         return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
@@ -48,6 +46,10 @@ export const PUT = async (req) => {
         const data = await req.json();
         const { id: removedId, ...updateData } = data;
 
+        if (removedId) {
+            return NextResponse.json({ message: "Invalid update data" }, { status: 400 });
+        }
+
         const item = await db.item.findUnique({ where: { id } });
 
         if (!item) {
@@ -56,57 +58,34 @@ export const PUT = async (req) => {
 
         const updatedItem = await db.item.update({
             where: { id },
-            data: updateData, // Fix: Pass updateData as the 'data' field
+            data: updateData,
         });
 
         return NextResponse.json(updatedItem);
     } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to update item",
-            },
-            {
-                status: 500,
-            }
-        );
+        return handleError(error, "Failed to update item");
     }
 };
 
+// DELETE request to delete item by ID
 export const DELETE = async (req) => {
-    const pathname = req.nextUrl.pathname;
-  
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/items\/([^/]+)/);
-    const id = match ? match[1] : null;
-  
+    const id = extractIdFromPath(req.nextUrl.pathname);
+
     if (!id) {
-      return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+        return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
     }
-  
+
     try {
-      // Check if the warehouse exists before attempting to delete
-      const item = await db.item.findUnique({ where: { id } });
-  
-      if (!item) {
-        return NextResponse.json({ message: "item not found" }, { status: 404 });
-      }
-  
-      // Delete the item
-      await db.item.delete({ where: { id } });
-  
-      return NextResponse.json({ message: "item deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        {
-          error,
-          message: "Failed to delete item",
-        },
-        {
-          status: 500,
+        const item = await db.item.findUnique({ where: { id } });
+
+        if (!item) {
+            return NextResponse.json({ message: "Item not found" }, { status: 404 });
         }
-      );
+
+        await db.item.delete({ where: { id } });
+
+        return NextResponse.json({ message: "Item deleted successfully" });
+    } catch (error) {
+        return handleError(error, "Failed to delete item");
     }
-  };
+};

@@ -1,7 +1,11 @@
-// app/api/invoiceItem/route.js
-
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
+
+// Helper function for error handling
+const handleError = (error, message) => {
+    console.error(error);
+    return NextResponse.json({ error: error.message || error, message }, { status: 500 });
+};
 
 // POST request to create a new invoice item
 export const POST = async (request) => {
@@ -11,10 +15,15 @@ export const POST = async (request) => {
         // Extract necessary data from the request
         const { invoiceId, itemId, qty, buyingPrice, sellingPrice } = data;
 
-        // Parse quantities and prices as numbers for calculation
+        // Parse quantities and prices as numbers
         const qtyNum = parseFloat(qty);
         const buyingPriceNum = parseFloat(buyingPrice);
         const sellingPriceNum = parseFloat(sellingPrice);
+
+        // Ensure valid inputs
+        if (isNaN(qtyNum) || isNaN(buyingPriceNum) || isNaN(sellingPriceNum)) {
+            throw new Error("Invalid input data: qty, buyingPrice, or sellingPrice is not a number.");
+        }
 
         // Calculate profit for the item
         const profit = (sellingPriceNum - buyingPriceNum) * qtyNum;
@@ -24,25 +33,16 @@ export const POST = async (request) => {
             data: {
                 invoiceId,
                 itemId,
-                qty: qty.toString(),
-                buyingPrice: buyingPrice.toString(),
-                sellingPrice: sellingPrice.toString(),
-                profit: profit.toFixed(2).toString(), // Convert profit to a string with 2 decimal places
+                qty: qtyNum.toString(),
+                buyingPrice: buyingPriceNum.toString(),
+                sellingPrice: sellingPriceNum.toString(),
+                profit: profit.toFixed(2), // Convert profit to a string with 2 decimal places
             },
         });
 
         return NextResponse.json(invoiceItem);
     } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to create the invoice item",
-            },
-            {
-                status: 500,
-            }
-        );
+        return handleError(error, "Failed to create the invoice item");
     }
 };
 
@@ -51,24 +51,15 @@ export const GET = async () => {
     try {
         const invoiceItems = await db.invoiceItem.findMany({
             include: {
-                item:true
+                item: true, // Include item details, ensure necessary fields are selected
             },
             orderBy: {
                 createdAt: 'desc',
             },
         });
-    
+
         return NextResponse.json(invoiceItems);
     } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to fetch invoice items",
-            },
-            {
-                status: 500,
-            }
-        );
+        return handleError(error, "Failed to fetch invoice items");
     }
 };

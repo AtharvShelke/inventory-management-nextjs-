@@ -50,13 +50,13 @@ model Item {
   description String?
 
   qty          String
-  buyingPrice  String
-  sellingPrice String
+  buyingPrice  String?
+  sellingPrice String?
   supplier     Supplier @relation(fields: [supplierId], references: [id])
   supplierId   String   @db.ObjectId
 
   imageUrl   String?
-  taxRate    String
+  taxRate    String?
   dimensions String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt // Optional
@@ -75,7 +75,7 @@ model Supplier {
   email         String?
   address       String?
   contactPerson String?
-  supplierCode  String   @unique
+  supplierCode  String?  @unique
   paymentTerms  String?
   taxId         String?
   description   String?
@@ -90,9 +90,9 @@ model Invoice {
   date         DateTime      @default(now())
   description  String?
   invoiceItems InvoiceItem[]
-  totalCost    String
-  totalSale    String
-  totalProfit  String
+  totalCost    String?
+  totalSale    String?
+  totalProfit  String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -105,18 +105,23 @@ model InvoiceItem {
   itemId    String  @db.ObjectId
 
   qty          String // Quantity of the item
-  buyingPrice  String // Price per item from Item model at purchase
-  sellingPrice String // Price per item from Item model at sale
-  profit       String // Calculated profit per item based on (sellingPrice - buyingPrice) * qty
+  buyingPrice  String? // Price per item from Item model at purchase
+  sellingPrice String? // Price per item from Item model at sale
+  profit       String? // Calculated profit per item based on (sellingPrice - buyingPrice) * qty
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }
 
 model User {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
   name  String?
   email String? @unique
-
+  role    UserRole @default(USER)
   password  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

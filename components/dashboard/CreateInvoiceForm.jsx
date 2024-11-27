@@ -7,6 +7,7 @@ import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import { getRequest, makePostRequest } from '@/lib/apiRequest';
 import React, { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { useSession } from 'next-auth/react';
 
 export default function CreateInvoiceForm({ items }) {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,8 @@ export default function CreateInvoiceForm({ items }) {
       items: [{ itemId: '', qty: '', buyingPrice: '', sellingPrice: '' }]
     }
   });
-
+  const { data:session } = useSession();
+  const role = session?.user?.role;
   // For dynamically adding/removing items
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
 
@@ -32,7 +34,7 @@ export default function CreateInvoiceForm({ items }) {
 
   const onSubmit = async (data) => {
     console.log('Invoice data:', data);
-    makePostRequest(reset, setLoading, 'invoice', 'Invoice', data);
+    makePostRequest(reset, setLoading, 'invoice', 'Client', data);
   };
 
   return (
@@ -40,7 +42,7 @@ export default function CreateInvoiceForm({ items }) {
       {/* Form */}
       <section className="my-8">
         <div className="py-8 px-4 mx-auto max-w-3xl lg:py-16 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
-          <h2 className="mb-4 text-xl font-bold text-gray-900">Create New Invoice</h2>
+          <h2 className="mb-4 text-xl font-bold text-gray-900">Create New Client</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
 
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -61,7 +63,7 @@ export default function CreateInvoiceForm({ items }) {
 
             {/* Invoice Items Section */}
             <div className="my-4">
-              <h3 className="text-lg font-semibold text-gray-700">Invoice Items</h3>
+              <h3 className="text-lg font-semibold text-gray-700">Client Items</h3>
 
               {fields.map((field, index) => {
                 return (
@@ -84,7 +86,7 @@ export default function CreateInvoiceForm({ items }) {
                       type="number"
                     />
 
-                    {/* Buying Price */}
+                   {role==='ADMIN'? <>{/* Buying Price */}
                     <TextInput
                       label="Buying Price"
                       name={`items[${index}].buyingPrice`}
@@ -92,6 +94,7 @@ export default function CreateInvoiceForm({ items }) {
                       errors={errors}
                       type="number"
                       disabled // Prevent manual entry, auto-set by SelectInput
+                      isRequired={false}
                     />
 
                     {/* Selling Price */}
@@ -102,7 +105,8 @@ export default function CreateInvoiceForm({ items }) {
                       errors={errors}
                       type="number"
                       disabled // Prevent manual entry, auto-set by SelectInput
-                    />
+                      isRequired={false}
+                    /></>:''}
 
                     {/* Remove item button */}
                     <button
@@ -127,7 +131,7 @@ export default function CreateInvoiceForm({ items }) {
             </div>
 
             {/* Submit Button */}
-            <SubmitButton isLoading={loading} title="Invoice" />
+            <SubmitButton isLoading={loading} title="Client" />
           </form>
         </div>
       </section>

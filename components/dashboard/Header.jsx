@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session, status } = useSession(); 
+  
   const router = useRouter()
   if (status==='loading') {
     return <p>Loading User...</p>
@@ -15,6 +16,8 @@ export default function Header() {
     router.push('/login')
   }
   const username = session?.user?.name??'';
+  const role = session?.user?.role;
+  
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -23,7 +26,7 @@ export default function Header() {
   return (
     <div className="bg-gray-100 h-12 flex items-center justify-between pl-20 border-b border-slate-200">
       <div className="flex justify-center gap-5 w-5/6">
-        <h1 className="font-semibold text-2xl">Enrich Kitchen Studio</h1>
+        <h1 className="font-semibold text-2xl">Enrich Kitchen Studio  </h1>
       </div>
       <div className="flex">
         {/* plus */}
@@ -35,6 +38,7 @@ export default function Header() {
               className="flex items-center justify-between w-full py-2 px-3 border-l border-gray-300 text-gray-700 rounded hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
             >
               {username}
+              
               <svg
                 className="w-4 h-4 ml-2"
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,8 +56,8 @@ export default function Header() {
                 
                   
                 <div className="py-1">
-                  <button
-                    onClick={()=>{signOut()}}
+                <button
+                    onClick={()=>  {signOut()}}
                     className="block px-4 py-2 w-full text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >
                     Sign out

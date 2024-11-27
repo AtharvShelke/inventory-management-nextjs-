@@ -5,6 +5,7 @@ import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
 import { makePostRequest, updateRequest } from '@/lib/apiRequest';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
@@ -21,6 +22,9 @@ export default function CreateItemForm({warehouses, suppliers, initialData, isUp
   } = useForm({
     defaultValues:initialData
   });
+  const { data: session } = useSession();
+  const role = session?.user?.role;
+  
   const onSubmit = async (data) => {
     data.imageUrl = imageUrl;
     console.log('data: ', data)
@@ -67,15 +71,14 @@ export default function CreateItemForm({warehouses, suppliers, initialData, isUp
                 className='w-full'
               />
               
-             
-
-              <TextInput
+             {role==='ADMIN'?<><TextInput
                 label={"Buying Price"}
                 name={"buyingPrice"}
                 register={register}
                 errors={errors}
                 type='number'
                 className='w-full'
+                isRequired={false}
               />
               <TextInput
                 label={"Selling Price"}
@@ -84,7 +87,19 @@ export default function CreateItemForm({warehouses, suppliers, initialData, isUp
                 errors={errors}
                 type='number'
                 className='w-full'
+                isRequired={false}
               />
+              <TextInput
+                label={"Tax Rate in %"}
+                name={"taxRate"}
+                register={register}
+                errors={errors}
+                type='number'
+                className='w-full'
+                isRequired={false}
+              /></>:''}
+
+              
               
               <SelectInput
                 register={register}
@@ -96,14 +111,7 @@ export default function CreateItemForm({warehouses, suppliers, initialData, isUp
               />
               
               
-              <TextInput
-                label={"Tax Rate in %"}
-                name={"taxRate"}
-                register={register}
-                errors={errors}
-                type='number'
-                className='w-full'
-              />
+              
               <TextareaInput
                 label={"Item Description"}
                 name={"description"}

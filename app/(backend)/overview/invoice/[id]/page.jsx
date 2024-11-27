@@ -3,6 +3,8 @@
 
 import FormHeader from '@/components/dashboard/FormHeader';
 import { getRequest } from '@/lib/apiRequest'; // Adjust the import path if needed
+import { authOptions } from '@/lib/authOptions';
+import { getServerSession } from 'next-auth';
 
 export default async function InvoiceDetail({ params }) {
     const { id } = params;
@@ -15,21 +17,24 @@ export default async function InvoiceDetail({ params }) {
     if (!invoice) {
         return <div>Invoice not found: {endpoint}</div>;
     }
-
+    const session = await getServerSession(authOptions)
+    const role = session?.user?.role;
     return (<>
         <FormHeader title='Invoice Details' href="/overview/invoice" />
         <div className="p-8">
 
-            
+
 
             {/* Invoice details */}
             <div className="mb-8">
                 <p><strong>Customer:</strong> {invoice.customerName}</p>
                 <p><strong>Date:</strong> {new Date(invoice.date).toLocaleString()}</p>
                 <p><strong>Description:</strong> {invoice.description || 'N/A'}</p>
-                <p><strong>Total Cost:</strong> {invoice.totalCost}</p>
-                <p><strong>Total Sale:</strong> {invoice.totalSale}</p>
-                <p><strong>Total Profit:</strong> {invoice.totalProfit}</p>
+                {role === 'ADMIN' ? <>
+                    <p><strong>Total Cost:</strong> {invoice.totalCost}</p>
+                    <p><strong>Total Sale:</strong> {invoice.totalSale}</p>
+                    <p><strong>Total Profit:</strong> {invoice.totalProfit}</p>
+                </> : ''}
             </div>
 
             {/* Invoice items table */}
@@ -39,9 +44,9 @@ export default async function InvoiceDetail({ params }) {
                     <tr>
                         <th scope="col" className="px-6 py-3">Item Title</th>
                         <th scope="col" className="px-6 py-3">Quantity</th>
-                        <th scope="col" className="px-6 py-3">Total Buying Price</th>
+                        {role==='ADMIN'?<><th scope="col" className="px-6 py-3">Total Buying Price</th>
                         <th scope="col" className="px-6 py-3">Total Selling Price</th>
-                        <th scope="col" className="px-6 py-3">Total Profit</th>
+                        <th scope="col" className="px-6 py-3">Total Profit</th></>:<></>}
                     </tr>
                 </thead>
                 <tbody>
@@ -57,9 +62,9 @@ export default async function InvoiceDetail({ params }) {
                             >
                                 <td className="px-6 py-4">{item.item.title}</td>
                                 <td className="px-6 py-4">{item.qty}</td>
-                                <td className="px-6 py-4">{totalBuyingPrice.toFixed(2)}</td>
+                                {role==='ADMIN'?<><td className="px-6 py-4">{totalBuyingPrice.toFixed(2)}</td>
                                 <td className="px-6 py-4">{totalSellingPrice.toFixed(2)}</td>
-                                <td className="px-6 py-4">{totalProfit.toFixed(2)}</td>
+                                <td className="px-6 py-4">{totalProfit.toFixed(2)}</td></>:''}
                             </tr>
                         );
                     })}

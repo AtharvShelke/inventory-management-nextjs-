@@ -1,15 +1,18 @@
 'use client'
 import { useState } from 'react';
-import { BarChart4, Cable, ChevronLeft, Files, Package, ShoppingBag, ShoppingCart, Warehouse, Menu, Boxes, WarehouseIcon, PackageOpen, Group, Users, Truck, List, ClipboardCheck, Plus } from 'lucide-react'
+import { Package, Warehouse, Menu,  WarehouseIcon, Users, Truck, ClipboardCheck, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
+
 
 export default function Sidebar() {
     const pathName = usePathname();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-
+    
+    
+    
 
     const sideBarLinks = [
         {

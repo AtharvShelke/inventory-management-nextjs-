@@ -1,12 +1,18 @@
+import AboutComponents from "@/components/website/AboutComponents";
+import CompanySection from "@/components/website/CompanySection";
+import Footer from "@/components/website/Footer";
+import Header from "@/components/website/Header";
+import HeroSection from "@/components/website/HeroSection";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center min-h-screen flex-col ">
-      <h2 className="text-3xl mb-4">
-        Inventory Management Software
-      </h2>
-      <Link href='/overview/home/dashboard'>Dashboard</Link>
-    </div>
+    <>
+      <Header />
+      <HeroSection />
+      <CompanySection/>
+      <AboutComponents/>
+      <Footer />
+    </>
   );
 }

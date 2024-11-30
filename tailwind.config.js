@@ -8,7 +8,15 @@ export default withUt({
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  prefix:"",
   theme: {
+	container:{
+		center:true,
+		padding:'2rem',
+		screens:{
+			'2xl': '1400px',
+		},
+	},
   	extend: {
   		colors: {
   			background: 'hsl(var(--background))',
@@ -29,6 +37,9 @@ export default withUt({
   				DEFAULT: 'hsl(var(--secondary))',
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
+			tertiary:{
+				DEFAULT:'hsl(var(--tertiary))'
+			},
   			muted: {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'

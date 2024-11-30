@@ -1,5 +1,6 @@
 import LoginForm from '@/components/auth/LoginForm';
 import { Warehouse } from 'lucide-react';
+import Link from 'next/link';
 import React from 'react';
 
 export default function Page() {
@@ -20,7 +21,8 @@ export default function Page() {
         {/* Right Form Section */}
         <div className="w-full px-6 py-8 md:px-8 lg:w-1/2">
           <div className="flex justify-center mx-auto">
-            <Warehouse className="h-8 w-8" />
+            <Link href={'/'}><Warehouse className="h-8 w-8" /></Link>
+            
           </div>
 
           <p className="mt-3 text-xl text-center text-gray-600 dark:text-gray-200">

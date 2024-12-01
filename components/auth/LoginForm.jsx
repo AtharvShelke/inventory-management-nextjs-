@@ -49,7 +49,7 @@ export default function LoginForm() {
         register={register}
         errors={errors}
         type="email" // Explicitly specify type for better UX (input field type for email)
-        autoComplete="email" // Improve accessibility and UX
+        
         required
       />
       <TextInput
@@ -58,7 +58,7 @@ export default function LoginForm() {
         register={register}
         errors={errors}
         type="password"
-        autoComplete="current-password" // Improve accessibility and UX
+        
         required
       />
       

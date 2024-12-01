@@ -22,7 +22,7 @@ const template = ({children}) => {
         style={{transform:`translateY(${completion - 100}%)`}}>
 
         </span>
-        <div className='h-[2500px]'></div>
+        
     </>
   )
 }

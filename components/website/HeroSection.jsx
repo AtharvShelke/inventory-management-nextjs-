@@ -15,7 +15,7 @@ const motionSettings = {
 
 const HeroSection = () => {
   return (
-    <div className="container py-12 xl:py-24 text-center lg:py-0 lg:text-left lg:flex lg:justify-between">
+    <div className="container text-center lg:py-0 lg:text-left lg:flex lg:justify-between lg:items-center">
       {/* Left Section */}
       <div className="lg:w-1/2 xl:py-14 lg:py-8">
         <motion.p
@@ -52,16 +52,20 @@ const HeroSection = () => {
       <motion.div
         {...motionSettings}
         variants={titleVariants}
-        className="hidden lg:flex lg:w-1/2 items-center justify-center"
+        className="hidden lg:flex lg:w-1/2 py-20 items-center justify-center"
       >
-        <Image
+        {/* <Image
           src="/downloads/hero.jpg"
-          width={448}
-          height={600}
+          height={200}
+          width={500}
           alt="Hero Section"
-          className="w-[448px] h-[600px] object-contain"
+          className="h-3/5 object-contain"
           priority
-        />
+        /> */}
+        <img
+         src="/downloads/hero.jpg"
+          alt=""
+          className='h-[500px] w-[500px] object-contain' />
       </motion.div>
     </div>
   );

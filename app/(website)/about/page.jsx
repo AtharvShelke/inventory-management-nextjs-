@@ -33,7 +33,7 @@ export default function Page() {
         </h1>
       </div>
       <div className='container'>
-        <div className='pt-4'>
+        <div className='pt-8'>
           <motion.h2 
             initial="offscreen"
             whileInView="onscreen"
@@ -46,7 +46,7 @@ export default function Page() {
             initial="offscreen"
             whileInView="onscreen"
             variants={desVariants}
-            className='text-2xl text-center font-medium pb-10 mt-5'
+            className='text-2xl text-center font-medium pb-4 mt-5'
           >
             Our interior design company is a company that provides interior design services for homes, offices, apartments and others. We provide the best interior design services for you. We have a team that is experienced in the field of interior.
           </motion.p>

@@ -6,7 +6,7 @@ import { TbArrowUpRight } from "react-icons/tb";
 import Image from 'next/image';
 import { desVariants, tagVariants, titleVariants } from "@/utils/animation";
 import { motion } from 'framer-motion';
-
+import { useRouter } from 'next/navigation';
 const motionSettings = {
   initial: "offscreen",
   whileInView: "onscreen",
@@ -14,10 +14,14 @@ const motionSettings = {
 };
 
 const HeroSection = () => {
+  const router = useRouter();
+  const handleRedirect = () => {
+    router.push('/contact')
+  }
   return (
     <div className="container text-center lg:py-0 lg:text-left lg:flex lg:justify-between lg:items-center">
       {/* Left Section */}
-      <div className="lg:w-1/2 xl:py-14 lg:py-8">
+      <div className="lg:w-1/2 xl:py-14 py-8">
         <motion.p
           {...motionSettings}
           variants={titleVariants}
@@ -42,7 +46,7 @@ const HeroSection = () => {
           best interior design.
         </motion.p>
         <motion.div {...motionSettings} variants={tagVariants}>
-          <Button className="inline-flex items-center px-8 py-3 text-white rounded-full shadow-lg hover:bg-gray-800 hover:ring-2 hover:ring-gray-950 ring-offset-2">
+          <Button onClick={handleRedirect} className="inline-flex items-center px-8 py-3 text-white rounded-full shadow-lg hover:bg-gray-800 hover:ring-2 hover:ring-gray-950 ring-offset-2">
             Book Now <TbArrowUpRight className="w-5 h-5 ml-2" />
           </Button>
         </motion.div>

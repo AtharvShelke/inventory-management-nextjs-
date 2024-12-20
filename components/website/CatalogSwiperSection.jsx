@@ -42,7 +42,7 @@ export default function CatalogSwiperSection() {
                     initial="offscreen"
                     whileInView="onscreen"
                     variants={tagVariants}
-                    className='grid grid-cols-2 text-gray-500 gap-x-8'>
+                    className='grid sm:grid-cols-1 md:grid-cols-2 text-gray-500 gap-x-8'>
                     <p>
                         Our kitchen interior solutions are designed with your lifestyle in mind, whether you're a home chef or a busy family. We prioritize layouts that maximize space, efficiency, and comfort, blending innovative storage solutions with modern aesthetics. From high-end materials to state-of-the-art appliances, every detail is carefully selected to enhance both functionality and elegance. We work closely with you to ensure every element— from cabinetry to lighting—complements your vision, creating a kitchen that is as beautiful as it is highly functional.
                     </p>

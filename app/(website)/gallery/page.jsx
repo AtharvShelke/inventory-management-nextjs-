@@ -7,12 +7,12 @@ const imageSources = [
   '/downloads/kitchen-5.jpg', '/downloads/kitchen-6.jpg', '/downloads/kitchen-7.jpg', '/downloads/kitchen-11.jpg',
   '/downloads/kitchen-12.jpg', '/downloads/kitchen-13.jpg', '/downloads/kitchen-15.jpg', '/downloads/kitchen-14.jpg',
   '/downloads/kitchen-17.jpg', '/downloads/kitchen-18.jpg', '/downloads/kitchen-20.jpg', '/downloads/kitchen-16.jpg',
-  '/downloads/kitchen-4.jpg', '/downloads/kitchen-8.jpg', '/downloads/kitchen-9.jpg', '/downloads/kitchen-19.jpg',
+  
 ]
 
 const ImageGrid = () => {
   return (
-    <div className='container py-10 grid grid-cols-2 md:grid-cols-5 gap-4'>
+    <div className='container py-10 grid grid-cols-2 md:grid-cols-4 gap-4'>
       {Array.from({ length: 5 }).map((_, index) => (
         <div key={index} className='flex flex-col gap-4'>
           {imageSources.slice(index * 4, (index + 1) * 4).map((src, i) => (

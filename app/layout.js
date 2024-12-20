@@ -31,7 +31,7 @@ export const metadata = {
   keywords: "kitchen design, custom kitchen, kitchen remodeling, modern kitchen, minimalist kitchen, rustic kitchen, luxury kitchen, bespoke kitchen design, Enrich Kitchen Studio",
   author: "Enrich Kitchen Studio",
   
-  robots: "index, follow", // Allows search engines to index the site and follow links
+  robots: "index, follow", 
   
 };
 export const viewport = {

@@ -104,10 +104,10 @@ model InvoiceItem {
   item      Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId    String  @db.ObjectId
 
-  qty          String // Quantity of the item
-  buyingPrice  String? // Price per item from Item model at purchase
-  sellingPrice String? // Price per item from Item model at sale
-  profit       String? // Calculated profit per item based on (sellingPrice - buyingPrice) * qty
+  qty          String 
+  buyingPrice  String? 
+  sellingPrice String? 
+  profit       String? 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

@@ -70,8 +70,9 @@ export default function Footer() {
         className="py-10 bg-black"
       >
         <div className="container text-white text-center lg:justify-between lg:flex">
-          <div className="pb-4 lg:pb-0">
+          <div className="pb-4 lg:pb-0 w-full flex justify-between">
             <p>&copy; 2024. All rights reserved</p>
+            <p>~ Atharv Shelke</p>
           </div>
         </div>
       </motion.div>

@@ -15,7 +15,6 @@ export default async function Adjustment() {
 
   const role = session?.user?.role;
 
-  // Convert items array to a map for quicker lookup
   const itemMap = items.reduce((acc, item) => {
     acc[item.id] = item;
     return acc;
@@ -49,9 +48,9 @@ export default async function Adjustment() {
   const updatedTransferStockAdjustments = updateAdjustments(transferStockAdjustment, false);
 
   // Column definitions
-  const columnsAdd = ['referenceNumber', 'addStockQty', 'item', 'buyingPrice', 'cost'];
+  const columnsAdd = ['referenceNumber', 'addStockQty', 'item', 'buyingPrice', 'cost', 'username'];
   const employeeColumnsAdd = ['referenceNumber', 'addStockQty', 'item'];
-  const columnTransfer = ['referenceNumber', 'transferStockQty', 'item', 'sellingPrice', 'sale'];
+  const columnTransfer = ['referenceNumber', 'transferStockQty', 'item', 'sellingPrice', 'sale', 'username'];
   const employeeColumnTransfer = ['referenceNumber', 'transferStockQty', 'item'];
 
   return (

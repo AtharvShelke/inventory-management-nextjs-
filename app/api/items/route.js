@@ -1,13 +1,11 @@
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
-// Helper function for handling errors
 const handleError = (error, message, status = 500) => {
-    console.error(error); // Log error for debugging
+    console.error(error); 
     return NextResponse.json({ error: error.message || error, message }, { status });
 };
 
-// POST request to create a new item
 export const POST = async (request) => {
     try {
         const data = await request.json();
@@ -19,15 +17,14 @@ export const POST = async (request) => {
     }
 };
 
-// GET request to fetch all items, with suppliers included, ordered by creation date
 export const GET = async (request) => {
     try {
         const items = await db.item.findMany({
             orderBy: {
-                createdAt: "desc", // Fetch latest items first
+                createdAt: "desc", 
             },
             include: {
-                supplier: true, // Include supplier information for each item
+                supplier: true, 
             },
         });
 

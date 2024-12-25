@@ -62,7 +62,7 @@ export const GET = async () => {
 export const POST = async (request) => {
     try {
         const data = await request.json();
-        const { customerName, description, items } = data;
+        const { customerName, description, items, username } = data;
 
         let totalCost = 0;
         let totalSale = 0;
@@ -86,6 +86,7 @@ export const POST = async (request) => {
             data: {
                 customerName,
                 description,
+                username,
                 totalCost: itemData.totalCost.toFixed(2),
                 totalSale: itemData.totalSale.toFixed(2),
                 totalProfit: itemData.totalProfit.toFixed(2),

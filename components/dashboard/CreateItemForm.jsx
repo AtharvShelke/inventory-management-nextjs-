@@ -1,5 +1,4 @@
 'use client';
-import ImageInput from '@/components/FormInputs/ImageInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
@@ -11,7 +10,6 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 export default function CreateItemForm({ warehouses, suppliers, initialData, isUpdate }) {
-  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm({
@@ -20,18 +18,16 @@ export default function CreateItemForm({ warehouses, suppliers, initialData, isU
 
   const { data: session } = useSession();
   const role = session?.user?.role;
-
+  const username = session?.user?.name;
   useEffect(() => {
     if (initialData) {
-      // Reset form if initial data exists to reflect updates in fields
       reset(initialData);
     }
   }, [initialData, reset]);
 
   const onSubmit = async (data) => {
-    data.imageUrl = imageUrl;
     console.log('data: ', data);
-
+    data.username = username;
     const requestAction = isUpdate ? updateRequest : makePostRequest;
     const requestUrl = isUpdate ? `items/${initialData.id}` : 'items';
     
@@ -117,12 +113,7 @@ export default function CreateItemForm({ warehouses, suppliers, initialData, isU
               errors={errors}
             />
 
-            <ImageInput
-              label="Item Image"
-              imageUrl={imageUrl}
-              setImageUrl={setImageUrl}
-              endpoint="imageUploader"
-            />
+            
           </div>
           <SubmitButton isLoading={loading} title={isUpdate ? 'Update Item' : 'New Item'} />
         </form>

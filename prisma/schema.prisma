@@ -27,6 +27,7 @@ model AddStockAdjustment {
   referenceNumber String
   addStockQty     String
   description     String?
+  username        String?
   warehouse       Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade) // Enable cascading delete
   warehouseId     String    @db.ObjectId
   item            Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
@@ -38,6 +39,7 @@ model TransferStockAdjustment {
   referenceNumber  String
   transferStockQty String
   description      String?
+  username         String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   item             Item     @relation(fields: [itemId], references: [id], onDelete: Cascade) // Enable cascading delete
@@ -55,7 +57,7 @@ model Item {
   supplier     Supplier @relation(fields: [supplierId], references: [id])
   supplierId   String   @db.ObjectId
 
-  imageUrl   String?
+  username   String?
   taxRate    String?
   dimensions String?
   createdAt  DateTime @default(now())
@@ -89,6 +91,7 @@ model Invoice {
   customerName String
   date         DateTime      @default(now())
   description  String?
+  username   String?
   invoiceItems InvoiceItem[]
   totalCost    String?
   totalSale    String?
@@ -104,10 +107,10 @@ model InvoiceItem {
   item      Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId    String  @db.ObjectId
 
-  qty          String 
-  buyingPrice  String? 
-  sellingPrice String? 
-  profit       String? 
+  qty          String
+  buyingPrice  String?
+  sellingPrice String?
+  profit       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -118,10 +121,10 @@ enum UserRole {
 }
 
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  name  String?
-  email String? @unique
-  role    UserRole @default(USER)
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?
+  email     String?  @unique
+  role      UserRole @default(USER)
   password  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

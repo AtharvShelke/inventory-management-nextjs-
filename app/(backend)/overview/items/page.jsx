@@ -7,7 +7,7 @@ import { getRequest } from '@/lib/apiRequest';
 import { useSession } from 'next-auth/react';
 
 export default function Items() {
-  const { data: session } = useSession();  // Fetch session client-side
+  const { data: session } = useSession(); 
   const [items, setItems] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ export default function Items() {
     });
   }, [items, suppliers]);
 
-  const adminColumns = ['title', 'qty', 'buyingPrice', 'sellingPrice', 'supplier'];
+  const adminColumns = ['title', 'qty', 'buyingPrice', 'sellingPrice', 'supplier', 'username'];
   const employeeColumns = ['title', 'qty', 'supplier'];
 
   const columns = useMemo(() => (role === 'USER' ? employeeColumns : adminColumns), [role]);

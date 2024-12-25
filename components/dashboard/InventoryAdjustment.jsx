@@ -13,7 +13,6 @@ export default function InventoryAdjustment({ items, warehouses }) {
 
   const [activeForm, setActiveForm] = useState('add');
 
-  // Memoizing the tab change handler
   const handleTabChange = useCallback((form) => {
     setActiveForm(form);
   }, []);

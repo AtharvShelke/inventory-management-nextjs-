@@ -5,6 +5,7 @@ import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
 import { makePostRequest } from '@/lib/apiRequest';
+import { useSession } from 'next-auth/react';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -17,17 +18,21 @@ export default function TransferInventoryForm({ warehouse, items }) {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  // Memoize items to avoid unnecessary re-renders
+const {data:session} = useSession();
+const username = session?.user?.name;
+
   const itemOptions = useMemo(() => items, [items]);
 
   // Optimized onSubmit function
   const onSubmit = useCallback(async (data) => {
+    data.username = username;
     try {
       await makePostRequest(reset, setLoading, 'inventoryadjustment/transfer', 'Transfer Stock', {
         referenceNumber: data.referenceNumber,
         itemId: data.itemId,
         transferStockQty: data.transferStockQty,
         description: data.description,
+        username:data.username
       });
     } catch (error) {
       console.error(error);

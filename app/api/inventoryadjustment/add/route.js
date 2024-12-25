@@ -11,7 +11,7 @@ const handleResponse = (message, status, data = null) => {
 // POST method to create a stock adjustment and update the item quantity
 export const POST = async (request) => {
     try {
-        const { referenceNumber, addStockQty, description, warehouseId, itemId } = await request.json();
+        const { referenceNumber, addStockQty, description, warehouseId, itemId, username } = await request.json();
 
         // Validate required fields
         if (!warehouseId || !itemId) {
@@ -46,6 +46,7 @@ export const POST = async (request) => {
                 description,
                 warehouse: { connect: { id: warehouseId } },
                 item: { connect: { id: itemId } },
+                username
             },
         });
 

@@ -39,14 +39,14 @@ export default function Invoice() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Display loading state
+    return <div>Loading...</div>; 
   }
 
   if (error) {
-    return <div>{error}</div>; // Display error message if data fetch fails
+    return <div>{error}</div>; 
   }
 
-  const columns = ['date', 'customerName', 'description'];
+  const columns = ['date', 'customerName', 'description', 'username'];
 
   return (
     <>

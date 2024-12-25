@@ -12,7 +12,7 @@ export default function ({ containerStyles, linkStyles, underlineStyles }) {
         {path:'/gallery', name:'gallery'},
         {path:'/project', name:'project'},
         {path:'/contact', name:'contact'},
-        {path:'/overview/home/dashboard', name:'dashboard'},
+        // {path:'/overview/home/dashboard', name:'dashboard'},
     ]
 
   return (

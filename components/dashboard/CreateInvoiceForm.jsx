@@ -20,7 +20,7 @@ export default function CreateInvoiceForm({ items }) {
 
   const { data: session } = useSession();
   const role = session?.user?.role;
-
+  const username = session?.user?.name
   // For dynamically adding/removing items
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
 
@@ -35,6 +35,7 @@ export default function CreateInvoiceForm({ items }) {
 
   const onSubmit = async (data) => {
     console.log('Invoice data:', data);
+    data.username = username;
     makePostRequest(reset, setLoading, 'invoice', 'Client', data);
   };
 

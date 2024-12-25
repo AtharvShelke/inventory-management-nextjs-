@@ -5,18 +5,18 @@ import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
 import TextInput from '@/components/FormInputs/TextInput';
 import { makePostRequest } from '@/lib/apiRequest';
+import { useSession } from 'next-auth/react';
 
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 export default function AddAdjustmentForm({ warehouses, items, initialData = {}, isUpdate = false }) {
   const [loading, setLoading] = useState(false);
-
-  // Initializing form with react-hook-form
+  const { data: session } = useSession();
   const { register, handleSubmit, reset, formState: { errors } } = useForm({ defaultValues: initialData });
-
-  // Use useCallback to memoize the onSubmit function
+  const username = session?.user?.name;
   const onSubmit = useCallback(async (data) => {
+    data.username = username;
     setLoading(true);
     await makePostRequest(reset, setLoading, 'inventoryadjustment/add', 'Stock', data);
   }, [reset]);

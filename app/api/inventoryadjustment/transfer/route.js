@@ -12,7 +12,7 @@ const createResponse = (message, status, data = null) => {
 export const POST = async (request) => {
     try {
         const data = await request.json();
-        const { referenceNumber, transferStockQty, description, itemId } = data;
+        const { referenceNumber, transferStockQty, description, itemId, username } = data;
 
         // Validate required fields
         if (!itemId || !transferStockQty) {
@@ -49,6 +49,7 @@ export const POST = async (request) => {
                 transferStockQty: transferQty.toString(),
                 description,
                 item: { connect: { id: itemId } },
+                username
             },
         });
 

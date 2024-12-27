@@ -24,14 +24,14 @@ const Josef = Sen({
   display: "swap",
 });
 
-// SEO-friendly metadata
+
 export const metadata = {
   title: "Enrich Kitchen Studio - Custom Kitchen Designs & Remodeling",
   description: "Enrich Kitchen Studio specializes in creating bespoke, modern, and functional kitchen designs. We offer custom kitchen remodeling and unique kitchen styles like minimalist, rustic, and luxury kitchens tailored to your needs.",
   keywords: "kitchen design, custom kitchen, kitchen remodeling, modern kitchen, minimalist kitchen, rustic kitchen, luxury kitchen, bespoke kitchen design, Enrich Kitchen Studio",
   author: "Enrich Kitchen Studio",
   
-  robots: "index, follow", 
+  // robots: "index, follow", 
   
 };
 export const viewport = {

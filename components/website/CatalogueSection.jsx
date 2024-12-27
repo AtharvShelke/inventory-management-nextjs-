@@ -41,10 +41,10 @@ export default function CatalogueSection() {
           {/* Image Section */}
           <Image
             src={item.image}
-            width={736}
-            height={1038}
+            width={720}
+            height={1024}
             alt={item.title}
-            className='w-full' 
+            className='w-full sm:h-[400px] md:h-[600px]' 
           />
           
           {/* Overlay Section */}

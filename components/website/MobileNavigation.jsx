@@ -16,7 +16,7 @@ export default function MobileNavigation() {
             <Logo />
             <Nav
               containerStyles="flex flex-col items-center gap-y-6"
-              linkStyles="text-xl font-semibold" // Corrected "text-1xl" to "text-xl"
+              linkStyles="text-xl font-semibold" 
             />
           </div>
         </div>

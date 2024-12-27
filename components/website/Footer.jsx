@@ -46,7 +46,7 @@ export default function Footer() {
           <FooterLinkSection
             title="Connect"
             links={connectLinks}
-            variants={desVariants}
+            variants={titleVariants}
           />
         </div>
         <motion.div

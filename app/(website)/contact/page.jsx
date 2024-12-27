@@ -7,19 +7,19 @@ import { useState } from "react";
 export default function Contact() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // Track if form is being submitted
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (isSubmitting) return; // Prevent multiple submissions
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
     setSuccessMessage("");
     setErrorMessage("");
 
     const formData = new FormData(e.target);
-    formData.append("access_key", "d58af696-1dca-478f-abe3-4a94d0151469");
+    formData.append("access_key", process.env.CONTACT_FORM_ACCESS_KEY);
 
     // Basic Validation
     if (!formData.get("firstname") || !formData.get("email") || !formData.get("message")) {
@@ -45,7 +45,7 @@ export default function Contact() {
 
       if (result.success) {
         setSuccessMessage("Thank you! Your message has been sent.");
-        e.target.reset(); // Reset the form after successful submission
+        e.target.reset();
       } else {
         setErrorMessage("Something went wrong. Please try again later.");
       }
@@ -53,47 +53,69 @@ export default function Contact() {
       setErrorMessage("Unable to submit your request. Please check your internet connection or try again later.");
       console.error("Error submitting the form:", error);
     } finally {
-      setIsSubmitting(false); // Reset submitting state regardless of success/failure
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="pb-14">
-      {/* Background image for heading */}
-      <div className="relative bg-cover bg-center h-64 flex items-center justify-center" style={{ backgroundImage: 'url(/image/backgroundproject.jpg)' }}>
-        <div className="absolute inset-0 bg-black opacity-50"></div> {/* Optional overlay for better text visibility */}
-        <div className="relative text-center z-10">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-white">
-            Contact Sales
-          </h2>
-          <p className="mt-2 text-lg leading-8 text-white">
-            Feel free to ask anything
-          </p>
-        </div>
-      </div>
-
-      {/* Contact Form */}
-      <form className="mx-auto mt-16 max-w-xl sm:mt-20" onSubmit={handleSubmit}>
+    <div className="pb-14 bg-gray-50 py-16">
+      <form 
+        className="mx-auto mt-16 max-w-3xl p-8 bg-white shadow-xl rounded-xl border border-gray-100" 
+        onSubmit={handleSubmit}
+      >
+        <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">Contact Us</h2>
         <div className="grid grid-cols-1 gap-x-8 gap-y-6">
-          <div className="mt-2.5">
-            <Input type="text" name="firstname" id="firstname" placeholder="First name" required />
+          <div className="mt-4">
+            <Input 
+              type="text" 
+              name="firstname" 
+              id="firstname" 
+              placeholder="First Name" 
+              required 
+              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            />
           </div>
-          <div className="mt-2.5">
-            <Input type="text" name="lastname" id="lastname" placeholder="Last name" />
+          <div className="mt-4">
+            <Input 
+              type="text" 
+              name="lastname" 
+              id="lastname" 
+              placeholder="Last Name" 
+              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            />
           </div>
-          <div className="mt-2.5">
-            <Input type="email" name="email" id="email" placeholder="Email Address" required />
+          <div className="mt-4">
+            <Input 
+              type="email" 
+              name="email" 
+              id="email" 
+              placeholder="Email Address" 
+              required 
+              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            />
           </div>
-          <div className="mt-2.5">
-            <Textarea name="message" placeholder="Message" required />
+          <div className="mt-4">
+            <Textarea 
+              name="message" 
+              placeholder="Your Message" 
+              required 
+              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+            />
           </div>
-          <Button type="submit" disabled={isSubmitting}>Send</Button>
+          <Button 
+            type="submit" 
+            disabled={isSubmitting} 
+            className="mt-6  text-white p-4 rounded-lg text-lg font-semibold w-full  focus:outline-none transition duration-200 disabled:bg-gray-300"
+          >
+            {isSubmitting ? "Sending..." : "Send Message"}
+          </Button>
         </div>
+
         {successMessage && (
-          <p className="mt-4 text-green-600">{successMessage}</p>
+          <p className="mt-4 text-green-600 text-lg font-medium">{successMessage}</p>
         )}
         {errorMessage && (
-          <p className="mt-4 text-red-600">{errorMessage}</p>
+          <p className="mt-4 text-red-600 text-lg font-medium">{errorMessage}</p>
         )}
       </form>
     </div>

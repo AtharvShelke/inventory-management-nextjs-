@@ -15,7 +15,7 @@ export default function Header() {
       setIsScrolled(window.scrollY > 50);
     };
 
-    // Use debounce to reduce scroll event frequency
+    
     const debounce = (func, wait = 100) => {
       let timeout;
       return (...args) => {
@@ -32,7 +32,7 @@ export default function Header() {
 
   const headerClass = `
     sticky top-0 z-30 transition-all 
-    ${isScrolled ? 'py-4 bg-tertiary shadow-lg' : 'py-6'} 
+    ${isScrolled ? 'py-2 bg-tertiary shadow-lg' : 'py-4'} 
     ${pathName === '/' ? 'bg-white' : ''}
   `;
 

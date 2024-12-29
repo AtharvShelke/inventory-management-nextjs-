@@ -36,8 +36,8 @@ export default function Footer() {
 
   return (
     <div className="bg-tertiary">
-      <div className="container lg:grid lg:grid-cols-2 py-14">
-        <div className="grid gap-4 pb-4 text-left lg:pb-0 lg:grid-cols-3">
+      <div className="container lg:grid lg:grid-cols-3 py-14">
+        <div className="grid gap-2 pb-4 text-left lg:pb-0 lg:grid-cols-3">
           <FooterLinkSection
             title="Company"
             links={companyLinks}
@@ -53,15 +53,26 @@ export default function Footer() {
           initial="offscreen"
           whileInView="onscreen"
           variants={titleVariants}
+          className='flex flex-row'
         >
-          <p className="pb-4 text-xl font-semibold">Stay Connected</p>
-          <div className="relative lg:max-w-sm">
-            <Input type="email" id="email" placeholder="Email Address" />
-            <button className="absolute bg-black text-white rounded-full h-10 px-3 text-sm top-2 right-2 hover:border-2 hover:border-black hover:bg-white hover:text-black">
-              Contact
-            </button>
+          <div >
+            <p className="pb-4 text-xl font-semibold">Stay Connected</p>
+            <div className="relative lg:max-w-sm">
+              <Input type="email" id="email" placeholder="Email Address" className='w-80'/>
+              <button className="absolute bg-black text-white rounded-full h-10 px-3 text-sm top-2 right-2 hover:border-2 hover:border-black hover:bg-white hover:text-black">
+                Contact
+              </button>
+            </div>
           </div>
+          
         </motion.div>
+        <motion.div
+        initial="offscreen"
+        whileInView="onscreen"
+        variants={titleVariants}
+        >
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28999.725227555075!2d75.36096095162843!3d19.8828125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdba30039c6aac1%3A0x5dea8c66d61bc474!2sENRICH%20MODULAR%20FURNITURE!5e1!3m2!1sen!2sin!4v1735317422331!5m2!1sen!2sin" width="400" height="300" style={{ border: 0 }} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </motion.div>
       </div>
       <motion.div
         initial="offscreen"

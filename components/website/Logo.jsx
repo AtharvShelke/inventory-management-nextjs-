@@ -5,13 +5,15 @@ import React from 'react'
 export default function Logo() {
     return (
         <Link href={'/'}>
-            <Image
-                src={'/downloads/enrich-kitchen-studio.jpeg'}
-                width={160}  // Default width for larger devices
-                height={55}  // Default height for larger devices
-                alt="Enrich Kitchen Studio Logo"
-                className="w-[160px] h-[55px] sm:w-[140px] sm:h-[50px] md:w-[160px] md:h-[55px] lg:w-[180px] lg:h-[60px]" // Responsive classes
-            />
+           <Image
+    src={'/downloads/logo.webp'} // Use WebP format
+    width={160}
+    height={55}
+    alt="Enrich Kitchen Studio Logo"
+    className="w-[160px] h-[55px] sm:w-[140px] sm:h-[50px] md:w-[160px] md:h-[55px] lg:w-[180px] lg:h-[60px]"
+    priority // Ensure it loads early
+/>
+
         </Link>
     )
 }

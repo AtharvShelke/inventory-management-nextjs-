@@ -23,22 +23,24 @@ const swiperImages = [
 
 export default function CatalogSwiperSection() {
     return (
-        <div className='py-16 '>
-            <div className='container grid gap-12 pb-14 lg:grid-cols-1'>
+        <div className="py-16">
+            <div className="container grid gap-12 pb-14 lg:grid-cols-1">
                 {/* Text Section */}
-                <div className='text-left'>
+                <div className="text-left">
                     <motion.h1
                         initial="offscreen"
                         whileInView="onscreen"
                         variants={titleVariants}
-                        className='py-4 text-4xl font-extrabold text-black lg:text-6xl lg:py-0'>
+                        className="py-4 text-4xl font-extrabold text-black lg:text-6xl lg:py-0"
+                    >
                         Modern Classic
                     </motion.h1>
                     <motion.h2
                         initial="offscreen"
                         whileInView="onscreen"
                         variants={desVariants}
-                        className='pb-6 text-lg font-semibold tracking-wide text-gray-600 lg:text-xl mt-5 leading-relaxed'>
+                        className="pb-6 text-lg font-semibold tracking-wide text-gray-600 lg:text-xl mt-5 leading-relaxed"
+                    >
                         Luxury Decor to Create Comfort in Your Home
                     </motion.h2>
                 </div>
@@ -48,25 +50,25 @@ export default function CatalogSwiperSection() {
                     initial="offscreen"
                     whileInView="onscreen"
                     variants={tagVariants}
-                    className='grid gap-8 sm:grid-cols-1 md:grid-cols-2 text-gray-700 leading-relaxed'>
+                    className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 text-gray-700 leading-relaxed"
+                >
                     <p>
                         Our kitchen interior solutions are designed with your lifestyle in mind, whether you're a home chef or a busy family. We prioritize layouts that maximize space, efficiency, and comfort, blending innovative storage solutions with modern aesthetics. From high-end materials to state-of-the-art appliances, every detail is carefully selected to enhance both functionality and elegance.
                     </p>
-                    
                 </motion.div>
 
                 {/* Button */}
-                <div className='text-center lg:text-left'>
+                <div className="text-center lg:text-left">
                     <a href="/gallery">
-                        <Button className='inline-flex items-center px-8 py-3 mt-6 text-white bg-primary rounded-full shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105'>
-                            View Gallery <TbArrowUpRight className='w-5 h-5 ml-2' />
+                        <Button className="inline-flex items-center px-8 py-3 mt-6 text-white bg-primary rounded-full shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105">
+                            View Gallery <TbArrowUpRight className="w-5 h-5 ml-2" />
                         </Button>
                     </a>
                 </div>
             </div>
 
             {/* Swiper Section */}
-            <div className='container'>
+            <div className="container">
                 <Swiper
                     slidesPerView={1}
                     breakpoints={{
@@ -79,18 +81,23 @@ export default function CatalogSwiperSection() {
                             spaceBetween: 40,
                         },
                     }}
-                    autoplay={{ delay: 3000, disableOnInteraction: false }}
+                    autoplay={{ delay: 1500, disableOnInteraction: false }}
                     modules={[Autoplay]}
-                    className='py-8'>
+                    className="py-8"
+                >
                     {swiperImages.map((image, index) => (
-                        <SwiperSlide key={index} className='p-4'>
-                            <div className='overflow-hidden rounded-lg shadow-lg transition-transform transform hover:scale-105'>
+                        <SwiperSlide key={index} className="p-4">
+                            <div className="overflow-hidden rounded-lg shadow-lg transition-transform transform hover:scale-105">
                                 <Image
                                     src={image}
                                     alt={`Swiper Image ${index + 1}`}
                                     width={500}
-                                    height={300}
-                                    className='w-full h-[400px] md:h-[300px] lg:h-[400px] object-cover'
+                                    height={400}
+                                    quality={75}
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
+                                    placeholder="blur"
+                                    blurDataURL="/placeholder-image.jpg" // Replace with an actual placeholder URL
+                                    className="w-full h-[400px] md:h-[300px] lg:h-[400px] object-cover"
                                 />
                             </div>
                         </SwiperSlide>

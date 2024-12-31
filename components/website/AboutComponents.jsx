@@ -8,42 +8,44 @@ const AboutComponents = () => {
   const motionSettings = {
     initial: "offscreen",
     whileInView: "onscreen",
+    viewport: { once: true },
   };
 
   return (
     <div className="container py-12 xl:py-24">
-      <div className="grid lg:grid-cols-2 gap-6 place-items-center">
+      <div className="grid lg:grid-cols-2 gap-6 items-center">
         {/* Image Section */}
         <motion.div {...motionSettings} variants={titleVariants}>
           <Image
             src="/downloads/aboutKitchen.jpg"
             width={736}
             height={736}
-            alt="About"
-            className="hidden lg:block h-[500px] object-contain"
+            alt="Creative kitchen design solutions"
+            className="h-[300px] sm:h-[400px] lg:h-[500px] w-auto object-contain"
+            priority
           />
         </motion.div>
 
         {/* Text Section */}
-        <div className="items-center">
+        <div className="lg:pl-8">
           <motion.h2
             {...motionSettings}
             variants={titleVariants}
-            className="px-12 py-4 text-3xl font-extrabold leading-tight lg:text-5xl"
+            className="text-3xl font-extrabold leading-tight lg:text-5xl mb-4"
           >
             Creative solutions by professional designers
           </motion.h2>
           <motion.p
             {...motionSettings}
             variants={desVariants}
-            className="px-12 pb-4 mt-4"
+            className="text-lg text-gray-700 mb-4"
           >
             Our innovative kitchen living concept creates more space for the important things in life.
           </motion.p>
           <motion.p
             {...motionSettings}
             variants={tagVariants}
-            className="px-12 pb-4"
+            className="text-lg text-gray-700"
           >
             Your kitchen is an expression of who you are, and its design should match your lifestyle. Whether you have traditional tastes or desire a modern feel, we can design your dream kitchen to suit any purpose.
           </motion.p>

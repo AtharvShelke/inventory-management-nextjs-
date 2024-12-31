@@ -35,6 +35,7 @@ const CompanySection = () => {
               whileInView="onscreen"
               variants={titleVariants}
               className="mx-auto flex max-w-xs flex-col gap-y-4"
+              transition={{ delay: 0.5 }}
             >
               <dt className="text-white leading-7">{badge.title}</dt>
               <dd className="order-first text-3xl font-semibold tracking-tight text-white sm:text-5xl">

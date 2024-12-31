@@ -6,13 +6,14 @@ export default function Logo() {
     return (
         <Link href={'/'}>
            <Image
-    src={'/downloads/logo.webp'} 
-    width={160}
-    height={55}
-    alt="Enrich Kitchen Studio Logo"
-    className="w-[160px] h-[55px] sm:w-[140px] sm:h-[50px] md:w-[160px] md:h-[55px] lg:w-[180px] lg:h-[60px]"
-    priority 
+  src="/downloads/logo.webp"
+  alt="Enrich Kitchen Studio Logo"
+  width={160}
+  height={49} // Adjusted to match the actual aspect ratio
+  priority
+  className="rounded-lg shadow-lg"
 />
+
 
         </Link>
     )

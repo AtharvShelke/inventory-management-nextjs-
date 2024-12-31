@@ -91,12 +91,12 @@ export default function CatalogSwiperSection() {
                                 <Image
                                     src={image}
                                     alt={`Swiper Image ${index + 1}`}
-                                    width={500}
-                                    height={400}
+                                    width={564}
+                                    height={564}
                                     quality={75}
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
-                                    placeholder="blur"
-                                    blurDataURL="/placeholder-image.jpg" // Replace with an actual placeholder URL
+                                    
+                                    
                                     className="w-full h-[400px] md:h-[300px] lg:h-[400px] object-cover"
                                 />
                             </div>

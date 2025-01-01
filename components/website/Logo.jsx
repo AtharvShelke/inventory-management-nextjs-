@@ -9,7 +9,7 @@ export default function Logo() {
   src="/downloads/logo.webp"
   alt="Enrich Kitchen Studio Logo"
   width={160}
-  height={49} // Adjusted to match the actual aspect ratio
+  height={49} 
   priority
   className="rounded-lg shadow-lg"
 />

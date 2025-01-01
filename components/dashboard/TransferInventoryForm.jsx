@@ -17,7 +17,7 @@ export default function TransferInventoryForm({ warehouse, items }) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
-
+ const [loading, setLoading] = useState(false);
 const {data:session} = useSession();
 const username = session?.user?.name;
 

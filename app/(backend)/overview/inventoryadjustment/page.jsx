@@ -1,3 +1,4 @@
+// 'use client'
 import DataTable from '@/components/dashboard/DataTable'
 import FixedHeader from '@/components/dashboard/FixedHeader'
 import { getRequest } from '@/lib/apiRequest'
@@ -5,7 +6,7 @@ import { authOptions } from '@/lib/authOptions'
 import { getServerSession } from 'next-auth'
 
 export default async function Adjustment() {
-  // Fetch all data concurrently
+ 
   const [addStockAdjustment, transferStockAdjustment, items, session] = await Promise.all([
     getRequest('inventoryadjustment/add'),
     getRequest('inventoryadjustment/transfer'),
@@ -20,16 +21,14 @@ export default async function Adjustment() {
     return acc;
   }, {});
 
-  // Helper function to calculate cost or sale
   const calculateCostOrSale = (quantity, price) => quantity * price;
 
-  // Helper function to update adjustments
   const updateAdjustments = (adjustments, isAddStock) => {
     return adjustments.map((adjustment) => {
       const { itemId, addStockQty, transferStockQty } = adjustment;
       const itemDetails = itemMap[itemId];
 
-      if (!itemDetails) return adjustment;  // handle missing item details
+      if (!itemDetails) return adjustment; 
 
       const quantity = parseInt(isAddStock ? addStockQty : transferStockQty);
       const price = isAddStock ? parseInt(itemDetails.buyingPrice) : parseInt(itemDetails.sellingPrice);

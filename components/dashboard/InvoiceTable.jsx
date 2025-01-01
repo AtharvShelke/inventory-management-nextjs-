@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, Pencil, Trash2 } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import React, { useCallback } from 'react';
 import RedModal from './RedModal';
@@ -38,8 +38,9 @@ export default function InvoiceTable({ data, columns, resourceName, setData }) {
   );
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <div className="relative overflow-x-auto max-w-full shadow-md sm:rounded-lg">
+      {/* Desktop Table View */}
+      <table className="hidden sm:table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             {columns.map((item, i) => (
@@ -64,6 +65,33 @@ export default function InvoiceTable({ data, columns, resourceName, setData }) {
           ))}
         </tbody>
       </table>
+
+      {/* Mobile View - Card Layout */}
+      <div className="sm:hidden">
+        {data.map((item) => (
+          <div key={item.id} className="mb-4 bg-white border border-gray-200 rounded-lg dark:border-gray-700">
+            {columns.map((columnName, colIndex) => (
+              <div key={colIndex} className="flex justify-between px-4 py-2 text-sm border-b dark:border-gray-600">
+                <span className="font-medium text-gray-700 dark:text-gray-400">{columnName}</span>
+                <span className="text-gray-500 dark:text-gray-300">{item[columnName]}</span>
+              </div>
+            ))}
+            <div className="flex justify-between px-4 py-2">
+              <span className="font-medium text-gray-700 dark:text-gray-400">Action</span>
+              <div className="flex items-center space-x-4">
+                <Link href={`invoice/${item.id}`} className="font-medium text-blue-600 dark:text-blue-500 flex items-center space-x-1">
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Open</span>
+                </Link>
+                <RedModal
+                  endpoint={`${resourceName}/${item.id}`}
+                  onDelete={handleDelete(item.id)}  // Avoid inline function definition here
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

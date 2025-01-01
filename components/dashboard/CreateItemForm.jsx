@@ -27,6 +27,9 @@ export default function CreateItemForm({ warehouses, suppliers, initialData, isU
 
   const onSubmit = async (data) => {
     console.log('data: ', data);
+    if (isUpdate) {
+      delete data.id;
+  }
     data.username = username;
     const requestAction = isUpdate ? updateRequest : makePostRequest;
     const requestUrl = isUpdate ? `items/${initialData.id}` : 'items';

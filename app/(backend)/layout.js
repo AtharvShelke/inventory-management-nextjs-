@@ -4,7 +4,7 @@ import Header from '@/components/dashboard/Header';
 
 export default function Layout({ children }) {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen ">
       {/* Sidebar */}
       <Sidebar />
       

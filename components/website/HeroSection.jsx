@@ -61,7 +61,7 @@ const HeroSection = () => {
       <motion.div
         {...motionSettings}
         variants={titleVariants}
-        className="hidden lg:flex lg:w-1/2 justify-center items-center py-12 lg:py-0"
+        className="flex lg:w-1/2 justify-center items-center py-12 lg:py-0"
       >
         <Image
           src="/downloads/hero-section.webp"

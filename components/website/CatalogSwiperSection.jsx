@@ -39,7 +39,7 @@ export default function CatalogSwiperSection() {
                         initial="offscreen"
                         whileInView="onscreen"
                         variants={desVariants}
-                        className="pb-6 text-lg font-semibold tracking-wide text-gray-600 lg:text-xl mt-5 leading-relaxed"
+                        className="md:pb-6 text-lg font-semibold tracking-wide text-gray-600 lg:text-xl mt-5 leading-relaxed"
                     >
                         Luxury Decor to Create Comfort in Your Home
                     </motion.h2>
@@ -50,7 +50,7 @@ export default function CatalogSwiperSection() {
                     initial="offscreen"
                     whileInView="onscreen"
                     variants={tagVariants}
-                    className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 text-gray-700 leading-relaxed"
+                    className=" text-gray-700 leading-relaxed"
                 >
                     <p>
                         Our kitchen interior solutions are designed with your lifestyle in mind, whether you're a home chef or a busy family. We prioritize layouts that maximize space, efficiency, and comfort, blending innovative storage solutions with modern aesthetics. From high-end materials to state-of-the-art appliances, every detail is carefully selected to enhance both functionality and elegance.

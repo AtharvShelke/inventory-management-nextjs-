@@ -11,7 +11,7 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (isSubmitting) return;
 
     setIsSubmitting(true);
@@ -58,64 +58,64 @@ export default function Contact() {
   };
 
   return (
-    <div className="pb-14 bg-gray-50 py-16">
-      <form 
-        className="mx-auto mt-16 max-w-3xl p-8 bg-white shadow-xl rounded-xl border border-gray-100" 
+    <div className="pb-14 bg-gray-100 lg:py-16">
+      <form
+        className="mx-auto mt-16 w-4/5 p-4 md:p-8 bg-white shadow-xl rounded-xl border border-gray-100"
         onSubmit={handleSubmit}
       >
-        <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">Contact Us</h2>
+        <h2 className="text-lg md:text-3xl font-semibold text-center mb-6 text-gray-800">Contact Us</h2>
         <div className="grid grid-cols-1 gap-x-8 gap-y-6">
-          <div className="mt-4">
-            <Input 
-              type="text" 
-              name="firstname" 
-              id="firstname" 
-              placeholder="First Name" 
-              required 
-              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          <div className="mt-2 md:mt-4">
+            <Input
+              type="text"
+              name="firstname"
+              id="firstname"
+              placeholder="First Name"
+              required
+              className="border border-gray-300 rounded-lg p-4 w-full text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
             />
           </div>
-          <div className="mt-4">
-            <Input 
-              type="text" 
-              name="lastname" 
-              id="lastname" 
-              placeholder="Last Name" 
-              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          <div className="mt-2 md:mt-4">
+            <Input
+              type="text"
+              name="lastname"
+              id="lastname"
+              placeholder="Last Name"
+              className="border border-gray-300 rounded-lg p-4 w-full  text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
             />
           </div>
-          <div className="mt-4">
-            <Input 
-              type="email" 
-              name="email" 
-              id="email" 
-              placeholder="Email Address" 
-              required 
-              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          <div className="mt-2 md:mt-4">
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email Address"
+              required
+              className="border border-gray-300 rounded-lg p-4 w-full  text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
             />
           </div>
-          <div className="mt-4">
-            <Textarea 
-              name="message" 
-              placeholder="Your Message" 
-              required 
-              className="border border-gray-300 rounded-lg p-4 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          <div className="mt-2 md:mt-4">
+            <Textarea
+              name="message"
+              placeholder="Your Message"
+              required
+              className="border border-gray-300 rounded-lg p-4 w-full  text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
             />
           </div>
-          <Button 
-            type="submit" 
-            disabled={isSubmitting} 
-            className="mt-6  text-white p-4 rounded-lg text-lg font-semibold w-full  focus:outline-none transition duration-200 disabled:bg-gray-300"
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-3 md:mt-6  text-white p-4 rounded-lg  text-md md:text-lg font-semibold w-full  focus:outline-none transition duration-200 disabled:bg-gray-300"
           >
             {isSubmitting ? "Sending..." : "Send Message"}
           </Button>
         </div>
 
         {successMessage && (
-          <p className="mt-4 text-green-600 text-lg font-medium">{successMessage}</p>
+          <p className="mt-4 text-green-600  text-md md:text-lg font-medium">{successMessage}</p>
         )}
         {errorMessage && (
-          <p className="mt-4 text-red-600 text-lg font-medium">{errorMessage}</p>
+          <p className="mt-4 text-red-600  text-md md:text-lg font-medium">{errorMessage}</p>
         )}
       </form>
     </div>

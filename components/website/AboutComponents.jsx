@@ -31,7 +31,7 @@ const AboutComponents = () => {
               priority
             />
             {/* Glassmorphism Overlay */}
-            <div className="absolute inset-0 bg-white/10 backdrop-blur-lg rounded-xl"></div>
+            
           </div>
         </motion.div>
 

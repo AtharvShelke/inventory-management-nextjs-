@@ -50,7 +50,7 @@ const AboutComponents = () => {
             variants={desVariants}
             className="text-lg text-gray-600 leading-relaxed mb-6"
           >
-            Our innovative **kitchen living concept** creates more space for the **important things in life**.
+            Our innovative <strong>kitchen living concept</strong> creates more space for the <strong>important things in life</strong>.
           </motion.p>
 
           <motion.p
@@ -58,7 +58,7 @@ const AboutComponents = () => {
             variants={tagVariants}
             className="text-lg text-gray-600 leading-relaxed"
           >
-            Your **kitchen is an expression of who you are**, and its design should match your **lifestyle**. Whether you prefer **traditional elegance** or a **modern aesthetic**, we create kitchens that suit your **purpose & personality**.
+            Your <strong>kitchen is an expression of who you are</strong>, and its design should match your <strong>lifestyle</strong>. Whether you prefer <strong>traditional elegance</strong> or a <strong>modern aesthetic</strong>, we create kitchens that suit your <strong>purpose & personality</strong>.
           </motion.p>
         </div>
         

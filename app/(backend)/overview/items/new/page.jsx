@@ -33,11 +33,11 @@ export default function NewItem({ initialData = {}, isUpdate = false }) {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading message while fetching data
+    return <div>Loading...</div>; 
   }
 
   if (error) {
-    return <div>{error}</div>; // Show an error message if fetching fails
+    return <div>{error}</div>; 
   }
 
   return (

@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { MapPin, Mail, Phone } from "lucide-react";
 
 export default function Contact() {
   const [successMessage, setSuccessMessage] = useState("");
@@ -11,7 +13,6 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (isSubmitting) return;
 
     setIsSubmitting(true);
@@ -21,7 +22,6 @@ export default function Contact() {
     const formData = new FormData(e.target);
     formData.append("access_key", process.env.CONTACT_FORM_ACCESS_KEY);
 
-    // Basic Validation
     if (!formData.get("firstname") || !formData.get("email") || !formData.get("message")) {
       setErrorMessage("Please fill in all required fields.");
       setIsSubmitting(false);
@@ -34,10 +34,7 @@ export default function Contact() {
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: json,
       });
 
@@ -50,74 +47,55 @@ export default function Contact() {
         setErrorMessage("Something went wrong. Please try again later.");
       }
     } catch (error) {
-      setErrorMessage("Unable to submit your request. Please check your internet connection or try again later.");
-      console.error("Error submitting the form:", error);
+      setErrorMessage("Unable to submit. Check your connection or try again later.");
+      console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="pb-14 bg-gray-100 lg:py-16">
-      <form
-        className="mx-auto mt-16 w-4/5 p-4 md:p-8 bg-white shadow-xl rounded-xl border border-gray-100"
-        onSubmit={handleSubmit}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.5 }}
+        className="max-w-5xl w-full grid md:grid-cols-2 gap-8 bg-white shadow-2xl rounded-2xl border border-gray-200 p-8"
       >
-        <h2 className="text-lg md:text-3xl font-semibold text-center mb-6 text-gray-800">Contact Us</h2>
-        <div className="grid grid-cols-1 gap-x-8 gap-y-6">
-          <div className="mt-2 md:mt-4">
-            <Input
-              type="text"
-              name="firstname"
-              id="firstname"
-              placeholder="First Name"
-              required
-              className="border border-gray-300 rounded-lg p-4 w-full text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-            />
-          </div>
-          <div className="mt-2 md:mt-4">
-            <Input
-              type="text"
-              name="lastname"
-              id="lastname"
-              placeholder="Last Name"
-              className="border border-gray-300 rounded-lg p-4 w-full  text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-            />
-          </div>
-          <div className="mt-2 md:mt-4">
-            <Input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Email Address"
-              required
-              className="border border-gray-300 rounded-lg p-4 w-full  text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-            />
-          </div>
-          <div className="mt-2 md:mt-4">
-            <Textarea
-              name="message"
-              placeholder="Your Message"
-              required
-              className="border border-gray-300 rounded-lg p-4 w-full  text-md md:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="mt-3 md:mt-6  text-white p-4 rounded-lg  text-md md:text-lg font-semibold w-full  focus:outline-none transition duration-200 disabled:bg-gray-300"
-          >
-            {isSubmitting ? "Sending..." : "Send Message"}
-          </Button>
+        {/* Contact Form */}
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Contact Us</h2>
+          <p className="text-gray-500 mb-6">We'd love to hear from you!</p>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input name="firstname" placeholder="First Name" required className="p-4 rounded-xl border-gray-300 focus:ring-2 focus:ring-[hsl(19,77%,57%)]" />
+            <Input name="lastname" placeholder="Last Name" className="p-4 rounded-xl border-gray-300 focus:ring-2 focus:ring-[hsl(19,77%,57%)]" />
+            <Input type="email" name="email" placeholder="Email Address" required className="p-4 rounded-xl border-gray-300 focus:ring-2 focus:ring-[hsl(19,77%,57%)]" />
+            <Textarea name="message" placeholder="Your Message" required className="p-4 rounded-xl border-gray-300 focus:ring-2 focus:ring-[hsl(19,77%,57%)]" />
+            <Button type="submit" disabled={isSubmitting} className="w-full py-3 rounded-xl text-lg font-semibold transition duration-300 bg-[hsl(19,77%,57%)] hover:bg-[hsl(19,67%,47%)] text-[hsl(60,9.1%,97.8%)]">
+              {isSubmitting ? "Sending..." : "Send Message"}
+            </Button>
+            {successMessage && <p className="text-green-600 text-center">{successMessage}</p>}
+            {errorMessage && <p className="text-red-600 text-center">{errorMessage}</p>}
+          </form>
         </div>
-
-        {successMessage && (
-          <p className="mt-4 text-green-600  text-md md:text-lg font-medium">{successMessage}</p>
-        )}
-        {errorMessage && (
-          <p className="mt-4 text-red-600  text-md md:text-lg font-medium">{errorMessage}</p>
-        )}
-      </form>
+        
+        {/* Contact Details */}
+        <div className="bg-gray-100 p-6 rounded-2xl flex flex-col justify-center">
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Our Contact Details</h3>
+          <div className="flex items-center gap-4 mb-4">
+            <MapPin className="text-[hsl(19,77%,57%)]" size={24} />
+            <p className="text-gray-700">123 Business Street, City, Country</p>
+          </div>
+          <div className="flex items-center gap-4 mb-4">
+            <Phone className="text-[hsl(19,77%,57%)]" size={24} />
+            <p className="text-gray-700">+123 456 7890</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Mail className="text-[hsl(19,77%,57%)]" size={24} />
+            <p className="text-gray-700">contact@business.com</p>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }

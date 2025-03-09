@@ -40,16 +40,13 @@ export const GET = async (req) => {
 // PUT request to update item by ID
 export const PUT = async (req) => {
     const id = extractIdFromPath(req.nextUrl.pathname);
-
     if (!id) {
         return NextResponse.json(
             { message: "Invalid ID: The ID parameter is missing or malformed" },
             { status: 400 }
         );
     }
-
     try {
-        // Parse and validate the request body
         const data = await req.json();
         console.log("Received data:", data);
 
@@ -79,7 +76,6 @@ export const PUT = async (req) => {
 
         return NextResponse.json(updatedItem);
     } catch (error) {
-        // Handle JSON parsing errors specifically
         if (error instanceof SyntaxError && error.message.includes("JSON")) {
             return NextResponse.json(
                 { message: "Invalid JSON in request body" },
@@ -87,7 +83,6 @@ export const PUT = async (req) => {
             );
         }
 
-        // Handle database-related errors specifically
         if (error.code) {
             return NextResponse.json(
                 { message: `Database error: ${error.code}` },
@@ -95,12 +90,10 @@ export const PUT = async (req) => {
             );
         }
 
-        // Fallback to general error handling
         return handleError(error, "Failed to update item");
     }
 };
 
-// DELETE request to delete item by ID
 export const DELETE = async (req) => {
     const id = extractIdFromPath(req.nextUrl.pathname);
 

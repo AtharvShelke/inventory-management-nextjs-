@@ -11,6 +11,7 @@ export default function UpdatePage({ params: { id } }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       try {
         const itemData = await getRequest(`items/${id}`);
         setData(itemData);
@@ -35,7 +36,6 @@ export default function UpdatePage({ params: { id } }) {
 
   return (
     <>
-      {/* Render the NewItem component with data */}
       <NewItem initialData={data} isUpdate={true} />
     </>
   );

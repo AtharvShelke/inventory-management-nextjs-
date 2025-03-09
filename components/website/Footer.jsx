@@ -1,19 +1,25 @@
 'use client'
 
 import Link from "next/link";
-import { Input } from "../ui/input";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { desVariants, titleVariants } from "@/utils/animation";
 
-// Reusable component for the link sections
 const FooterLinkSection = ({ title, links, variants }) => (
-  <motion.div initial="offscreen" whileInView="onscreen" variants={variants}>
-    <h2 className="pb-4 text-xl font-semibold uppercase">{title}</h2>
-    <div className="flex flex-col">
+  <motion.div 
+    initial="offscreen" 
+    whileInView="onscreen" 
+    variants={variants} 
+    className="space-y-3"
+  >
+    <h2 className="pb-2 text-lg font-semibold uppercase text-gray-800">{title}</h2>
+    <div className="flex flex-col space-y-2">
       {links.map((link, index) => (
-        <Link key={index} href={link.href} className="py-1 hover:underline">
-          {link.text}
-        </Link>
+        <motion.div key={index} whileHover={{ scale: 1.05 }}>
+          <Link href={link.href} className="text-gray-600 hover:text-gray-900 transition">
+            {link.text}
+          </Link>
+        </motion.div>
       ))}
     </div>
   </motion.div>
@@ -36,56 +42,62 @@ export default function Footer() {
 
   return (
     <div className="bg-tertiary">
-      <div className="container lg:grid lg:grid-cols-3 py-14">
-        <div className="grid gap-2 pb-4 text-left lg:pb-0 lg:grid-cols-3">
-          <FooterLinkSection
-            title="Company"
-            links={companyLinks}
-            variants={titleVariants}
-          />
-          <FooterLinkSection
-            title="Connect"
-            links={connectLinks}
-            variants={titleVariants}
-          />
-        </div>
-        <motion.div
-          initial="offscreen"
-          whileInView="onscreen"
-          variants={titleVariants}
-          className='flex flex-row'
+      <div className="container grid lg:grid-cols-3 gap-12 py-14 px-8">
+        
+        {/* Logo Section */}
+        <motion.div 
+          initial="offscreen" 
+          whileInView="onscreen" 
+          variants={titleVariants} 
+          className='flex flex-col items-start space-y-4'
         >
-          <div >
-            <p className="pb-4 text-xl font-semibold">Stay Connected</p>
-            <div className="relative lg:max-w-sm">
-              <Input type="email" id="email" placeholder="Email Address" className='w-80'/>
-              <button className="absolute bg-black text-white rounded-full h-10 px-3 text-sm top-2 right-2 hover:border-2 hover:border-black hover:bg-white hover:text-black">
-                Contact
-              </button>
-            </div>
-          </div>
-          
+          <Link href="/">
+            <Image
+              src="/downloads/logo.webp"
+              alt="Enrich Kitchen Studio Logo"
+              width={240}
+              height={73.5}
+              priority
+              className="rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
+            />
+          </Link>
         </motion.div>
-        <motion.div
-        initial="offscreen"
-        whileInView="onscreen"
-        variants={titleVariants}
-        className='w-4/5 md:w-full mt-5'
+
+        {/* Links Section */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <FooterLinkSection title="Company" links={companyLinks} variants={titleVariants} />
+          <FooterLinkSection title="Connect" links={connectLinks} variants={titleVariants} />
+        </div>
+
+        {/* Google Maps Section */}
+        <motion.div 
+          initial="offscreen" 
+          whileInView="onscreen" 
+          variants={titleVariants} 
+          className='w-full md:w-auto mt-5 flex justify-center lg:justify-start'
         >
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28999.725227555075!2d75.36096095162843!3d19.8828125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdba30039c6aac1%3A0x5dea8c66d61bc474!2sENRICH%20MODULAR%20FURNITURE!5e1!3m2!1sen!2sin!4v1735317422331!5m2!1sen!2sin" width="300" height="300" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
-          </motion.div>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28999.725227555075!2d75.36096095162843!3d19.8828125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdba30039c6aac1%3A0x5dea8c66d61bc474!2sENRICH%20MODULAR%20FURNITURE!5e1!3m2!1sen!2sin!4v1735317422331!5m2!1sen!2sin"
+            width="100%"
+            height="250"
+            style={{ border: 0, borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </motion.div>
       </div>
+
+      {/* Bottom Footer Bar */}
       <motion.div
         initial="offscreen"
         whileInView="onscreen"
         variants={desVariants}
-        className="py-10 bg-black"
+        className="py-6 bg-gray-900 text-white text-center border-t border-gray-700"
       >
-        <div className="container text-white text-center lg:justify-between lg:flex">
-          <div className="pb-4 lg:pb-0 w-full flex justify-between">
-            <p>&copy; 2024. All rights reserved</p>
-            <p>~ Atharv Shelke</p>
-          </div>
+        <div className="container flex flex-col md:flex-row justify-between items-center opacity-80">
+          <p>&copy; 2024. All rights reserved</p>
+          <p className="mt-2 md:mt-0 font-medium">~ Atharv Shelke</p>
         </div>
       </motion.div>
     </div>

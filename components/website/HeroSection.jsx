@@ -21,63 +21,86 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between py-16 px-6">
+    <div className="relative container mx-auto flex flex-col lg:flex-row items-center justify-between py-20 px-4 sm:px-6 lg:px-8">
+      {/* Background Decorative Elements */}
+      <div className="absolute -z-10 inset-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-primary/5 to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 rounded-full bg-primary/5 blur-3xl"></div>
+      </div>
       
       {/* Left Section */}
-      <div className="lg:w-1/2 text-center lg:text-left space-y-6">
+      <div className="lg:w-1/2 text-center lg:text-left space-y-8 lg:pr-10">
         <motion.p
           {...motionSettings}
           variants={titleVariants}
-          className="tracking-widest uppercase text-gray-500 text-sm lg:text-base"
+          className="tracking-widest uppercase text-primary font-medium text-sm lg:text-base"
         >
-          Offer for the Best Interior
+          Crafting Timeless Spaces
         </motion.p>
 
         <motion.h1
           {...motionSettings}
           variants={desVariants}
-          className="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-600 text-transparent bg-clip-text leading-tight"
+          className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
         >
-          Make Your Kitchen a <br /> Piece of Art
+          Elevate Your Kitchen <br className="hidden sm:block" /> Into a <span className="text-primary">Masterpiece</span>
         </motion.h1>
 
         <motion.p
           {...motionSettings}
           variants={tagVariants}
-          className="text-gray-700 text-base lg:text-lg leading-relaxed max-w-lg"
+          className="text-gray-600 text-lg lg:text-xl leading-relaxed max-w-lg"
         >
-          Change your view with the best interior design. We provide the best
-          interior design for your kitchen. Make every moment beautiful with the
-          best interior design.
+          Transform your cooking space with our bespoke interior designs. We blend functionality with artistry to create kitchens that inspire creativity and bring people together.
         </motion.p>
 
-        <motion.div {...motionSettings} variants={tagVariants}>
+        <motion.div 
+          {...motionSettings} 
+          variants={tagVariants}
+          className="flex flex-col sm:flex-row gap-4 pt-4"
+        >
           <Button
             onClick={handleRedirect}
-            className="inline-flex items-center px-8 py-3 text-white bg-primary rounded-full shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105 hover:shadow-lg hover:-rotate-2 duration-300"
+            className="px-8 py-6 text-white bg-primary rounded-full hover:bg-primary-dark transition-all duration-300 hover:shadow-xl"
           >
-            Book Now <TbArrowUpRight className="w-5 h-5 ml-2" />
+            <span className="flex items-center">
+              Book Consultation <TbArrowUpRight className="w-5 h-5 ml-2" />
+            </span>
+          </Button>
+          <Button
+            onClick={() => router.push('/project')}
+            variant="outline"
+            className="px-8 py-6 text-gray-900 border-gray-300 rounded-full hover:bg-gray-50 transition-all duration-300 hover:shadow-xl"
+          >
+            View Portfolio
           </Button>
         </motion.div>
+
+        
       </div>
 
       {/* Right Image Section */}
       <motion.div
         {...motionSettings}
         variants={titleVariants}
-        className="lg:w-1/2 flex justify-center items-center py-12 lg:py-0"
+        className="lg:w-1/2 mt-12 lg:mt-0 relative"
       >
-        <Image
-          src="/downloads/hero-section.webp"
-          alt="Hero Section"
-          width={500}
-          height={500}
-          quality={80}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
-          className="rounded-lg shadow-lg object-cover transition-transform duration-300 hover:scale-105 hover:shadow-xl border border-gray-200 hover:border-gray-400"
-        />
+        <div className="relative aspect-square w-full max-w-2xl mx-auto">
+          <Image
+            src="/image/eb-1.png"
+            alt="Luxury Kitchen Design"
+            fill
+            priority
+            quality={90}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+            className="rounded-2xl object-cover shadow-2xl border-8 border-white"
+          />
+          <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-lg hidden lg:block">
+            <div className="text-primary font-bold text-2xl">15+ Years</div>
+            <div className="text-gray-600">Of Excellence</div>
+          </div>
+        </div>
       </motion.div>
-
     </div>
   );
 };

@@ -1,15 +1,410 @@
-make changes according to call recording
-add edit and delete functionality to each table
-add authentication and authorization
-work on home page
-need to work on client page
+redesign the whole landing page into a modern sleek and state of the art website
 
-editing in inventory adjustment pending
-edit in items completed
-edit in supplier completed
-edit warehouse completed
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <HeroSection />
+      <CompanySection/>
+      <AboutComponents/>
+      <CatalogueSection/>
+      <CatalogSwiperSection/>
+      <ContactSection/>
+      <Footer />
+    </>
+  );
+}
 
-delete functionality not working idk why status code 405
-delete functionality done for all
+
+export default function Header() {
+  
+  return (
+    <header className={headerClass}>
+      <div className="container mx-auto">
+        <div className="flex items-center justify-between">
+          <Logo />
+          <div className="flex items-center gap-x-6">
+            <Nav
+              containerStyles="hidden lg:flex gap-x-8 items-center"
+              linkStyles="relative hover:text-primary transition-all cursor-pointer"
+              underlineStyles="absolute left-0 top-full h-[2px] bg-primary w-full"
+            />
+            <div className="lg:hidden">
+              <MobileNavigation />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
 
 
+
+
+const HeroSection = () => {
+  
+  return (
+    <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between py-16 px-6">
+      
+      {/* Left Section */}
+      <div className="lg:w-1/2 text-center lg:text-left space-y-6">
+        <motion.p
+          {...motionSettings}
+          variants={titleVariants}
+          className="tracking-widest uppercase text-gray-500 text-sm lg:text-base"
+        >
+          Offer for the Best Interior
+        </motion.p>
+
+        <motion.h1
+          {...motionSettings}
+          variants={desVariants}
+          className="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-600 text-transparent bg-clip-text leading-tight"
+        >
+          Make Your Kitchen a <br /> Piece of Art
+        </motion.h1>
+
+        <motion.p
+          {...motionSettings}
+          variants={tagVariants}
+          className="text-gray-700 text-base lg:text-lg leading-relaxed max-w-lg"
+        >
+          Change your view with the best interior design. We provide the best
+          interior design for your kitchen. Make every moment beautiful with the
+          best interior design.
+        </motion.p>
+
+        <motion.div {...motionSettings} variants={tagVariants}>
+          <Button
+            onClick={handleRedirect}
+            className="inline-flex items-center px-8 py-3 text-white bg-primary rounded-full shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105 hover:shadow-lg hover:-rotate-2 duration-300"
+          >
+            Book Now <TbArrowUpRight className="w-5 h-5 ml-2" />
+          </Button>
+        </motion.div>
+      </div>
+
+      {/* Right Image Section */}
+      <motion.div
+        {...motionSettings}
+        variants={titleVariants}
+        className="lg:w-1/2 flex justify-center items-center py-12 lg:py-0"
+      >
+        <Image
+          src="/downloads/hero-section.webp"
+          alt="Hero Section"
+          width={500}
+          height={500}
+          quality={80}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
+          className="rounded-lg shadow-lg object-cover transition-transform duration-300 hover:scale-105 hover:shadow-xl border border-gray-200 hover:border-gray-400"
+        />
+      </motion.div>
+
+    </div>
+  );
+};
+
+export default HeroSection;
+
+const CompanySection = () => {
+ 
+
+  return (
+    <div className="bg-primary py-24 my-10">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
+          {badges.map((badge, index) => (
+            <motion.div
+              key={index}
+              initial="offscreen"
+              whileInView="onscreen"
+              variants={titleVariants}
+              className="mx-auto flex max-w-xs flex-col gap-y-4"
+              transition={{ delay: 0.5 }}
+            >
+              <dt className="text-white leading-7">{badge.title}</dt>
+              <dd className="order-first text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+                <Badge endCountNum={badge.count} endCountText={badge.text} />
+              </dd>
+            </motion.div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  );
+};
+
+export default CompanySection;
+
+const AboutComponents = () => {
+ 
+  return (
+    <div className="container py-16 xl:py-24">
+      <div className="grid lg:grid-cols-2 gap-12 items-center">
+        
+        {/* Image Section */}
+        <motion.div 
+          {...motionSettings} 
+          variants={titleVariants} 
+          className="relative flex justify-center"
+        >
+          <div className="relative rounded-xl overflow-hidden shadow-xl transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+            <Image
+              src="/downloads/aboutKitchen.jpg"
+              width={736}
+              height={736}
+              alt="Creative kitchen design solutions"
+              className="h-[300px] sm:h-[400px] lg:h-[500px] w-auto object-cover rounded-xl"
+              priority
+            />
+            {/* Glassmorphism Overlay */}
+            
+          </div>
+        </motion.div>
+
+        {/* Text Section */}
+        <div className="lg:pl-10">
+          <motion.h2
+            {...motionSettings}
+            variants={titleVariants}
+            className="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-600 text-transparent bg-clip-text leading-tight mb-6"
+          >
+            Creative Solutions by <br /> Professional Designers
+          </motion.h2>
+
+          <motion.p
+            {...motionSettings}
+            variants={desVariants}
+            className="text-lg text-gray-600 leading-relaxed mb-6"
+          >
+            Our innovative <strong>kitchen living concept</strong> creates more space for the <strong>important things in life</strong>.
+          </motion.p>
+
+          <motion.p
+            {...motionSettings}
+            variants={tagVariants}
+            className="text-lg text-gray-600 leading-relaxed"
+          >
+            Your <strong>kitchen is an expression of who you are</strong>, and its design should match your <strong>lifestyle</strong>. Whether you prefer <strong>traditional elegance</strong> or a <strong>modern aesthetic</strong>, we create kitchens that suit your <strong>purpose & personality</strong>.
+          </motion.p>
+        </div>
+        
+      </div>
+    </div>
+  );
+};
+
+
+  
+export default function CatalogueSection() {
+  return (
+    <div className="grid gap-8 lg:grid-cols-4 md:grid-cols-2 lg:gap-0 divide-gray-300 lg:divide-x">
+      {items.map((item) => (
+        <div key={item.id} className="relative overflow-hidden group">
+          {/* Image Section */}
+          <Image
+            src={item.image}
+            width={720}
+            height={1024}
+            alt={item.title}
+            quality={75}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            placeholder="blur"
+            blurDataURL="/placeholder-image.jpg" // Replace with an actual placeholder URL
+            className="w-full sm:h-[400px] md:h-[600px] object-cover"
+          />
+
+          {/* Overlay Section */}
+          <div className="absolute top-0 p-8 bg-white text-black bg-opacity-60 backdrop-blur m-12">
+            <div className="flex justify-between pb-4">
+              <p className="text-sm">{item.category}</p>
+              <span className="text-sm">{item.id}</span>
+            </div>
+            <a href="#" className="block text-xl font-semibold">
+              {item.title}
+            </a>
+            <p className="py-4">{item.description}</p>
+            <a href="#" className="inline-flex items-center font-medium">
+              See Details <TbArrowNarrowRight className="ml-2" />
+            </a>
+          </div>
+
+          {/* Category and ID Hover Section */}
+          <div className="absolute inset-0 bg-tertiary flex-col items-center justify-end md:flex gap-32 pb-16 text-xl transition duration-300 ease-in-out border-b-2 group-hover:translate-y-full md:border-b-0 hidden">
+            <p className="tracking-wider -rotate-90">{item.category}</p>
+            <span>{item.id}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+export default function CatalogSwiperSection() {
+    return (
+        <div className="py-16">
+            <div className="container grid gap-12 pb-14 lg:grid-cols-1">
+                {/* Text Section */}
+                <div className="text-left">
+                    <motion.h1
+                        initial="offscreen"
+                        whileInView="onscreen"
+                        variants={titleVariants}
+                        className="py-4 text-4xl font-extrabold text-black lg:text-6xl lg:py-0"
+                    >
+                        Modern Classic
+                    </motion.h1>
+                    <motion.h2
+                        initial="offscreen"
+                        whileInView="onscreen"
+                        variants={desVariants}
+                        className="md:pb-6 text-lg font-semibold tracking-wide text-gray-600 lg:text-xl mt-5 leading-relaxed"
+                    >
+                        Luxury Decor to Create Comfort in Your Home
+                    </motion.h2>
+                </div>
+
+                {/* Description Section */}
+                <motion.div
+                    initial="offscreen"
+                    whileInView="onscreen"
+                    variants={tagVariants}
+                    className=" text-gray-700 leading-relaxed"
+                >
+                    <p>
+                        Our kitchen interior solutions are designed with your lifestyle in mind, whether you're a home chef or a busy family. We prioritize layouts that maximize space, efficiency, and comfort, blending innovative storage solutions with modern aesthetics. From high-end materials to state-of-the-art appliances, every detail is carefully selected to enhance both functionality and elegance.
+                    </p>
+                </motion.div>
+
+                {/* Button */}
+                <div className="text-center lg:text-left">
+                    <a href="/gallery">
+                        <Button className="inline-flex items-center px-8 py-3 mt-6 text-white bg-primary rounded-full shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105">
+                            View Gallery <TbArrowUpRight className="w-5 h-5 ml-2" />
+                        </Button>
+                    </a>
+                </div>
+            </div>
+
+            {/* Swiper Section */}
+            <div className="container">
+                <Swiper
+                    slidesPerView={1}
+                    breakpoints={{
+                        640: {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                        },
+                        1024: {
+                            slidesPerView: 3,
+                            spaceBetween: 40,
+                        },
+                    }}
+                    autoplay={{ delay: 1500, disableOnInteraction: false }}
+                    modules={[Autoplay]}
+                    className="py-8"
+                >
+                    {swiperImages.map((image, index) => (
+                        <SwiperSlide key={index} className="p-4">
+                            <div className="overflow-hidden rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                                <Image
+                                    src={image}
+                                    alt={`Swiper Image ${index + 1}`}
+                                    width={564}
+                                    height={564}
+                                    quality={75}
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
+                                    
+                                    
+                                    className="w-full h-[400px] md:h-[300px] lg:h-[400px] object-cover"
+                                />
+                            </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
+        </div>
+    );
+}
+
+
+// Post component for rendering each review
+const Post = React.memo(({ post }) => {
+    return (
+        <article key={post.id} className="flex max-w-xl flex-col items-start justify-between bg-white rounded-lg shadow-md transition-transform hover:scale-105 hover:shadow-xl p-6">
+            <div className="flex items-center gap-x-4 text-xs text-gray-600">
+                <time dateTime={post.datetime}>
+                    <Image src='/image/star.svg' alt="star icon" width={80} height={16} />
+                </time>
+                <a href={post.category.href} className="bg-primary text-white px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-gray-700 transition-all duration-200">
+                    {post.category.title}
+                </a>
+            </div>
+            <div className="group relative mt-4">
+                <h3 className="text-lg font-semibold leading-6 text-gray-900 group-hover:text-primary">
+                    <a href={post.href}>
+                        <span>{post.title}</span>
+                    </a>
+                </h3>
+                <p className="mt-3 text-sm text-gray-500 line-clamp-3">{post.description}</p>
+            </div>
+            <div className="mt-6 flex items-center gap-x-4 font-semibold text-gray-600">
+                <span>{post.author.name}</span>
+                <p className="text-sm">{post.author.location}</p>
+            </div>
+        </article>
+    );
+});
+
+export default function ContactSection() {
+    const [visiblePosts, setVisiblePosts] = useState(3); // Initially, show 3 posts
+
+    // Handle load more functionality
+    const loadMorePosts = () => {
+        setVisiblePosts(prev => Math.min(prev + 3, posts.length)); // Increase by 3 reviews
+    };
+
+    return (
+        <div className="py-12 ">
+            <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                <motion.h2
+                    initial="offscreen"
+                    whileInView="onscreen"
+                    variants={titleVariants}
+                    className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900">
+                    Customer Reviews
+                </motion.h2>
+                
+                <motion.p
+                    initial="offscreen"
+                    whileInView="onscreen"
+                    variants={desVariants}
+                    className="mt-2 text-lg text-gray-600">
+                    Hear from our happy customers about their experiences with our services.
+                </motion.p>
+
+                <motion.div
+                    initial="offscreen"
+                    whileInView="onscreen"
+                    variants={tagVariants}
+                    className="mx-auto mt-10 grid lg:grid-cols-3 gap-x-8 lg:max-w-none sm:grid-cols-1 gap-y-16 sm:py-16 py-10 border-b border-gray-200">
+                    {posts.slice(0, visiblePosts).map(post => (
+                        <Post key={post.id} post={post} />
+                    ))}
+                </motion.div>
+
+                {/* Load more button */}
+                {visiblePosts < posts.length && (
+                    <div className="text-center mt-8">
+                        <button
+                            onClick={loadMorePosts}
+                            className="bg-primary text-white px-6 py-2 rounded-full text-lg font-medium hover:bg-gray-700 transition-all">
+                            Load More Reviews
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

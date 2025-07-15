@@ -96,8 +96,8 @@ export default function Footer() {
         className="py-6 bg-gray-900 text-white text-center border-t border-gray-700"
       >
         <div className="container flex flex-col md:flex-row justify-between items-center opacity-80">
-          <p>&copy; 2024. All rights reserved</p>
-          <p className="mt-2 md:mt-0 font-medium">~ Atharv Shelke</p>
+          <p>&copy; {new Date().getFullYear()}. All rights reserved</p>
+          <Link href={"https://atharv-portfolio-ivory.vercel.app/"} className="mt-2 md:mt-0 font-medium">~ Atharv Shelke</Link>
         </div>
       </motion.div>
     </div>

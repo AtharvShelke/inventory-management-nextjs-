@@ -9,11 +9,11 @@ const projects = [
     id: 1,
     name: 'Modern Minimalist Kitchen',
     description: 'A sleek, contemporary design with clean lines, neutral tones, and functional spaces...',
-    image: '/downloads/kitchen-5.jpg',
+    image: '/whatsapp/h1.jpeg',
     additionalImages: [
-      '/downloads/kitchen-1.jpg',
-      '/downloads/kitchen-2.jpg',
-      '/downloads/kitchen-3.jpg',
+      '/whatsapp/h1.jpeg',
+      '/whatsapp/n1.jpeg',
+      '/whatsapp/n2.jpeg',
     ],
   },
   {
@@ -22,44 +22,24 @@ const projects = [
     description: 'A warm, inviting design featuring earthy wood textures, open shelving, and a cozy ambiance...',
     image: '/downloads/kitchen-11.jpg',
     additionalImages: [
-      '/downloads/kitchen-12.jpg',
-      '/downloads/kitchen-13.jpg',
+      '/whatsapp/a1.jpeg',
+      '/whatsapp/h5.jpeg',
       '/downloads/kitchen-15.jpg',
     ],
   },
+  
   {
     id: 3,
     name: 'Luxurious Modular Kitchen',
     description: 'A high-tech kitchen with premium finishes, marble countertops, and custom cabinetry...',
-    image: '/downloads/kitchen-18.jpg',
+    image: '/whatsapp/a2.jpeg',
     additionalImages: [
-      '/downloads/kitchen-16.jpg',
-      '/downloads/kitchen-17.jpg',
-      '/downloads/kitchen-19.jpg',
+      '/whatsapp/a2.jpeg',
+      '/whatsapp/h4.jpeg',
+      '/whatsapp/n7.jpeg',
     ],
   },
-  {
-    id: 4,
-    name: 'Luxurious Modular Kitchen',
-    description: 'A high-tech kitchen with premium finishes, marble countertops, and custom cabinetry...',
-    image: '/downloads/kitchen-18.jpg',
-    additionalImages: [
-      '/downloads/kitchen-16.jpg',
-      '/downloads/kitchen-17.jpg',
-      '/downloads/kitchen-19.jpg',
-    ],
-  },
-  {
-    id: 5,
-    name: 'Luxurious Modular Kitchen',
-    description: 'A high-tech kitchen with premium finishes, marble countertops, and custom cabinetry...',
-    image: '/downloads/kitchen-18.jpg',
-    additionalImages: [
-      '/downloads/kitchen-16.jpg',
-      '/downloads/kitchen-17.jpg',
-      '/downloads/kitchen-19.jpg',
-    ],
-  },
+  
 ];
 
 export default function Page() {

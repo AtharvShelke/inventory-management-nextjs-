@@ -9,17 +9,17 @@ const CompanySection = () => {
   const badges = [
     {
       title: "Trusted by numerous satisfied clients",
-      count: 50,
+      count: 1000,
       text: "+ Clients",
     },
     {
       title: "Delivering innovative and creative designs",
-      count: 100,
+      count: 5000,
       text: "+ Designs",
     },
     {
       title: "Of Experience and Excellence",
-      count: 10,
+      count: 15,
       text: "+ Years",
     },
   ];

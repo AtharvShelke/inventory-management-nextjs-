@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const imageSources = [
-  '/downloads/kitchen-1.jpg', '/downloads/kitchen-2.jpg', '/downloads/kitchen-3.jpg', '/downloads/kitchen-10.jpg',
-  '/downloads/kitchen-5.jpg', '/downloads/kitchen-6.jpg', '/downloads/kitchen-7.jpg', '/downloads/kitchen-11.jpg',
-  '/downloads/kitchen-12.jpg', '/downloads/kitchen-13.jpg', '/downloads/kitchen-15.jpg', '/downloads/kitchen-14.jpg',
-  '/downloads/kitchen-17.jpg', '/downloads/kitchen-18.jpg', '/downloads/kitchen-20.jpg', '/downloads/kitchen-16.jpg',
+  '/whatsapp/a1.jpeg', '/downloads/kitchen-2.jpg', '/whatsapp/n1.jpeg', '/whatsapp/a2.jpeg',
+  '/whatsapp/h1.jpeg', '/whatsapp/n2.jpeg', '/whatsapp/h3.jpeg', '/whatsapp/n3.jpeg',
+  '/whatsapp/h4.jpeg', '/whatsapp/n4.jpeg', '/whatsapp/h5.jpeg', '/whatsapp/n5.jpeg',
+  '/whatsapp/h6.jpeg', '/whatsapp/n6.jpeg', '/whatsapp/n7.jpeg', '/whatsapp/n8.jpeg',
 ];
 
 const ImageGrid = ({ onImageClick }) => {

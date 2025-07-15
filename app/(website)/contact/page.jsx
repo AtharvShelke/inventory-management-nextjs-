@@ -56,9 +56,9 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }} 
-        animate={{ opacity: 1, y: 0 }} 
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="max-w-5xl w-full grid md:grid-cols-2 gap-8 bg-white shadow-2xl rounded-2xl border border-gray-200 p-8"
       >
@@ -78,21 +78,22 @@ export default function Contact() {
             {errorMessage && <p className="text-red-600 text-center">{errorMessage}</p>}
           </form>
         </div>
-        
+
         {/* Contact Details */}
         <div className="bg-gray-100 p-6 rounded-2xl flex flex-col justify-center">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">Our Contact Details</h3>
           <div className="flex items-center gap-4 mb-4">
             <MapPin className="text-[hsl(19,77%,57%)]" size={24} />
-            <p className="text-gray-700">123 Business Street, City, Country</p>
+            <p className="text-gray-700">ENRICH MODULAR FURNITURE 24/39
+              MIDC CHIKALTHANA NR Dekson Casting Chhatrapati Sambhajinagar</p>
           </div>
           <div className="flex items-center gap-4 mb-4">
             <Phone className="text-[hsl(19,77%,57%)]" size={24} />
-            <p className="text-gray-700">+123 456 7890</p>
+            <p className="text-gray-700">9881734646</p>
           </div>
           <div className="flex items-center gap-4">
             <Mail className="text-[hsl(19,77%,57%)]" size={24} />
-            <p className="text-gray-700">contact@business.com</p>
+            <p className="text-gray-700">sp@enrichfurniture.com</p>
           </div>
         </div>
       </motion.div>

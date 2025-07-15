@@ -23,7 +23,7 @@ const AboutComponents = () => {
         >
           <div className="relative rounded-xl overflow-hidden shadow-xl transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
             <Image
-              src="/downloads/aboutKitchen.jpg"
+              src="/whatsapp/h1.jpeg"
               width={736}
               height={736}
               alt="Creative kitchen design solutions"

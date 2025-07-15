@@ -10,12 +10,12 @@ import { motion } from 'framer-motion';
 import { desVariants, tagVariants, titleVariants } from '@/utils/animation';
 
 const swiperImages = [
-    "/downloads/kitchen-5.jpg",
+    "/whatsapp/a1.jpeg",
     "/downloads/kitchen-2.jpg",
-    "/downloads/kitchen-13.jpg",
-    "/downloads/kitchen-18.jpg",
+    "/whatsapp/h1.jpeg",
+    "/whatsapp/n1.jpeg",
     "/downloads/kitchen-19.jpg",
-    "/downloads/kitchen-20.jpg",
+    "/whatsapp/n2.jpeg",
     "/downloads/kitchen-16.jpg",
     "/downloads/kitchen-17.jpg",
     "/downloads/kitchen-10.jpg",

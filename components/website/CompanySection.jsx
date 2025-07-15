@@ -25,8 +25,9 @@ const CompanySection = () => {
   ];
 
   return (
-    <div className="bg-primary py-24 my-10">
+    <section className="bg-primary py-24 my-10" aria-labelledby="company-heading">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <h2 id="company-heading" className="sr-only">Our Company</h2>
         <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
           {badges.map((badge, index) => (
             <motion.div
@@ -45,7 +46,7 @@ const CompanySection = () => {
           ))}
         </dl>
       </div>
-    </div>
+    </section>
   );
 };
 

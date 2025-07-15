@@ -26,10 +26,20 @@ const Josef = Sen({
 
 // ✅ SEO + Social Metadata
 export const metadata = {
-  title: "Enrich Kitchen Studio | Custom Kitchen Designs & Remodeling",
+  title: "Enrich Furniture & Kitchen Studio | Custom Kitchen Designs & Remodeling",
   description:
-    "Enrich Kitchen Studio offers high-end kitchen remodeling and custom kitchen designs, including modern, minimalist, luxury, and rustic styles. Tailored craftsmanship for your dream kitchen.",
-  keywords: [
+  "Enrich Furniture & Kitchen Studio in Chhatrapati Sambhajinagar (Aurangabad) specializes in modular kitchens, premium furniture, and customized interior solutions. Visit us to explore your dream living spaces.",
+keywords: [
+    "Enrich Furniture",
+    "Aurangabad kitchen studio",
+    "Chhatrapati Sambhajinagar furniture",
+    "modular furniture",
+    "modular kitchen",
+    "furniture showroom Aurangabad",
+    "kitchen interior Aurangabad",
+    "Enrich Modular",
+    "Enrich Kitchen Studio",
+    "luxury kitchen design Aurangabad",
     "kitchen design",
     "custom kitchen",
     "kitchen remodeling",

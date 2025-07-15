@@ -12,7 +12,7 @@ const AboutComponents = () => {
   };
 
   return (
-    <div className="container py-16 xl:py-24">
+    <section className="container py-16 xl:py-24" aria-labelledby="about-heading">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
         
         {/* Image Section */}
@@ -40,6 +40,7 @@ const AboutComponents = () => {
           <motion.h2
             {...motionSettings}
             variants={titleVariants}
+            id="about-heading"
             className="text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-600 text-transparent bg-clip-text leading-tight mb-6"
           >
             Creative Solutions by <br /> Professional Designers
@@ -63,7 +64,7 @@ const AboutComponents = () => {
         </div>
         
       </div>
-    </div>
+    </section>
   );
 };
 

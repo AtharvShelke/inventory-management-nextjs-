@@ -34,10 +34,10 @@ export default function Footer() {
   ];
 
   const connectLinks = [
-    { href: '/', text: 'Facebook' },
-    { href: '/', text: 'Instagram' },
-    { href: '/', text: 'X' },
-    { href: '/', text: 'Contact' },
+    { href: 'https://facebook.com/enrichkitchenstudio', text: 'Facebook' },
+    { href: 'https://instagram.com/enrichkitchenstudio', text: 'Instagram' },
+    { href: 'https://twitter.com/enrichkitchen', text: 'X' },
+    { href: '/contact', text: 'Contact' },
   ];
 
   return (
@@ -68,6 +68,28 @@ export default function Footer() {
           <FooterLinkSection title="Company" links={companyLinks} variants={titleVariants} />
           <FooterLinkSection title="Connect" links={connectLinks} variants={titleVariants} />
         </div>
+
+        {/* Contact Info Section */}
+        <motion.div
+          initial="offscreen"
+          whileInView="onscreen"
+          variants={titleVariants}
+          className="flex flex-col gap-4 justify-center bg-gray-100 p-6 rounded-2xl"
+        >
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Contact Us</h3>
+          <div className="flex items-start gap-2">
+            <span role="img" aria-label="address">📍</span>
+            <span className="text-gray-700">ENRICH MODULAR FURNITURE 24/39 MIDC CHIKALTHANA NR Dekson Casting Chhatrapati Sambhajinagar</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span role="img" aria-label="phone">📞</span>
+            <a href="tel:9881734646" className="text-gray-700 hover:text-primary">9881734646</a>
+          </div>
+          <div className="flex items-center gap-2">
+            <span role="img" aria-label="email">✉️</span>
+            <a href="mailto:sp@enrichfurniture.com" className="text-gray-700 hover:text-primary">sp@enrichfurniture.com</a>
+          </div>
+        </motion.div>
 
         {/* Google Maps Section */}
         <motion.div 

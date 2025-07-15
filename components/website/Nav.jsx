@@ -19,9 +19,12 @@ export default function ({ containerStyles, linkStyles, underlineStyles }) {
     <nav className={`${containerStyles}`}>
         {
             links.map((link, index)=>{
+                const isActive = link.path === pathName;
                 return (
-                    <Link href={link.path} key={index} className={`uppercase ${linkStyles}`}>
-                        {link.path === pathName && (
+                    <Link href={link.path} key={index} className={`uppercase ${linkStyles}`}
+                        aria-current={isActive ? 'page' : undefined}
+                    >
+                        {isActive && (
                             <motion.span
                              initial={{ y:'-100%' }}
                              animate={{ y:0 }}
@@ -29,7 +32,6 @@ export default function ({ containerStyles, linkStyles, underlineStyles }) {
                              layoutId='underline'
                              className={`${underlineStyles}`}
                              />
-                             
                         )}{link.name}
                     </Link>
                 )

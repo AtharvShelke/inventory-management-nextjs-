@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import AuthProvider from "@/context/AuthProvider";
 import { ThemeProvider } from "@/components/website/ThemesProvider";
 import { Sen } from 'next/font/google';
+import React from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -83,17 +84,61 @@ export const viewport = {
   themeColor: "#ffffff", // ✅ THIS IS VALID HERE
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Enrich Kitchen Studio",
+  "url": "https://www.enrichfurniture.com",
+  "logo": "/favicon.ico",
+  "description": "Enrich Kitchen Studio offers high-end kitchen remodeling and custom kitchen designs, including modern, minimalist, luxury, and rustic styles.",
+  "sameAs": [
+    "https://www.facebook.com/enrichkitchenstudio",
+    "https://www.instagram.com/enrichkitchenstudio"
+  ]
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${Josef.className} antialiased`}>
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
             <Toaster position="top-center" reverseOrder={false} />
-            {children}
+            <main id="main-content">
+              {children}
+            </main>
           </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
   );
 }
+
+// Add skip-link styles (can be moved to global CSS)
+// .skip-link {
+//   position: absolute;
+//   left: -999px;
+//   top: auto;
+//   width: 1px;
+//   height: 1px;
+//   overflow: hidden;
+//   z-index: 100;
+// }
+// .skip-link:focus {
+//   left: 0;
+//   top: 0;
+//   width: auto;
+//   height: auto;
+//   background: #fff;
+//   color: #000;
+//   padding: 1rem;
+//   font-size: 1rem;
+//   text-decoration: underline;
+// }

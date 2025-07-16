@@ -117,7 +117,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${Josef.className} antialiased`}>
-        <a href="#main-content" className="skip-link">Skip to main content</a>
+        
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
             <Toaster position="top-center" reverseOrder={false} />

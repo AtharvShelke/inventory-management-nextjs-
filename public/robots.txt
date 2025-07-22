@@ -1,5 +1,9 @@
+# *
 User-agent: *
-Disallow: /api/
-Disallow: /admin/
 Allow: /
-Sitemap: https://www.enrichfurniture.com/sitemap.xml 
+
+# Host
+Host: https://www.enrichfurniture.com
+
+# Sitemaps
+Sitemap: https://www.enrichfurniture.com/sitemap.xml

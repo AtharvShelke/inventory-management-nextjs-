@@ -111,6 +111,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* ✅ Google Search Console verification */}
+        <meta name="google-site-verification" content="G7U8Uynh-hXLI9AGzc5mFgFCXkKEACJUzP7QwAJGYTw" />
+
+        {/* ✅ JSON-LD Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

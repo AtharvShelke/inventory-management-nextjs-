@@ -26,7 +26,7 @@ const Josef = Sen({
 
 // ✅ SEO + Social Metadata
 export const metadata = {
-  title: "Enrich Furniture & Kitchen Studio | Custom Kitchen Designs & Remodeling",
+  title: "Enrich Furniture",
   description:
   "Enrich Furniture & Kitchen Studio in Chhatrapati Sambhajinagar (Aurangabad) specializes in modular kitchens, premium furniture, and customized interior solutions. Visit us to explore your dream living spaces.",
 keywords: [

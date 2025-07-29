@@ -31,6 +31,11 @@ export const metadata = {
   "Enrich Furniture & Kitchen Studio in Chhatrapati Sambhajinagar (Aurangabad) specializes in modular kitchens, premium furniture, and customized interior solutions. Visit us to explore your dream living spaces.",
 keywords: [
     "Enrich Furniture",
+    "enrich kitchen",
+    "enrich modular",
+    "enrich furniture aurangabad",
+    "enrich furniture chhatrapati sambhajinagar",
+    "",
     "Aurangabad kitchen studio",
     "Chhatrapati Sambhajinagar furniture",
     "modular furniture",

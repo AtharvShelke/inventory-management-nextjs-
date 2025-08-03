@@ -47,7 +47,7 @@ export default function CatalogueSection() {
             quality={75}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
             placeholder="blur"
-            blurDataURL="/placeholder-image.jpg" // Replace with an actual placeholder URL
+            blurDataURL={item.image}
             className="w-full sm:h-[400px] md:h-[600px] object-cover"
           />
 

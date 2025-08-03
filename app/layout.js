@@ -5,6 +5,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { ThemeProvider } from "@/components/website/ThemesProvider";
 import { Sen } from 'next/font/google';
 import React from "react";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -133,31 +134,10 @@ export default function RootLayout({ children }) {
             <main id="main-content">
               {children}
             </main>
+            <WhatsAppButton />
           </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
   );
 }
-
-// Add skip-link styles (can be moved to global CSS)
-// .skip-link {
-//   position: absolute;
-//   left: -999px;
-//   top: auto;
-//   width: 1px;
-//   height: 1px;
-//   overflow: hidden;
-//   z-index: 100;
-// }
-// .skip-link:focus {
-//   left: 0;
-//   top: 0;
-//   width: auto;
-//   height: auto;
-//   background: #fff;
-//   color: #000;
-//   padding: 1rem;
-//   font-size: 1rem;
-//   text-decoration: underline;
-// }

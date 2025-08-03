@@ -30,7 +30,6 @@ const AboutComponents = () => {
               className="h-[300px] sm:h-[400px] lg:h-[500px] w-auto object-cover rounded-xl"
               priority
             />
-            {/* Glassmorphism Overlay */}
             
           </div>
         </motion.div>

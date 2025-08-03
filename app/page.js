@@ -6,6 +6,7 @@ import ContactSection from "@/components/website/ContactSection";
 import Footer from "@/components/website/Footer";
 import Header from "@/components/website/Header";
 import HeroSection from "@/components/website/HeroSection";
+import KeyFeatures from "@/components/website/KeyFeatures";
 
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
       <Header />
       <HeroSection />
       <CompanySection/>
+      <KeyFeatures/>
       <AboutComponents/>
       <CatalogueSection/>
       <CatalogSwiperSection/>

@@ -60,25 +60,25 @@ export default function Page() {
               {
                 title: 'Modular Kitchens',
                 subtitle: 'Contemporary & Classic Designs',
-                image: '/image/kitchen-1.jpg',
+                image: '/downloads/kitchen-10.jpg',
                 alt: 'Modular Kitchen Design',
               },
               {
                 title: 'Wardrobes',
                 subtitle: 'Smart Storage Solutions',
-                image: '/image/wardrobe-1.jpg',
+                image: '/downloads/wardrobe.jpg',
                 alt: 'Wardrobe Design',
               },
               {
                 title: 'Dining Islands',
                 subtitle: 'Functional Elegance',
-                image: '/image/dining-island.jpg',
+                image: '/downloads/kitchen-3.jpg',
                 alt: 'Dining Island',
               },
               {
                 title: 'Custom Furniture',
                 subtitle: 'Bespoke Creations',
-                image: '/image/custom-furniture.jpg',
+                image: '/downloads/kitchen-20.jpg',
                 alt: 'Custom Furniture',
               },
             ].map(({ title, subtitle, image, alt }, i) => (
@@ -91,10 +91,10 @@ export default function Page() {
               >
                 <Image
                   src={image}
-                  width={400}
-                  height={300}
+                  width={500}
+                  height={400}
                   alt={alt}
-                  className='w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110'
+                  className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-110'
                 />
                 <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent' />
                 <div className='absolute bottom-4 left-4 text-white'>
@@ -114,7 +114,7 @@ export default function Page() {
               title: 'Our In-House Production',
               description:
                 'Fully equipped with advanced machinery ensuring consistent quality, timely delivery, and complete customization for all modular requirements.',
-              image: '/image/our-in-house-production.jpg',
+              image: '/downloads/modular-kitchen.jpg',
               imageLeft: false,
               bgColor: 'bg-white',
             },
@@ -123,7 +123,7 @@ export default function Page() {
               title: 'Diverse Kitchen Themes',
               description:
                 'Contemporary, classic, industrial, and nature-inspired designs that cater to every aesthetic preference and lifestyle need.',
-              image: '/image/diverse-kitchen-themes.jpg',
+              image: '/downloads/about-catalogue.jpg',
               imageLeft: true,
               bgColor: 'bg-gray-50',
             },
@@ -131,7 +131,7 @@ export default function Page() {
               icon: <CheckCircle className='w-6 h-6 text-primary' />,
               title: 'Expert Carpentry & Installation',
               description: 'Skilled craftsmen with modern hardware expertise delivering precision installation and flawless finishing.',
-              image: '/image/expert-carpentry-installation.jpg',
+              image: '/downloads/about-installation.jpg',
               imageLeft: false,
               bgColor: 'bg-white',
             },
@@ -140,7 +140,7 @@ export default function Page() {
               title: 'Free 3D Design Previews',
               description:
                 'Visualize your space with detailed 3D renderings before commitment - complete design freedom with no strings attached.',
-              image: '/image/3d-design-previews.jpg',
+              image: '/downloads/3d.jpg',
               imageLeft: true,
               bgColor: 'bg-gray-50',
             },
@@ -148,7 +148,7 @@ export default function Page() {
               icon: <CheckCircle className='w-6 h-6 text-primary' />,
               title: 'End-to-End Project Management',
               description: 'Comprehensive project oversight from initial concept through final installation, including dedicated after-sales support.',
-              image: '/image/project-management.jpg',
+              image: '/downloads/pm1.jpg',
               imageLeft: false,
               bgColor: 'bg-white',
             },

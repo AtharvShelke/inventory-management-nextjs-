@@ -8,7 +8,7 @@ const WhatsAppButton = () => {
   const [showInitialPopup, setShowInitialPopup] = useState(true)
 
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/918275334604', '_blank', 'noopener,noreferrer')
+    window.open('https://wa.me/919881734646', '_blank', 'noopener,noreferrer')
   }
 
   const handleClosePopup = () => {

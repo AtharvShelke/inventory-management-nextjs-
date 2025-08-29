@@ -4,6 +4,8 @@ import InventoryAdjustmentAdd from '@/components/dashboard/InventoryAdjustmentAd
 import TransferInventoryForm from '@/components/dashboard/TransferInventoryForm';
 import { Minus, Plus } from 'lucide-react';
 import React, { useState, useCallback } from 'react';
+import { getRequest } from '@/lib/apiRequest';
+import { toast } from 'react-hot-toast';
 
 export default function InventoryAdjustment({ items, warehouses }) {
   const tabs = [
@@ -23,6 +25,17 @@ export default function InventoryAdjustment({ items, warehouses }) {
     }
     return <TransferInventoryForm warehouse={warehouses} items={items} />;
   };
+
+  // Add validation for stock transfers
+  const handleTransfer = useCallback(async (data) => {
+    // Get current stock level
+    const item = await getRequest(`items/${data.itemId}`);
+    if (item.qty < data.transferStockQty) {
+      toast.error('Insufficient stock for transfer');
+      return false;
+    }
+    return true;
+  }, []);
 
   return (
     <>

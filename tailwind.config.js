@@ -71,7 +71,25 @@ export default withUt({
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#2563eb',
+          600: '#2048c8',
+        },
+        success: {
+          50: '#f0fdf4',
+          500: '#16a34a',
+        },
+        warning: {
+          50: '#fefce8',
+          500: '#eab308',
+        },
+        error: {
+          50: '#fef2f2',
+          500: '#dc2626',
+        },
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

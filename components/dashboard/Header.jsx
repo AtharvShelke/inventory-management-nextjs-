@@ -1,7 +1,7 @@
 'use client'
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 export default function Header() {
@@ -9,12 +9,12 @@ export default function Header() {
   const { data: session, status } = useSession(); 
   
   const router = useRouter()
-  if (status==='loading') {
-    return <p>Loading User...</p>
-  }
-  if (status==='unauthenticated') {
-    router.push('/login')
-  }
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
+  
   const username = session?.user?.name??'';
   const role = session?.user?.role;
   

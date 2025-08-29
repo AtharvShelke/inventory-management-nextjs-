@@ -68,6 +68,8 @@ model Item {
   TransferStockAdjustment TransferStockAdjustment[]
   AddStockAdjustment      AddStockAdjustment[]
   InvoiceItem             InvoiceItem[]
+
+  reorderPoint Int @default(30)
 }
 
 model Supplier {
@@ -98,6 +100,8 @@ model Invoice {
   totalProfit  String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+
+  status     String   @default("PENDING")
 }
 
 model InvoiceItem {

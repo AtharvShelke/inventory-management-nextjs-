@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+import { useEffect, useState } from 'react'
+import { getRequest } from '@/lib/apiRequest'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -16,12 +18,95 @@ import {
   MoreHorizontal,
   Activity
 } from 'lucide-react'
+import {LineChart} from '@/components/Charts'
+import {BarChart} from '@/components/Charts'
+
+import { formatCurrency } from '@/lib/utils'
+
+// Example data format for charts
+const revenueData = [
+  { name: 'Jan', value: 4000 },
+  { name: 'Feb', value: 3000 },
+  { name: 'Mar', value: 2000 },
+  { name: 'Apr', value: 2780 },
+  { name: 'May', value: 1890 },
+  { name: 'Jun', value: 2390 },
+]
+
+const productsData = [
+  { name: 'Product A', value: 400 },
+  { name: 'Product B', value: 300 },
+  { name: 'Product C', value: 200 },
+  { name: 'Product D', value: 278 },
+  { name: 'Product E', value: 189 },
+]
 
 export default function Dashboard() {
-  const stats = [
+  const [dashboardData, setDashboardData] = useState({
+    stats: {
+      totalRevenue: 0,
+      totalItems: 0,
+      totalSales: 0,
+      activeOrders: 0
+    },
+    recentOrders: [],
+    inventory: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
+  const [stats, setStats] = useState({
+    revenueData: revenueData,
+    productsData: productsData,
+    // ...other stats
+  })
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [invoices, items, adjustments] = await Promise.all([
+          getRequest('invoice'),
+          getRequest('items'),
+          getRequest('inventoryadjustment/transfer')
+        ]);
+
+        const totalRevenue = invoices.reduce((acc, inv) => acc + (inv.totalSale || 0), 0);
+        const totalSales = adjustments.length;
+        
+        setDashboardData({
+          stats: {
+            totalRevenue: totalRevenue,
+            totalItems: items.length,
+            totalSales: totalSales,
+            activeOrders: invoices.filter(inv => inv.status === 'PENDING').length
+          },
+          recentOrders: invoices.slice(0, 5).map(inv => ({
+            id: inv.invoiceNumber,
+            customer: inv.customerName,
+            amount: `Rs.${inv.totalSale?.toFixed(2)}`,
+            status: inv.status.toLowerCase(),
+            date: new Date(inv.createdAt).toLocaleDateString()
+          })),
+          inventory: items.map(item => ({
+            name: item.title,
+            stock: item.qty,
+            target: 100, // You may want to add a reorderPoint field to your schema
+            status: item.qty < 30 ? 'critical' : item.qty < 60 ? 'low' : 'good'
+          }))
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const statsData = [
     {
       title: "Total Revenue",
-      value: "$45,231.89",
+      value: `Rs.${dashboardData.stats.totalRevenue.toFixed(2)}`,
       change: "+20.1% from last month",
       icon: <DollarSign className="h-4 w-4 text-muted-foreground" />,
       trend: "up"
@@ -35,33 +120,23 @@ export default function Dashboard() {
     },
     {
       title: "Sales",
-      value: "+12,234",
+      value: dashboardData.stats.totalSales,
       change: "+19% from last month",
       icon: <ShoppingCart className="h-4 w-4 text-muted-foreground" />,
       trend: "up"
     },
     {
       title: "Active Orders",
-      value: "+573",
+      value: dashboardData.stats.activeOrders,
       change: "+201 since last hour",
       icon: <Activity className="h-4 w-4 text-muted-foreground" />,
       trend: "up"
     }
   ]
 
-  const recentOrders = [
-    { id: "ORD-001", customer: "John Doe", amount: "$250.00", status: "completed", avatar: "/avatars/01.png" },
-    { id: "ORD-002", customer: "Jane Smith", amount: "$150.00", status: "pending", avatar: "/avatars/02.png" },
-    { id: "ORD-003", customer: "Mike Johnson", amount: "$350.00", status: "processing", avatar: "/avatars/03.png" },
-    { id: "ORD-004", customer: "Sarah Wilson", amount: "$120.00", status: "completed", avatar: "/avatars/04.png" },
-  ]
+  const recentOrders = dashboardData.recentOrders
 
-  const inventoryItems = [
-    { name: "Wireless Headphones", stock: 45, target: 100, status: "low" },
-    { name: "Smartphone Case", stock: 87, target: 100, status: "good" },
-    { name: "Bluetooth Speaker", stock: 23, target: 50, status: "critical" },
-    { name: "USB Cable", stock: 156, target: 200, status: "good" },
-  ]
+  const inventoryItems = dashboardData.inventory
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -97,7 +172,7 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
+        {statsData.map((stat, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -196,6 +271,45 @@ export default function Dashboard() {
         </Card>
       </div>
 
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="p-6">
+          <h3 className="font-semibold mb-4">Revenue Overview</h3>
+          <LineChart
+            data={stats?.revenueData || []}
+            height={300}
+          />
+        </Card>
+        <Card className="p-6">
+          <h3 className="font-semibold mb-4">Top Products</h3>
+          <BarChart 
+            data={stats?.productsData || []}
+            height={300}
+          />
+        </Card>
+      </div>
+
+      {/* Recent Activity */}
+      <Card className="p-6">
+        <h3 className="font-semibold mb-4">Recent Activity</h3>
+        <div className="space-y-4">
+          {stats?.recentActivity?.map((activity, index) => (
+            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center">
+                <div className="p-2 bg-white rounded-full mr-4">
+                  {activity.icon}
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">{activity.title}</p>
+                  <p className="text-sm text-gray-600">{activity.description}</p>
+                </div>
+              </div>
+              <span className="text-sm text-gray-500">{activity.time}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
       {/* Bottom Section */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Sales Overview */}
@@ -208,17 +322,17 @@ export default function Dashboard() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">This Month</span>
-                <span className="text-sm font-medium">$12,345</span>
+                <span className="text-sm font-medium">Rs.12,345</span>
               </div>
               <Progress value={75} className="h-2" />
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Last Month</span>
-                <span className="text-sm font-medium">$10,234</span>
+                <span className="text-sm font-medium">Rs.10,234</span>
               </div>
               <Progress value={60} className="h-2" />
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Target</span>
-                <span className="text-sm font-medium">$15,000</span>
+                <span className="text-sm font-medium">Rs.15,000</span>
               </div>
               <Progress value={82} className="h-2" />
             </div>

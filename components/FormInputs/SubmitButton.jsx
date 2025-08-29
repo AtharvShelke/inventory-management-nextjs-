@@ -6,9 +6,9 @@ export default function SubmitButton({ isLoading, title }) {
     <button
       type={isLoading ? "button" : "submit"}
       disabled={isLoading}
-      className={`inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 ${
+      className={`inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:ring-blue-200 ${
         isLoading
-          ? 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700'
+          ? 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 '
           : 'bg-blue-700 hover:bg-blue-800 '
       }`}
     >

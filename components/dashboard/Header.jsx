@@ -35,7 +35,7 @@ export default function Header() {
             {/* Dropdown button */}
             <button
               onClick={toggleDropdown}
-              className="flex items-center justify-between w-full py-2 px-3 border-l border-gray-300 text-gray-700 rounded hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+              className="flex items-center justify-between w-full py-2 px-3 border-l border-gray-300 text-gray-700 rounded hover:bg-gray-100 "
             >
               {username}
               
@@ -52,13 +52,13 @@ export default function Header() {
 
             {/* Dropdown menu */}
             {isOpen && (
-              <div className="absolute right-0 z-10 mt-2 w-44 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg dark:bg-gray-700 dark:divide-gray-600">
+              <div className="absolute right-0 z-10 mt-2 w-44 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ">
                 
                   
                 <div className="py-1">
                 <button
                     onClick={()=>  {signOut()}}
-                    className="block px-4 py-2 w-full text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    className="block px-4 py-2 w-full text-sm text-gray-700 hover:bg-gray-100 "
                   >
                     Sign out
                   </button>

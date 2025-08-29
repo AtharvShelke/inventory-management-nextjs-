@@ -70,6 +70,14 @@ model Item {
   InvoiceItem             InvoiceItem[]
 
   reorderPoint Int @default(30)
+
+  category      String?
+  brand         String?
+  sku           String?
+  barcode       String?
+  minStockLevel Int      @default(10)
+  maxStockLevel Int?
+  lastOrderDate DateTime?
 }
 
 model Supplier {
@@ -102,6 +110,11 @@ model Invoice {
   updatedAt    DateTime      @updatedAt
 
   status     String   @default("PENDING")
+
+  paymentStatus String   @default("UNPAID")
+  dueDate      DateTime?
+  taxRate      Float    @default(18)
+  discount     Float    @default(0)
 }
 
 model InvoiceItem {

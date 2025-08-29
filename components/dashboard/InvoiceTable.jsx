@@ -8,14 +8,14 @@ import RedModal from './RedModal';
 // Memoizing the table row to avoid unnecessary re-renders
 const TableRow = React.memo(({ item, columns, resourceName, onDelete }) => {
   return (
-    <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+    <tr className="odd:bg-white  even:bg-gray-50  border-b ">
       {columns.map((columnName, colIndex) => (
         <td key={colIndex} className="px-6 py-4">
           {item[columnName]}
         </td>
       ))}
       <td className="px-6 py-4 flex items-center space-x-4">
-        <Link href={`invoice/${item.id}`} className="font-medium text-blue-600 dark:text-blue-500 flex items-center space-x-1">
+        <Link href={`invoice/${item.id}`} className="font-medium text-blue-600  flex items-center space-x-1">
           <ExternalLink className="w-4 h-4" />
           <span>Open</span>
         </Link>
@@ -40,8 +40,8 @@ export default function InvoiceTable({ data, columns, resourceName, setData }) {
   return (
     <div className="relative overflow-x-auto max-w-full shadow-md sm:rounded-lg">
       {/* Desktop Table View */}
-      <table className="hidden sm:table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table className="hidden sm:table w-full text-sm text-left rtl:text-right text-gray-500 ">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
           <tr>
             {columns.map((item, i) => (
               <th key={i} scope="col" className="px-6 py-3">
@@ -69,17 +69,17 @@ export default function InvoiceTable({ data, columns, resourceName, setData }) {
       {/* Mobile View - Card Layout */}
       <div className="sm:hidden">
         {data.map((item) => (
-          <div key={item.id} className="mb-4 bg-white border border-gray-200 rounded-lg dark:border-gray-700">
+          <div key={item.id} className="mb-4 bg-white border border-gray-200 rounded-lg ">
             {columns.map((columnName, colIndex) => (
-              <div key={colIndex} className="flex justify-between px-4 py-2 text-sm border-b dark:border-gray-600">
-                <span className="font-medium text-gray-700 dark:text-gray-400">{columnName}</span>
-                <span className="text-gray-500 dark:text-gray-300">{item[columnName]}</span>
+              <div key={colIndex} className="flex justify-between px-4 py-2 text-sm border-b ">
+                <span className="font-medium text-gray-700 ">{columnName}</span>
+                <span className="text-gray-500 ">{item[columnName]}</span>
               </div>
             ))}
             <div className="flex justify-between px-4 py-2">
-              <span className="font-medium text-gray-700 dark:text-gray-400">Action</span>
+              <span className="font-medium text-gray-700 ">Action</span>
               <div className="flex items-center space-x-4">
-                <Link href={`invoice/${item.id}`} className="font-medium text-blue-600 dark:text-blue-500 flex items-center space-x-1">
+                <Link href={`invoice/${item.id}`} className="font-medium text-blue-600  flex items-center space-x-1">
                   <ExternalLink className="w-4 h-4" />
                   <span>Open</span>
                 </Link>

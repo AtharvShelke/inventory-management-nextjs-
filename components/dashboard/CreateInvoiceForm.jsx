@@ -8,9 +8,12 @@ import { getRequest, makePostRequest } from '@/lib/apiRequest';
 import React, { useState, useCallback } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useSession } from 'next-auth/react';
+import { Card } from '@/components/ui/card';
 
 export default function CreateInvoiceForm({ items }) {
   const [loading, setLoading] = useState(false);
+  const [autoComplete, setAutoComplete] = useState(true);
+  const [preview, setPreview] = useState(false);
 
   const { register, handleSubmit, reset, control, formState: { errors }, setValue } = useForm({
     defaultValues: {
@@ -127,6 +130,22 @@ export default function CreateInvoiceForm({ items }) {
               Add Item
             </button>
           </div>
+
+          {/* Real-time Calculations - Uncomment if needed */}
+          {/* <Card className="p-4">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>₹0.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Tax (18%)</span>
+              <span>₹0.00</span>
+            </div>
+            <div className="flex justify-between font-bold">
+              <span>Total</span>
+              <span>₹0.00</span>
+            </div>
+          </Card> */}
 
           {/* Submit Button */}
           <SubmitButton isLoading={loading} title="Client" />

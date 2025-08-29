@@ -6,6 +6,8 @@ import { Minus, Plus } from 'lucide-react';
 import React, { useState, useCallback } from 'react';
 import { getRequest } from '@/lib/apiRequest';
 import { toast } from 'react-hot-toast';
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 export default function InventoryAdjustment({ items, warehouses }) {
   const tabs = [
@@ -14,6 +16,7 @@ export default function InventoryAdjustment({ items, warehouses }) {
   ];
 
   const [activeForm, setActiveForm] = useState('add');
+  const [batchOperation, setBatchOperation] = useState(false);
 
   const handleTabChange = useCallback((form) => {
     setActiveForm(form);
@@ -40,7 +43,7 @@ export default function InventoryAdjustment({ items, warehouses }) {
   return (
     <>
       <div className="border-b border-gray-200 w-full max-w-4xl px-4 bg-white sm:px-6 md:px-8 mx-auto my-3">
-        <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+        <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 ">
           {tabs.map((tab) => (
             <li className="me-2" key={tab.form}>
               <button
@@ -60,6 +63,35 @@ export default function InventoryAdjustment({ items, warehouses }) {
         </ul>
       </div>
       {renderForm()}
+
+      <div className="space-y-4">
+        {/* Batch Operations */}
+        <div className="flex justify-end">
+          <Button onClick={() => setBatchOperation(true)}>
+            Batch Update
+          </Button>
+        </div>
+
+        {/* Stock Alerts */}
+        <div className="grid gap-2">
+          <Alert variant="destructive">
+            Critical Stock Level
+          </Alert>
+          <Alert variant="warning">
+            Low Stock Warning
+          </Alert>
+        </div>
+
+        {/* Enhanced Filter Options */}
+        <div className="flex gap-2">
+          <select className="form-select">
+            <option>Filter by Category</option>
+          </select>
+          <select className="form-select">
+            <option>Sort by Stock Level</option>
+          </select>
+        </div>
+      </div>
     </>
   );
 }

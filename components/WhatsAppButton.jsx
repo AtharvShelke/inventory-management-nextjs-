@@ -18,7 +18,7 @@ const WhatsAppButton = () => {
   }, [])
 
   // ✅ Only decide rendering AFTER hooks
-  if (pathname.includes('overview')||pathname.includes('login')||pathname.includes('register')) {
+  if (pathname.includes('dashboard')||pathname.includes('login')||pathname.includes('register') || pathname.includes('inventory')||pathname.includes('inventoryadjustment')||pathname.includes('invoice')||pathname.includes('items')||pathname.includes('supplier')||pathname.includes('warehouse')||pathname.includes('analytics')) {
     return null
   }
 

@@ -1,75 +1,118 @@
-import db from "@/lib/db";
-import { NextResponse } from "next/server";
+import db from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { handleApiError, ApiError } from '@/lib/api/errorHandler';
 
-// Helper function to handle JSON responses
-const createResponse = (message, status, data = null) => {
-    const response = { message };
-    if (data) response.data = data;
-    return NextResponse.json(response, { status });
-};
+export async function POST(request) {
+  try {
+    const { referenceNumber, transferStockQty, description, itemId, username } =
+      await request.json();
 
-// POST request to create a transfer stock adjustment
-export const POST = async (request) => {
-    try {
-        const data = await request.json();
-        const { referenceNumber, transferStockQty, description, itemId, username } = data;
+    // Validate required fields
+    if (!itemId || !transferStockQty) {
+      throw new ApiError('Item ID and transfer quantity are required', 400);
+    }
 
-        // Validate required fields
-        if (!itemId || !transferStockQty) {
-            return createResponse("All fields (sending warehouse, item, and transfer quantity) are required.", 400);
-        }
+    // Validate quantity
+    const qty = parseInt(transferStockQty);
+    if (isNaN(qty) || qty <= 0) {
+      throw new ApiError('Invalid transfer quantity', 400);
+    }
 
-        // Fetch the item details
-        const item = await db.item.findUnique({ where: { id: itemId } });
-        if (!item) {
-            return createResponse("Item not found.", 404);
-        }
+    // Use transaction for data consistency
+    const result = await db.$transaction(async (tx) => {
+      // Fetch current item
+      const item = await tx.item.findUnique({
+        where: { id: itemId },
+        select: { id: true, qty: true, title: true, sellingPrice: true },
+      });
 
-        // Validate transfer quantity
-        const transferQty = parseInt(transferStockQty, 10);
-        if (isNaN(transferQty) || transferQty <= 0) {
-            return createResponse("Invalid transfer quantity.", 400);
-        }
+      if (!item) {
+        throw new ApiError('Item not found', 404);
+      }
 
-        const currentQty = parseInt(item.qty, 10);
-        if (currentQty < transferQty) {
-            return createResponse("Not enough stock to transfer.", 400);
-        }
+      // Validate sufficient stock
+      const currentQty = parseInt(item.qty) || 0;
+      if (currentQty < qty) {
+        throw new ApiError(
+          `Insufficient stock. Available: ${currentQty}, Requested: ${qty}`,
+          400
+        );
+      }
 
-        // Update the item quantity
-        await db.item.update({
-            where: { id: itemId },
-            data: { qty: (currentQty - transferQty).toString() },
-        });
+      // Calculate new quantity
+      const newQty = currentQty - qty;
 
-        // Create the transfer stock adjustment record
-        const transferStockAdjustment = await db.transferStockAdjustment.create({
-            data: {
-                referenceNumber,
-                transferStockQty: transferQty.toString(),
-                description,
-                item: { connect: { id: itemId } },
-                username
+      // Update item quantity
+      await tx.item.update({
+        where: { id: itemId },
+        data: { 
+          qty: newQty.toString(),
+          updatedAt: new Date(),
+        },
+      });
+
+      // Create transfer record
+      const transfer = await tx.transferStockAdjustment.create({
+        data: {
+          referenceNumber: referenceNumber || `TRF-${Date.now()}`,
+          transferStockQty: qty.toString(),
+          description,
+          username,
+          itemId,
+        },
+        include: {
+          item: {
+            select: {
+              id: true,
+              title: true,
+              qty: true,
+              sellingPrice: true,
             },
-        });
+          },
+        },
+      });
 
-        return NextResponse.json(transferStockAdjustment);
-    } catch (error) {
-        console.error("Error creating transfer stock adjustment:", error);
-        return createResponse("Failed to create adjustments", 500, error.message || error);
-    }
-};
+      return transfer;
+    });
 
-// GET request to fetch transfer stock adjustments
-export const GET = async (request) => {
-    try {
-        const transfer = await db.transferStockAdjustment.findMany({
-            orderBy: { createdAt: 'desc' }, // Latest transfer first
-        });
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Stock transferred successfully',
+        data: result,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}
 
-        return NextResponse.json(transfer);
-    } catch (error) {
-        console.error("Error fetching transfer stock adjustments:", error);
-        return createResponse("Failed to fetch the transfer", 500, error.message || error);
-    }
-};
+export async function GET(request) {
+  try {
+    const transfers = await db.transferStockAdjustment.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        item: {
+          select: {
+            id: true,
+            title: true,
+            sellingPrice: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: transfers,
+      count: transfers.length,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}

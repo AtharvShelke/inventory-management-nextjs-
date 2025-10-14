@@ -1,117 +1,270 @@
-import db from "@/lib/db";
-import { NextResponse } from "next/server";
+import db from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { updateItemSchema } from '@/lib/validations/item.validation';
+import { handleApiError, ApiError } from '@/lib/api/errorHandler';
 
-// Helper function to extract ID from URL
-const extractIdFromPath = (pathname) => {
-    const match = pathname.match(/\/api\/items\/([^/]+)/);
-    return match ? match[1] : null;
-};
+/**
+ * Validate MongoDB ObjectId format
+ */
+function isValidObjectId(id) {
+  return /^[0-9a-fA-F]{24}$/.test(id);
+}
 
-// Helper function for error handling
-const handleError = (error, message) => {
-    console.error(message, error); // Log the error details
-    const errorMessage = error.message || "An unexpected error occurred";
-    return NextResponse.json(
-        { message: `${message}: ${errorMessage}` },
-        { status: 500 }
-    );
-};
-// GET request to fetch item by ID
-export const GET = async (req) => {
-    const id = extractIdFromPath(req.nextUrl.pathname);
+/**
+ * GET /api/items/[id] - Get a single item by ID
+ */
+export async function GET(request, { params }) {
+  try {
+    const { id } = params;
 
-    if (!id) {
-        return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid item ID format', 400);
     }
 
-    try {
-        const item = await db.item.findUnique({ where: { id } });
+    const item = await db.item.findUnique({
+      where: { id },
+      include: {
+        supplier: {
+          select: {
+            id: true,
+            title: true,
+            email: true,
+            phone: true,
+            address: true,
+            contactPerson: true,
+            supplierCode: true,
+          },
+        },
+        warehouse: {
+          select: {
+            id: true,
+            title: true,
+            location: true,
+            warehouseType: true,
+            description: true,
+          },
+        },
+        AddStockAdjustment: {
+          take: 5,
+          orderBy: { id: 'desc' },
+          select: {
+            id: true,
+            referenceNumber: true,
+            addStockQty: true,
+            description: true,
+            username: true,
+          },
+        },
+        TransferStockAdjustment: {
+          take: 5,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            referenceNumber: true,
+            transferStockQty: true,
+            description: true,
+            username: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
 
-        if (!item) {
-            return NextResponse.json({ message: "Item not found" }, { status: 404 });
-        }
-
-        return NextResponse.json(item);
-    } catch (error) {
-        return handleError(error, "Failed to fetch item");
+    if (!item) {
+      throw new ApiError('Item not found', 404);
     }
-};
 
-// PUT request to update item by ID
-export const PUT = async (req) => {
-    const id = extractIdFromPath(req.nextUrl.pathname);
-    if (!id) {
-        return NextResponse.json(
-            { message: "Invalid ID: The ID parameter is missing or malformed" },
-            { status: 400 }
+    // Calculate stock status
+    const qty = parseInt(item.qty) || 0;
+    const stockStatus = qty < item.minStockLevel 
+      ? 'critical' 
+      : qty < item.reorderPoint 
+      ? 'low' 
+      : 'good';
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        ...item,
+        stockStatus,
+      },
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}
+
+/**
+ * PUT /api/items/[id] - Update an item by ID
+ */
+export async function PUT(request, { params }) {
+  try {
+    const { id } = params;
+
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid item ID format', 400);
+    }
+
+    // Check if item exists
+    const existingItem = await db.item.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!existingItem) {
+      throw new ApiError('Item not found', 404);
+    }
+
+    // Parse and validate request body
+    const body = await request.json();
+    const validatedData = updateItemSchema.parse(body);
+
+    // Verify supplier exists if being updated
+    if (validatedData.supplierId) {
+      const supplier = await db.supplier.findUnique({
+        where: { id: validatedData.supplierId },
+        select: { id: true },
+      });
+
+      if (!supplier) {
+        throw new ApiError('Supplier not found', 404);
+      }
+    }
+
+    // Verify warehouse exists if being updated
+    if (validatedData.warehouseId) {
+      const warehouse = await db.warehouse.findUnique({
+        where: { id: validatedData.warehouseId },
+        select: { id: true },
+      });
+
+      if (!warehouse) {
+        throw new ApiError('Warehouse not found', 404);
+      }
+    }
+
+    // Check for duplicate SKU or barcode if being updated
+    if (validatedData.sku || validatedData.barcode) {
+      const duplicateCheck = await db.item.findFirst({
+        where: {
+          AND: [
+            { id: { not: id } }, // Exclude current item
+            {
+              OR: [
+                validatedData.sku ? { sku: validatedData.sku } : {},
+                validatedData.barcode ? { barcode: validatedData.barcode } : {},
+              ],
+            },
+          ],
+        },
+      });
+
+      if (duplicateCheck) {
+        throw new ApiError(
+          'Another item with this SKU or barcode already exists',
+          409,
+          {
+            duplicateField: duplicateCheck.sku === validatedData.sku ? 'sku' : 'barcode',
+          }
         );
-    }
-    try {
-        const data = await req.json();
-        console.log("Received data:", data);
-
-        const { id: removedId, ...updateData } = data;
-
-        if (removedId) {
-            return NextResponse.json(
-                { message: "Invalid update data: 'id' field cannot be updated" },
-                { status: 400 }
-            );
-        }
-
-        // Check if the item exists
-        const item = await db.item.findUnique({ where: { id } });
-        if (!item) {
-            return NextResponse.json(
-                { message: `Item not found with ID: ${id}` },
-                { status: 404 }
-            );
-        }
-
-        // Perform the update
-        const updatedItem = await db.item.update({
-            where: { id },
-            data: updateData,
-        });
-
-        return NextResponse.json(updatedItem);
-    } catch (error) {
-        if (error instanceof SyntaxError && error.message.includes("JSON")) {
-            return NextResponse.json(
-                { message: "Invalid JSON in request body" },
-                { status: 400 }
-            );
-        }
-
-        if (error.code) {
-            return NextResponse.json(
-                { message: `Database error: ${error.code}` },
-                { status: 500 }
-            );
-        }
-
-        return handleError(error, "Failed to update item");
-    }
-};
-
-export const DELETE = async (req) => {
-    const id = extractIdFromPath(req.nextUrl.pathname);
-
-    if (!id) {
-        return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+      }
     }
 
-    try {
-        const item = await db.item.findUnique({ where: { id } });
+    // Update the item
+    const updatedItem = await db.item.update({
+      where: { id },
+      data: {
+        ...validatedData,
+        updatedAt: new Date(),
+      },
+      include: {
+        supplier: {
+          select: {
+            id: true,
+            title: true,
+            email: true,
+            phone: true,
+          },
+        },
+        warehouse: {
+          select: {
+            id: true,
+            title: true,
+            location: true,
+            warehouseType: true,
+          },
+        },
+      },
+    });
 
-        if (!item) {
-            return NextResponse.json({ message: "Item not found" }, { status: 404 });
-        }
+    return NextResponse.json({
+      success: true,
+      message: 'Item updated successfully',
+      data: updatedItem,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}
 
-        await db.item.delete({ where: { id } });
+/**
+ * DELETE /api/items/[id] - Delete an item by ID
+ */
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = params;
 
-        return NextResponse.json({ message: "Item deleted successfully" });
-    } catch (error) {
-        return handleError(error, "Failed to delete item");
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid item ID format', 400);
     }
-};
+
+    // Check if item exists
+    const existingItem = await db.item.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            InvoiceItem: true,
+            AddStockAdjustment: true,
+            TransferStockAdjustment: true,
+          },
+        },
+      },
+    });
+
+    if (!existingItem) {
+      throw new ApiError('Item not found', 404);
+    }
+
+    // Check if item is referenced in invoices
+    if (existingItem._count.InvoiceItem > 0) {
+      throw new ApiError(
+        'Cannot delete item that is referenced in invoices',
+        400,
+        {
+          invoiceCount: existingItem._count.InvoiceItem,
+          suggestion: 'Consider marking the item as inactive instead',
+        }
+      );
+    }
+
+    // Delete the item (cascade will handle related adjustments)
+    await db.item.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Item deleted successfully',
+      data: { id },
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}

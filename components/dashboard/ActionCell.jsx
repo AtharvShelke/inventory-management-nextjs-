@@ -2,35 +2,27 @@ import { Pencil } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import RedModal from './RedModal';
+import { Button } from '@/components/ui/button';
 
 export const ActionCell = ({ item, resourceName, onDelete, isTable }) => {
-  if (isTable) {
-    // Render as <td> for table
-    return (
-      <td className="px-6 py-4 flex items-center space-x-4">
-        <Link href={`/overview/${resourceName}/update/${item.id}`} className="font-medium text-blue-600  flex items-center space-x-1">
-          <Pencil className="w-4 h-4" />
+  const actions = (
+    <div className="flex items-center gap-2">
+      <Button variant="ghost" size="sm" asChild>
+        <Link
+          href={`/${resourceName}/update/${item.id}`}
+          className="text-blue-600 hover:text-blue-700"
+        >
+          <Pencil className="h-4 w-4 mr-1" />
           <span>Edit</span>
         </Link>
-        <RedModal
-          endpoint={`${resourceName}/${item.id}`}
-          onDelete={onDelete}
-        />
-      </td>
-    );
-  }
-
-  // Render as <div> for card view
-  return (
-    <div className="flex items-center space-x-4">
-      <Link href={`/overview/${resourceName}/update/${item.id}`} className="font-medium text-blue-600  flex items-center space-x-1">
-        <Pencil className="w-4 h-4" />
-        <span>Edit</span>
-      </Link>
-      <RedModal
-        endpoint={`${resourceName}/${item.id}`}
-        onDelete={onDelete}
-      />
+      </Button>
+      <RedModal endpoint={`${resourceName}/${item.id}`} onDelete={onDelete} />
     </div>
   );
+
+  if (isTable) {
+    return <td className="px-6 py-4">{actions}</td>;
+  }
+
+  return actions;
 };

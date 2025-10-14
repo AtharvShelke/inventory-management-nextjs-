@@ -32,7 +32,7 @@ export default function LoginForm() {
 
       if (loginData?.ok) {
         setLoading(false);
-        router.push("/overview/home/dashboard");
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Error in onSubmit:", error);

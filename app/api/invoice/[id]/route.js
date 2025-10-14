@@ -1,85 +1,189 @@
 import db from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { handleApiError, ApiError } from '@/lib/api/errorHandler';
+import { updateInvoiceSchema } from '@/lib/validations/invoice.validation';
 
-// Helper function to extract ID from the URL
-const extractIdFromPath = (pathname) => {
-  const match = pathname.match(/\/api\/invoice\/([^/]+)/);
-  return match ? match[1] : null;
-};
+// Validate MongoDB ObjectId
+function isValidObjectId(id) {
+  return /^[0-9a-fA-F]{24}$/.test(id);
+}
 
-// Helper function to handle response formatting
-const createResponse = (message, status, data = null) => {
-  const response = { message };
-  if (data) response.data = data;
-  return NextResponse.json(response, { status });
-};
-
-export const GET = async (req) => {
-  const id = extractIdFromPath(req.nextUrl.pathname);
-
-  if (!id) return createResponse("Invalid ID", 400);
-
+/**
+ * GET /api/invoice/[id] - Get a single invoice
+ */
+export async function GET(request, { params }) {
   try {
+    const { id } = params;
+
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid invoice ID format', 400);
+    }
+
     const invoice = await db.invoice.findUnique({
       where: { id },
       include: {
         invoiceItems: {
           include: {
-            item: true, // Include related item data
+            item: {
+              select: {
+                id: true,
+                title: true,
+                description: true,
+                category: true,
+                brand: true,
+                sku: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
           },
         },
       },
     });
 
-    if (!invoice) return createResponse("Invoice not found", 404);
+    if (!invoice) {
+      throw new ApiError('Invoice not found', 404);
+    }
 
-    return createResponse("Invoice fetched successfully", 200, invoice);
+    return NextResponse.json({
+      success: true,
+      data: invoice,
+    });
   } catch (error) {
-    console.error(error);
-    return createResponse("Failed to fetch invoice", 500, error.message || error);
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
   }
-};
+}
 
-export const PUT = async (req) => {
-  const id = extractIdFromPath(req.nextUrl.pathname);
-
-  if (!id) return createResponse("Invalid ID", 400);
-
+/**
+ * PUT /api/invoice/[id] - Update an invoice
+ */
+export async function PUT(request, { params }) {
   try {
-    const data = await req.json();
-    const { id: removedId, ...updateData } = data;
+    const { id } = params;
 
-    const invoice = await db.invoice.findUnique({ where: { id } });
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid invoice ID format', 400);
+    }
 
-    if (!invoice) return createResponse("Invoice not found", 404);
-
-    const updatedInvoice = await db.invoice.update({
+    // Check if invoice exists
+    const existingInvoice = await db.invoice.findUnique({
       where: { id },
-      data: updateData,
+      include: {
+        invoiceItems: true,
+      },
     });
 
-    return createResponse("Invoice updated successfully", 200, updatedInvoice);
+    if (!existingInvoice) {
+      throw new ApiError('Invoice not found', 404);
+    }
+
+    // Prevent updating completed or cancelled invoices
+    if (existingInvoice.status === 'COMPLETED' || existingInvoice.status === 'CANCELLED') {
+      throw new ApiError(
+        `Cannot update ${existingInvoice.status.toLowerCase()} invoice`,
+        400
+      );
+    }
+
+    // Parse and validate body
+    const body = await request.json();
+    const { id: removedId, ...updateData } = body;
+    const validatedData = updateInvoiceSchema.parse(updateData);
+
+    // Update invoice
+    const updatedInvoice = await db.invoice.update({
+      where: { id },
+      data: {
+        ...validatedData,
+        updatedAt: new Date(),
+      },
+      include: {
+        invoiceItems: {
+          include: {
+            item: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Invoice updated successfully',
+      data: updatedInvoice,
+    });
   } catch (error) {
-    console.error(error);
-    return createResponse("Failed to update invoice", 500, error.message || error);
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
   }
-};
+}
 
-export const DELETE = async (req) => {
-  const id = extractIdFromPath(req.nextUrl.pathname);
-
-  if (!id) return createResponse("Invalid ID", 400);
-
+/**
+ * DELETE /api/invoice/[id] - Delete an invoice
+ */
+export async function DELETE(request, { params }) {
   try {
-    const invoice = await db.invoice.findUnique({ where: { id } });
+    const { id } = params;
 
-    if (!invoice) return createResponse("Invoice not found", 404);
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid invoice ID format', 400);
+    }
 
-    await db.invoice.delete({ where: { id } });
+    // Check if invoice exists
+    const invoice = await db.invoice.findUnique({
+      where: { id },
+      include: {
+        invoiceItems: {
+          include: {
+            item: true,
+          },
+        },
+      },
+    });
 
-    return createResponse("Invoice deleted successfully", 200);
+    if (!invoice) {
+      throw new ApiError('Invoice not found', 404);
+    }
+
+    // Prevent deletion of paid invoices
+    if (invoice.paymentStatus === 'PAID') {
+      throw new ApiError('Cannot delete paid invoices', 400);
+    }
+
+    // Use transaction to restore stock and delete invoice
+    await db.$transaction(async (tx) => {
+      // Restore stock for each item
+      for (const invoiceItem of invoice.invoiceItems) {
+        const currentQty = parseInt(invoiceItem.item.qty) || 0;
+        const returnQty = parseInt(invoiceItem.qty) || 0;
+        const newQty = currentQty + returnQty;
+
+        await tx.item.update({
+          where: { id: invoiceItem.itemId },
+          data: {
+            qty: newQty.toString(),
+            updatedAt: new Date(),
+          },
+        });
+      }
+
+      // Delete invoice (cascade will delete invoice items)
+      await tx.invoice.delete({
+        where: { id },
+      });
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Invoice deleted successfully and stock restored',
+      data: { id },
+    });
   } catch (error) {
-    console.error(error);
-    return createResponse("Failed to delete invoice", 500, error.message || error);
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
   }
-};
+}

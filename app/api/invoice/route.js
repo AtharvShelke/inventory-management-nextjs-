@@ -1,104 +1,192 @@
-import db from "@/lib/db";
-import { NextResponse } from "next/server";
+import db from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { handleApiError, ApiError } from '@/lib/api/errorHandler';
+import { createInvoiceSchema } from '@/lib/validations/invoive.validation';
 
-// Helper function to handle item updates and calculate totals
-const updateItemData = async (itemData, element) => {
-    const item = await db.item.findUnique({
-        where: { id: element.itemId },
-    });
 
-    if (!item) {
-        throw new Error(`Item with ID ${element.itemId} not found.`);
+/**
+ * GET /api/invoice - Get all invoices
+ */
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status');
+    const paymentStatus = searchParams.get('paymentStatus');
+    const search = searchParams.get('search');
+
+    // Build filter
+    const where = {};
+
+    if (status) {
+      where.status = status;
     }
 
-    const updatedQty = (parseInt(item.qty) - element.qty).toString();
-
-    if (parseInt(item.qty) < element.qty) {
-        throw new Error(`Not enough stock for item ${element.itemId}.`);
+    if (paymentStatus) {
+      where.paymentStatus = paymentStatus;
     }
 
-    await db.item.update({
-        where: { id: element.itemId },
-        data: { qty: updatedQty },
+    if (search) {
+      where.OR = [
+        { customerName: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    const invoices = await db.invoice.findMany({
+      where,
+      include: {
+        invoiceItems: {
+          include: {
+            item: {
+              select: {
+                id: true,
+                title: true,
+                category: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
-    // Calculate totals
-    const totalCostForItem = element.qty * element.buyingPrice;
-    const totalSaleForItem = element.qty * element.sellingPrice;
-    const profitForItem = totalSaleForItem - totalCostForItem;
-
-    itemData.totalCost += totalCostForItem;
-    itemData.totalSale += totalSaleForItem;
-    itemData.totalProfit += profitForItem;
-
-    // Prepare InvoiceItem data
-    itemData.invoiceItemsData.push({
-        itemId: element.itemId,
-        qty: element.qty.toString(),
-        buyingPrice: element.buyingPrice.toString(),
-        sellingPrice: element.sellingPrice.toString(),
-        profit: profitForItem.toFixed(2).toString(),
+    return NextResponse.json({
+      success: true,
+      data: invoices,
+      count: invoices.length,
     });
-};
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}
 
-export const GET = async () => {
-    try {
-        const invoices = await db.invoice.findMany({
+/**
+ * POST /api/invoice - Create a new invoice
+ */
+export async function POST(request) {
+  try {
+    const body = await request.json();
+
+    // Validate input
+    const validatedData = createInvoiceSchema.parse(body);
+
+    const { customerName, description, items, username, status, paymentStatus, taxRate, discount, dueDate } = validatedData;
+
+    // Use transaction for data consistency
+    const result = await db.$transaction(async (tx) => {
+      let totalCost = 0;
+      let totalSale = 0;
+      let totalProfit = 0;
+
+      const invoiceItemsData = [];
+
+      // Process each item
+      for (const element of items) {
+        // Fetch item details
+        const item = await tx.item.findUnique({
+          where: { id: element.itemId },
+          select: { id: true, title: true, qty: true, buyingPrice: true, sellingPrice: true },
+        });
+
+        if (!item) {
+          throw new ApiError(`Item with ID ${element.itemId} not found`, 404);
+        }
+
+        // Check stock availability
+        const currentQty = parseInt(item.qty) || 0;
+        if (currentQty < element.qty) {
+          throw new ApiError(
+            `Insufficient stock for item "${item.title}". Available: ${currentQty}, Requested: ${element.qty}`,
+            400
+          );
+        }
+
+        // Update item quantity
+        const updatedQty = currentQty - element.qty;
+        await tx.item.update({
+          where: { id: element.itemId },
+          data: { 
+            qty: updatedQty.toString(),
+            updatedAt: new Date(),
+          },
+        });
+
+        // Calculate totals
+        const itemCost = element.qty * element.buyingPrice;
+        const itemSale = element.qty * element.sellingPrice;
+        const itemProfit = itemSale - itemCost;
+
+        totalCost += itemCost;
+        totalSale += itemSale;
+        totalProfit += itemProfit;
+
+        // Prepare invoice item data
+        invoiceItemsData.push({
+          itemId: element.itemId,
+          qty: element.qty.toString(),
+          buyingPrice: element.buyingPrice.toString(),
+          sellingPrice: element.sellingPrice.toString(),
+          profit: itemProfit.toFixed(2).toString(),
+        });
+      }
+
+      // Apply discount if provided
+      if (discount > 0) {
+        const discountAmount = (totalSale * discount) / 100;
+        totalSale -= discountAmount;
+        totalProfit -= discountAmount;
+      }
+
+      // Create invoice with all items
+      const invoice = await tx.invoice.create({
+        data: {
+          customerName,
+          description,
+          username,
+          totalCost: totalCost.toFixed(2).toString(),
+          totalSale: totalSale.toFixed(2).toString(),
+          totalProfit: totalProfit.toFixed(2).toString(),
+          status: status || 'PENDING',
+          paymentStatus: paymentStatus || 'UNPAID',
+          taxRate: taxRate || 18,
+          discount: discount || 0,
+          dueDate: dueDate ? new Date(dueDate) : null,
+          invoiceItems: {
+            create: invoiceItemsData,
+          },
+        },
+        include: {
+          invoiceItems: {
             include: {
-                invoiceItems: true, // Include invoiceItems for the response
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
-        });
-
-        return NextResponse.json(invoices);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ message: "Failed to fetch invoices", error: error.message || error }, { status: 500 });
-    }
-};
-
-export const POST = async (request) => {
-    try {
-        const data = await request.json();
-        const { customerName, description, items, username } = data;
-
-        let totalCost = 0;
-        let totalSale = 0;
-        let totalProfit = 0;
-
-        // Create an array to hold InvoiceItem data
-        const invoiceItemsData = [];
-
-        // Prepare item data and calculate totals
-        const itemData = { totalCost, totalSale, totalProfit, invoiceItemsData };
-
-        const updateItemPromises = items.map((element) =>
-            updateItemData(itemData, element)
-        );
-
-        // Wait for all items to be processed
-        await Promise.all(updateItemPromises);
-
-        // Create the invoice with aggregated totals and item data
-        const invoice = await db.invoice.create({
-            data: {
-                customerName,
-                description,
-                username,
-                totalCost: itemData.totalCost.toFixed(2),
-                totalSale: itemData.totalSale.toFixed(2),
-                totalProfit: itemData.totalProfit.toFixed(2),
-                invoiceItems: {
-                    create: itemData.invoiceItemsData,
+              item: {
+                select: {
+                  id: true,
+                  title: true,
                 },
+              },
             },
-        });
+          },
+        },
+      });
 
-        return NextResponse.json({ invoice, data });
-    } catch (error) {
-        console.error("Error creating invoice:", error);
-        return NextResponse.json({ error: error.message || error, message: "Failed to create the invoice" }, { status: 500 });
-    }
-};
+      return invoice;
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Invoice created successfully',
+        data: result,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}

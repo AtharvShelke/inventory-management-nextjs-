@@ -1,74 +1,121 @@
-import db from "@/lib/db";
-import { NextResponse } from "next/server";
+import db from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { handleApiError, ApiError } from '@/lib/api/errorHandler';
 
-// Helper function for creating consistent error responses
-const handleResponse = (message, status, data = null) => {
-    const response = { message };
-    if (data) response.data = data;
-    return NextResponse.json(response, { status });
-};
+export async function POST(request) {
+  try {
+    const { referenceNumber, addStockQty, description, warehouseId, itemId, username } =
+      await request.json();
 
-// POST method to create a stock adjustment and update the item quantity
-export const POST = async (request) => {
-    try {
-        const { referenceNumber, addStockQty, description, warehouseId, itemId, username } = await request.json();
-
-        // Validate required fields
-        if (!warehouseId || !itemId) {
-            return handleResponse("Warehouse ID and Item ID are required.", 400);
-        }
-
-        // Fetch the current item details to get the existing qty
-        const item = await db.item.findUnique({
-            where: { id: itemId },
-        });
-
-        if (!item) {
-            return handleResponse("Item not found.", 404);
-        }
-
-        // Calculate the new quantity
-        const currentQty = parseInt(item.qty, 10);  // Convert to integer
-        const additionalQty = parseInt(addStockQty, 10);  // Convert to integer
-        const newQty = currentQty + additionalQty;
-
-        // Update the item quantity in the Item model
-        await db.item.update({
-            where: { id: itemId },
-            data: { qty: newQty.toString() },  // Convert back to string
-        });
-
-        // Create the stock adjustment
-        const addStockAdjustment = await db.addStockAdjustment.create({
-            data: {
-                referenceNumber,
-                addStockQty,
-                description,
-                warehouse: { connect: { id: warehouseId } },
-                item: { connect: { id: itemId } },
-                username
-            },
-        });
-
-        return handleResponse('Stock adjustment created and item quantity updated successfully', 200, addStockAdjustment);
-
-    } catch (error) {
-        console.error("Error creating stock adjustment:", error);
-        return handleResponse("Failed to create adjustments", 500, error.message || error);
+    // Validate required fields
+    if (!warehouseId || !itemId || !addStockQty) {
+      throw new ApiError('Warehouse ID, Item ID, and Quantity are required', 400);
     }
-};
 
-// GET method to fetch stock adjustments
-export const GET = async (request) => {
-    try {
-        const addStockAdjustments = await db.addStockAdjustment.findMany({
-            include: { item: true },  // Fetch related item details
-        });
-
-        return NextResponse.json(addStockAdjustments);
-
-    } catch (error) {
-        console.log("Error fetching stock adjustments:", error);
-        return handleResponse("Failed to fetch the addStockAdjustment", 500, error.message || error);
+    // Validate quantity
+    const qty = parseInt(addStockQty);
+    if (isNaN(qty) || qty <= 0) {
+      throw new ApiError('Invalid quantity value', 400);
     }
-};
+
+    // Use transaction for data consistency
+    const result = await db.$transaction(async (tx) => {
+      // Fetch current item
+      const item = await tx.item.findUnique({
+        where: { id: itemId },
+        select: { id: true, qty: true, title: true },
+      });
+
+      if (!item) {
+        throw new ApiError('Item not found', 404);
+      }
+
+      // Verify warehouse exists
+      const warehouse = await tx.warehouse.findUnique({
+        where: { id: warehouseId },
+        select: { id: true, title: true },
+      });
+
+      if (!warehouse) {
+        throw new ApiError('Warehouse not found', 404);
+      }
+
+      // Calculate new quantity
+      const currentQty = parseInt(item.qty) || 0;
+      const newQty = currentQty + qty;
+
+      // Update item quantity
+      await tx.item.update({
+        where: { id: itemId },
+        data: { 
+          qty: newQty.toString(),
+          updatedAt: new Date(),
+        },
+      });
+
+      // Create adjustment record
+      const adjustment = await tx.addStockAdjustment.create({
+        data: {
+          referenceNumber: referenceNumber || `ADD-${Date.now()}`,
+          addStockQty: qty.toString(),
+          description,
+          username,
+          warehouseId,
+          itemId,
+        },
+        include: {
+          warehouse: { select: { id: true, title: true } },
+          item: { select: { id: true, title: true, qty: true } },
+        },
+      });
+
+      return adjustment;
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Stock added successfully',
+        data: result,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}
+
+export async function GET(request) {
+  try {
+    const adjustments = await db.addStockAdjustment.findMany({
+      orderBy: { id: 'desc' },
+      include: {
+        item: {
+          select: {
+            id: true,
+            title: true,
+            buyingPrice: true,
+          },
+        },
+        warehouse: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: adjustments,
+      count: adjustments.length,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}

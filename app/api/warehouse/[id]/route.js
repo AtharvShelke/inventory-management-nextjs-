@@ -1,112 +1,181 @@
-import db from "@/lib/db";
-import { NextResponse } from "next/server";
+import db from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { handleApiError, ApiError } from '@/lib/api/errorHandler';
+import { z } from 'zod';
 
-export const GET = async (req) => {
-    const pathname = req.nextUrl.pathname;
-
-
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/warehouse\/([^/]+)/);
-    const id = match ? match[1] : null;
-
-    try {
-        const warehouse = await db.warehouse.findUnique({
-            where: { id: id }, // Find the invoice by the dynamic `id`
-            
-        });
-
-        if (!warehouse) {
-            return NextResponse.json({ message: "warehouse not found" }, { status: 404 });
-        }
-
-        return NextResponse.json(warehouse);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to fetch invoice",
-            },
-            {
-                status: 500,
-            }
-        );
-    }
+// Validation helpers
+function isValidObjectId(id) {
+  return /^[0-9a-fA-F]{24}$/.test(id);
 }
-export const PUT = async (req) => {
-    const pathname = req.nextUrl.pathname;
 
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/warehouse\/([^/]+)/);
-    const id = match ? match[1] : null;
+const updateWarehouseSchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  location: z.string().optional().nullable(),
+  warehouseType: z.string().optional(),
+  description: z.string().max(1000).optional().nullable(),
+});
 
-    if (!id) {
-        return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+/**
+ * GET /api/warehouse/[id] - Get a single warehouse
+ */
+export async function GET(request, { params }) {
+  try {
+    const { id } = params;
+
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid warehouse ID format', 400);
     }
 
-    try {
-        const data = await req.json();
-        const { id: removedId, ...updateData } = data;
-
-        const warehouse = await db.warehouse.findUnique({ where: { id } });
-
-        if (!warehouse) {
-            return NextResponse.json({ message: "warehouse not found" }, { status: 404 });
-        }
-
-        const updatedwarehouse = await db.warehouse.update({
-            where: { id },
-            data: updateData, // Fix: Pass updateData as the 'data' field
-        });
-
-        return NextResponse.json(updatedwarehouse);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            {
-                error,
-                message: "Failed to update warehouse",
-            },
-            {
-                status: 500,
-            }
-        );
-    }
-};
-
-export const DELETE = async (req) => {
-    const pathname = req.nextUrl.pathname;
-  
-    // Extract the dynamic 'id' from the pathname using a regular expression
-    const match = pathname.match(/\/api\/warehouse\/([^/]+)/);
-    const id = match ? match[1] : null;
-  
-    if (!id) {
-      return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
-    }
-  
-    try {
-      // Check if the warehouse exists before attempting to delete
-      const warehouse = await db.warehouse.findUnique({ where: { id } });
-  
-      if (!warehouse) {
-        return NextResponse.json({ message: "warehouse not found" }, { status: 404 });
-      }
-  
-      // Delete the warehouse
-      await db.warehouse.delete({ where: { id } });
-  
-      return NextResponse.json({ message: "warehouse deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        {
-          error,
-          message: "Failed to delete warehouse",
+    const warehouse = await db.warehouse.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { Item: true, AddStockAdjustment: true },
         },
+        Item: {
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            title: true,
+            qty: true,
+            category: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+
+    if (!warehouse) {
+      throw new ApiError('Warehouse not found', 404);
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: warehouse,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}
+
+/**
+ * PUT /api/warehouse/[id] - Update a warehouse
+ */
+export async function PUT(request, { params }) {
+  try {
+    const { id } = params;
+
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid warehouse ID format', 400);
+    }
+
+    // Check if warehouse exists
+    const existingWarehouse = await db.warehouse.findUnique({
+      where: { id },
+    });
+
+    if (!existingWarehouse) {
+      throw new ApiError('Warehouse not found', 404);
+    }
+
+    // Parse and validate body
+    const body = await request.json();
+    const { id: removedId, ...updateData } = body;
+    const validatedData = updateWarehouseSchema.parse(updateData);
+
+    // Check for duplicate name if title is being updated
+    if (validatedData.title && validatedData.title !== existingWarehouse.title) {
+      const duplicateWarehouse = await db.warehouse.findFirst({
+        where: {
+          title: validatedData.title,
+          id: { not: id },
+        },
+      });
+
+      if (duplicateWarehouse) {
+        throw new ApiError('A warehouse with this name already exists', 409);
+      }
+    }
+
+    // Update warehouse
+    const updatedWarehouse = await db.warehouse.update({
+      where: { id },
+      data: {
+        ...validatedData,
+        updatedAt: new Date(),
+      },
+      include: {
+        _count: {
+          select: { Item: true },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Warehouse updated successfully',
+      data: updatedWarehouse,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}
+
+/**
+ * DELETE /api/warehouse/[id] - Delete a warehouse
+ */
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = params;
+
+    if (!isValidObjectId(id)) {
+      throw new ApiError('Invalid warehouse ID format', 400);
+    }
+
+    // Check if warehouse exists and get item count
+    const warehouse = await db.warehouse.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { Item: true, AddStockAdjustment: true },
+        },
+      },
+    });
+
+    if (!warehouse) {
+      throw new ApiError('Warehouse not found', 404);
+    }
+
+    // Prevent deletion if warehouse has items
+    if (warehouse._count.Item > 0) {
+      throw new ApiError(
+        `Cannot delete warehouse with ${warehouse._count.Item} items. Please reassign or remove items first.`,
+        400,
         {
-          status: 500,
+          itemCount: warehouse._count.Item,
+          suggestion: 'Reassign items to another warehouse before deletion',
         }
       );
     }
-  };
+
+    // Delete warehouse
+    await db.warehouse.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Warehouse deleted successfully',
+      data: { id },
+    });
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    await db.$disconnect();
+  }
+}

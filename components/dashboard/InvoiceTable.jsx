@@ -1,97 +1,246 @@
 'use client';
 
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Trash2, Eye } from 'lucide-react';
 import Link from 'next/link';
-import React, { useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Search, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import RedModal from './RedModal';
 
-// Memoizing the table row to avoid unnecessary re-renders
-const TableRow = React.memo(({ item, columns, resourceName, onDelete }) => {
-  return (
-    <tr className="odd:bg-white  even:bg-gray-50  border-b ">
-      {columns.map((columnName, colIndex) => (
-        <td key={colIndex} className="px-6 py-4">
-          {item[columnName]}
-        </td>
-      ))}
-      <td className="px-6 py-4 flex items-center space-x-4">
-        <Link href={`invoice/${item.id}`} className="font-medium text-blue-600  flex items-center space-x-1">
-          <ExternalLink className="w-4 h-4" />
-          <span>Open</span>
-        </Link>
-        <RedModal
-          endpoint={`${resourceName}/${item.id}`}
-          onDelete={onDelete(item.id)}  // Avoid inline function definition here
-        />
-      </td>
-    </tr>
-  );
-});
+export default function InvoiceTable({ data, columns, resourceName, onDelete, onRefresh }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-export default function InvoiceTable({ data, columns, resourceName, setData }) {
-  // Memoizing the delete handler to prevent re-creation on each render
-  const handleDelete = useCallback(
-    (id) => () => {
-      setData((prevData) => prevData.filter((i) => i.id !== id));
+  // Filter data based on search term
+  const filteredData = useMemo(() => {
+    if (!searchTerm) return data;
+
+    return data.filter((item) =>
+      columns.some((column) => {
+        const value = item[column.key];
+        return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
+      })
+    );
+  }, [data, searchTerm, columns]);
+
+  // Sort data
+  const sortedData = useMemo(() => {
+    if (!sortConfig.key) return filteredData;
+
+    return [...filteredData].sort((a, b) => {
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
+
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+
+      const aStr = aValue.toString().toLowerCase();
+      const bStr = bValue.toString().toLowerCase();
+
+      if (aStr < bStr) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aStr > bStr) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [filteredData, sortConfig]);
+
+  // Paginate data
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return sortedData.slice(startIndex, startIndex + itemsPerPage);
+  }, [sortedData, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+
+  // Handle sorting
+  const handleSort = useCallback((key) => {
+    setSortConfig((prevConfig) => ({
+      key,
+      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  }, []);
+
+  // Handle search
+  const handleSearch = useCallback((e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  }, []);
+
+  // Render cell value
+  const renderCellValue = useCallback(
+    (item, column) => {
+      if (column.render) {
+        return column.render(item);
+      }
+      if (column.format) {
+        return column.format(item[column.key]);
+      }
+      return item[column.key] || '-';
     },
-    [setData]
+    []
   );
 
   return (
-    <div className="relative overflow-x-auto max-w-full shadow-md sm:rounded-lg">
-      {/* Desktop Table View */}
-      <table className="hidden sm:table w-full text-sm text-left rtl:text-right text-gray-500 ">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
-          <tr>
-            {columns.map((item, i) => (
-              <th key={i} scope="col" className="px-6 py-3">
-                {item}
-              </th>
-            ))}
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <TableRow
-              key={item.id}  // Using item.id as the unique key for each row
-              item={item}
-              columns={columns}
-              resourceName={resourceName}
-              onDelete={handleDelete}
-            />
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      {/* Search and Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="relative w-full sm:w-96">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Search invoices..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="pl-10"
+          />
+        </div>
 
-      {/* Mobile View - Card Layout */}
-      <div className="sm:hidden">
-        {data.map((item) => (
-          <div key={item.id} className="mb-4 bg-white border border-gray-200 rounded-lg ">
-            {columns.map((columnName, colIndex) => (
-              <div key={colIndex} className="flex justify-between px-4 py-2 text-sm border-b ">
-                <span className="font-medium text-gray-700 ">{columnName}</span>
-                <span className="text-gray-500 ">{item[columnName]}</span>
-              </div>
+        <div className="flex items-center gap-2">
+          <Select
+            value={itemsPerPage.toString()}
+            onValueChange={(value) => {
+              setItemsPerPage(Number(value));
+              setCurrentPage(1);
+            }}
+          >
+            <SelectTrigger className="w-[120px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10 per page</SelectItem>
+              <SelectItem value="25">25 per page</SelectItem>
+              <SelectItem value="50">50 per page</SelectItem>
+              <SelectItem value="100">100 per page</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Results count */}
+      <div className="text-sm text-muted-foreground">
+        Showing {paginatedData.length} of {sortedData.length} results
+        {searchTerm && ` (filtered from ${data.length} total)`}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden md:block relative overflow-x-auto shadow-md sm:rounded-lg border">
+        <table className="w-full text-sm text-left text-gray-600">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              {columns.map((column) => (
+                <th
+                  key={column.key}
+                  scope="col"
+                  className="px-6 py-3 cursor-pointer hover:bg-gray-100"
+                  onClick={() => column.sortable && handleSort(column.key)}
+                >
+                  <div className="flex items-center gap-2">
+                    {column.label}
+                    {column.sortable && <ArrowUpDown className="h-3 w-3 text-gray-400" />}
+                  </div>
+                </th>
+              ))}
+              <th scope="col" className="px-6 py-3">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((item) => (
+              <tr
+                key={item.id}
+                className="odd:bg-white even:bg-gray-50 border-b hover:bg-gray-100 transition-colors"
+              >
+                {columns.map((column) => (
+                  <td key={column.key} className="px-6 py-4">
+                    {renderCellValue(item, column)}
+                  </td>
+                ))}
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/invoice/${item.id}`} className="flex items-center gap-1">
+                        <Eye className="w-4 h-4" />
+                        <span>View</span>
+                      </Link>
+                    </Button>
+                    <RedModal endpoint={`${resourceName}/${item.id}`} onDelete={() => onDelete(item.id)} />
+                  </div>
+                </td>
+              </tr>
             ))}
-            <div className="flex justify-between px-4 py-2">
-              <span className="font-medium text-gray-700 ">Action</span>
-              <div className="flex items-center space-x-4">
-                <Link href={`invoice/${item.id}`} className="font-medium text-blue-600  flex items-center space-x-1">
-                  <ExternalLink className="w-4 h-4" />
-                  <span>Open</span>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {paginatedData.map((item) => (
+          <div key={item.id} className="border rounded-lg shadow-sm overflow-hidden bg-white">
+            <div className="p-4 space-y-3">
+              {columns.map((column) => (
+                <div key={column.key} className="flex justify-between items-start">
+                  <span className="font-medium text-gray-700 text-sm">{column.label}:</span>
+                  <span className="text-gray-600 text-sm text-right">
+                    {renderCellValue(item, column)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="bg-gray-50 px-4 py-3 border-t flex gap-2">
+              <Button variant="outline" size="sm" asChild className="flex-1">
+                <Link href={`/invoice/${item.id}`} className="flex items-center justify-center gap-1">
+                  <Eye className="w-4 h-4" />
+                  <span>View</span>
                 </Link>
-                <RedModal
-                  endpoint={`${resourceName}/${item.id}`}
-                  onDelete={handleDelete(item.id)}  // Avoid inline function definition here
-                />
-              </div>
+              </Button>
+              <RedModal endpoint={`${resourceName}/${item.id}`} onDelete={() => onDelete(item.id)} />
             </div>
           </div>
         ))}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-4 border-t">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Previous
+          </Button>
+
+          <div className="text-sm text-muted-foreground">
+            Page {currentPage} of {totalPages}
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

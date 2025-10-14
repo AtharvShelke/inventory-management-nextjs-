@@ -1,4 +1,5 @@
 'use client';
+
 import SelectInput from '@/components/FormInputs/SelectInput';
 import SubmitButton from '@/components/FormInputs/SubmitButton';
 import TextareaInput from '@/components/FormInputs/TextAreaInput';
@@ -8,34 +9,137 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle, Info } from 'lucide-react';
+import { toast } from 'sonner'; // or your toast library
 
 export default function CreateItemForm({ warehouses, suppliers, initialData, isUpdate }) {
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
   const router = useRouter();
-  const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm({
-    defaultValues: initialData
+  
+  const { 
+    register, 
+    handleSubmit, 
+    reset, 
+    watch,
+    formState: { errors, isDirty, isValid } 
+  } = useForm({
+    defaultValues: {
+      title: '',
+      qty: '',
+      description: '',
+      supplierId: '',
+      warehouseId: '',
+      buyingPrice: '',
+      sellingPrice: '',
+      taxRate: '',
+      category: '',
+      brand: '',
+      sku: '',
+      barcode: '',
+      reorderPoint: 30,
+      minStockLevel: 10,
+      maxStockLevel: '',
+      ...initialData
+    },
+    mode: 'onChange' // Enable real-time validation
   });
 
   const { data: session } = useSession();
   const role = session?.user?.role;
   const username = session?.user?.name;
+
+  // Watch buying and selling prices for profit margin calculation
+  const buyingPrice = watch('buyingPrice');
+  const sellingPrice = watch('sellingPrice');
+  const qty = watch('qty');
+
   useEffect(() => {
     if (initialData) {
       reset(initialData);
     }
   }, [initialData, reset]);
 
+  // Calculate profit margin
+  const profitMargin = React.useMemo(() => {
+    if (buyingPrice && sellingPrice) {
+      const buying = parseFloat(buyingPrice);
+      const selling = parseFloat(sellingPrice);
+      if (buying > 0 && selling > 0) {
+        return (((selling - buying) / buying) * 100).toFixed(2);
+      }
+    }
+    return null;
+  }, [buyingPrice, sellingPrice]);
+
+  // Calculate potential profit
+  const potentialProfit = React.useMemo(() => {
+    if (buyingPrice && sellingPrice && qty) {
+      const buying = parseFloat(buyingPrice);
+      const selling = parseFloat(sellingPrice);
+      const quantity = parseInt(qty);
+      if (buying > 0 && selling > 0 && quantity > 0) {
+        return ((selling - buying) * quantity).toFixed(2);
+      }
+    }
+    return null;
+  }, [buyingPrice, sellingPrice, qty]);
+
   const onSubmit = async (data) => {
-    console.log('data: ', data);
-    if (isUpdate) {
-      delete data.id;
-  }
-    data.username = username;
-    const requestAction = isUpdate ? updateRequest : makePostRequest;
-    const requestUrl = isUpdate ? `items/${initialData.id}` : 'items';
-    
-    await requestAction(reset, setLoading, requestUrl, 'Item', data);
-    router.push('/overview/items');
+    try {
+      setLoading(true);
+      setSubmitError(null);
+
+      // Validation checks
+      if (!data.supplierId) {
+        setSubmitError('Please select a supplier');
+        return;
+      }
+
+      if (role === 'ADMIN' && data.sellingPrice && data.buyingPrice) {
+        const selling = parseFloat(data.sellingPrice);
+        const buying = parseFloat(data.buyingPrice);
+        if (selling < buying) {
+          setSubmitError('Selling price cannot be less than buying price');
+          return;
+        }
+      }
+
+      // Prepare data
+      const submitData = { ...data };
+      submitData.username = username;
+
+      // Remove empty optional fields
+      Object.keys(submitData).forEach(key => {
+        if (submitData[key] === '' || submitData[key] === null) {
+          delete submitData[key];
+        }
+      });
+
+      if (isUpdate) {
+        delete submitData.id;
+      }
+
+      const requestAction = isUpdate ? updateRequest : makePostRequest;
+      const requestUrl = isUpdate ? `items/${initialData.id}` : 'items';
+      
+      const result = await requestAction(reset, setLoading, requestUrl, 'Item', submitData);
+      
+      if (result && result.success !== false) {
+        toast.success(isUpdate ? 'Item updated successfully!' : 'Item created successfully!');
+        router.push('/items');
+      } else {
+        throw new Error(result?.error || 'Failed to save item');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitError(error.message || 'Failed to save item. Please try again.');
+      toast.error(error.message || 'Failed to save item');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderAdminFields = () => (
@@ -46,6 +150,8 @@ export default function CreateItemForm({ warehouses, suppliers, initialData, isU
         register={register}
         errors={errors}
         type="number"
+        step="0.01"
+        min="0"
         className="w-full"
         isRequired={false}
       />
@@ -55,72 +161,217 @@ export default function CreateItemForm({ warehouses, suppliers, initialData, isU
         register={register}
         errors={errors}
         type="number"
+        step="0.01"
+        min="0"
         className="w-full"
         isRequired={false}
       />
       <TextInput
-        label="Tax Rate in %"
+        label="Tax Rate (%)"
         name="taxRate"
         register={register}
         errors={errors}
         type="number"
+        step="0.01"
+        min="0"
+        max="100"
         className="w-full"
         isRequired={false}
       />
+
+      {/* Profit Margin Display */}
+      {profitMargin !== null && (
+        <div className="col-span-2">
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <span className="font-medium">Profit Margin: </span>
+              <span className={profitMargin > 0 ? 'text-green-600' : 'text-red-600'}>
+                {profitMargin}%
+              </span>
+              {potentialProfit && (
+                <span className="ml-4">
+                  <span className="font-medium">Potential Profit: </span>
+                  ₹{potentialProfit}
+                </span>
+              )}
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
     </>
   );
 
   return (
     <section className="my-8">
-      <div className="py-8 px-4 mx-auto max-w-3xl lg:py-16 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
-        <h2 className="mb-4 text-xl font-bold text-gray-900">{isUpdate ? 'Update Item' : 'Add a New Product'}</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-            <TextInput
-              label="Item Title"
-              name="title"
-              register={register}
-              errors={errors}
-            />
-            <SelectInput
-              register={register}
-              className="w-full"
-              name="supplierId"
-              label="Select the Item Supplier"
-              options={suppliers}
-            />
-            <TextInput
-              label="Item Quantity"
-              name="qty"
-              register={register}
-              errors={errors}
-              type="number"
-              className="w-full"
-            />
+      <Card className="max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle>{isUpdate ? 'Update Item' : 'Add a New Product'}</CardTitle>
+          <CardDescription>
+            {isUpdate 
+              ? 'Update the item details below' 
+              : 'Fill in the details to add a new item to your inventory'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {submitError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{submitError}</AlertDescription>
+            </Alert>
+          )}
 
-            {role === 'ADMIN' && renderAdminFields()}
+          {warehouses.length === 0 && (
+            <Alert className="mb-4">
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                No warehouses found. Please create a warehouse first.
+              </AlertDescription>
+            </Alert>
+          )}
 
-            <SelectInput
-              register={register}
-              className="w-full"
-              name="warehouseId"
-              label="Select the Item Warehouse"
-              options={warehouses}
-              isRequired={false}
+          {suppliers.length === 0 && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                No suppliers found. Please create a supplier first before adding items.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+              <TextInput
+                label="Item Title"
+                name="title"
+                register={register}
+                errors={errors}
+                isRequired={true}
+                className="w-full"
+              />
+              
+              <SelectInput
+                register={register}
+                className="w-full"
+                name="supplierId"
+                label="Select Supplier"
+                options={suppliers}
+                isRequired={true}
+                errors={errors}
+              />
+
+              <TextInput
+                label="Item Quantity"
+                name="qty"
+                register={register}
+                errors={errors}
+                type="number"
+                min="0"
+                className="w-full"
+                isRequired={true}
+              />
+
+              <SelectInput
+                register={register}
+                className="w-full"
+                name="warehouseId"
+                label="Select Warehouse"
+                options={warehouses}
+                isRequired={false}
+                errors={errors}
+              />
+
+              <TextInput
+                label="Category"
+                name="category"
+                register={register}
+                errors={errors}
+                className="w-full"
+                isRequired={false}
+                placeholder="e.g., Electronics, Furniture"
+              />
+
+              <TextInput
+                label="Brand"
+                name="brand"
+                register={register}
+                errors={errors}
+                className="w-full"
+                isRequired={false}
+              />
+
+              <TextInput
+                label="SKU"
+                name="sku"
+                register={register}
+                errors={errors}
+                className="w-full"
+                isRequired={false}
+                placeholder="Stock Keeping Unit"
+              />
+
+              <TextInput
+                label="Barcode"
+                name="barcode"
+                register={register}
+                errors={errors}
+                className="w-full"
+                isRequired={false}
+              />
+
+              <TextInput
+                label="Reorder Point"
+                name="reorderPoint"
+                register={register}
+                errors={errors}
+                type="number"
+                min="0"
+                className="w-full"
+                isRequired={false}
+              />
+
+              <TextInput
+                label="Min Stock Level"
+                name="minStockLevel"
+                register={register}
+                errors={errors}
+                type="number"
+                min="0"
+                className="w-full"
+                isRequired={false}
+              />
+
+              <TextInput
+                label="Max Stock Level"
+                name="maxStockLevel"
+                register={register}
+                errors={errors}
+                type="number"
+                min="0"
+                className="w-full"
+                isRequired={false}
+              />
+
+              {role === 'ADMIN' && renderAdminFields()}
+
+              <TextareaInput
+                label="Item Description"
+                name="description"
+                register={register}
+                errors={errors}
+                className="col-span-2"
+                isRequired={false}
+              />
+            </div>
+
+            <SubmitButton 
+              isLoading={loading} 
+              title={isUpdate ? 'Update Item' : 'Create Item'}
+              disabled={loading || suppliers.length === 0 || (isUpdate ? false : !isDirty)}
             />
-
-            <TextareaInput
-              label="Item Description"
-              name="description"
-              register={register}
-              errors={errors}
-            />
-
-            
-          </div>
-          <SubmitButton isLoading={loading} title={isUpdate ? 'Update Item' : 'New Item'} />
-        </form>
-      </div>
+          </form>
+        </CardContent>
+      </Card>
     </section>
   );
 }

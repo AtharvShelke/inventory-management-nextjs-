@@ -155,7 +155,7 @@ export default function Footer() {
           variants={desVariants}
           className="py-8 border-t border-gray-800"
         >
-          {/* <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
             <p>&copy; {new Date().getFullYear()} Enrich Kitchen Studio. All rights reserved.</p>
             <Link 
               href="https://atharv-portfolio-ivory.vercel.app/" 
@@ -163,7 +163,7 @@ export default function Footer() {
             >
               Designed by Atharv Shelke
             </Link>
-          </div> */}
+          </div>
         </motion.div>
       </div>
     </footer>

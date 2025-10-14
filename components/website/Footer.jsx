@@ -149,7 +149,7 @@ export default function Footer() {
         </motion.div>
 
         {/* Bottom Bar */}
-        <motion.div
+        {/* <motion.div
           initial="offscreen"
           whileInView="onscreen"
           variants={desVariants}
@@ -164,7 +164,7 @@ export default function Footer() {
               Designed by Atharv Shelke
             </Link>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </footer>
   );

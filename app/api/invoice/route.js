@@ -1,7 +1,7 @@
 import db from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { handleApiError, ApiError } from '@/lib/api/errorHandler';
-import { createInvoiceSchema } from '@/lib/validations/invoive.validation';
+import { createInvoiceSchema } from '@/lib/validations/invoice.validation';
 
 
 /**

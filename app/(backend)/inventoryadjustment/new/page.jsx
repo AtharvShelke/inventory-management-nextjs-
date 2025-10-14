@@ -40,7 +40,7 @@ export default function NewAdjustments() {
 
   return (
     <>
-      <FormHeader title="Inventory Adjustment" href="/overview/inventoryadjustment" />
+      <FormHeader title="Inventory Adjustment" href="/inventoryadjustment" />
       <InventoryAdjustment warehouses={warehouses} items={items} />
     </>
   );

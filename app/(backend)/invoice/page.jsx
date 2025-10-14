@@ -168,7 +168,7 @@ export default function InvoicePage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Invoices" newLink="/overview/invoice/new" />
+        <FixedHeader title="Invoices" newLink="/invoice/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
@@ -183,7 +183,7 @@ export default function InvoicePage() {
   if (error) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Invoices" newLink="/overview/invoice/new" />
+        <FixedHeader title="Invoices" newLink="/invoice/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <Card className="p-6 max-w-md">
             <div className="text-center">
@@ -203,7 +203,7 @@ export default function InvoicePage() {
 
   return (
     <div className="space-y-6">
-      <FixedHeader title="Invoices" newLink="/overview/invoice/new" />
+      <FixedHeader title="Invoices" newLink="/invoice/new" />
 
       {/* Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 p-4 md:p-8">
@@ -289,7 +289,7 @@ export default function InvoicePage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Create your first invoice to get started
                 </p>
-                <Button onClick={() => (window.location.href = '/overview/invoice/new')}>
+                <Button onClick={() => (window.location.href = '/invoice/new')}>
                   <FileText className="mr-2 h-4 w-4" />
                   Create Invoice
                 </Button>

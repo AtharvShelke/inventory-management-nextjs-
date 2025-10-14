@@ -15,7 +15,7 @@ export default async function UpdateAdjustment({ params: { id } }) {
     // Return the UI with the fetched data
     return (
       <>
-        <FormHeader title="Inventory Adjustment" href="/overview/inventory" />
+        <FormHeader title="Inventory Adjustment" href="/inventory" />
         <InventoryAdjustmentAdd
           warehouses={warehouses}
           items={items}

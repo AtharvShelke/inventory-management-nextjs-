@@ -139,7 +139,7 @@ export default function Items() {
   if (loading && items.length === 0) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Items" newLink="/overview/items/new" />
+        <FixedHeader title="Items" newLink="/items/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
@@ -154,7 +154,7 @@ export default function Items() {
   if (error && items.length === 0) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Items" newLink="/overview/items/new" />
+        <FixedHeader title="Items" newLink="/items/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <Card className="p-6 max-w-md">
             <div className="text-center">
@@ -174,7 +174,7 @@ export default function Items() {
 
   return (
     <div className="space-y-4">
-      <FixedHeader title="Items" newLink="/overview/items/new" />
+      <FixedHeader title="Items" newLink="/items/new" />
       
       {error && (
         <Alert variant="destructive">

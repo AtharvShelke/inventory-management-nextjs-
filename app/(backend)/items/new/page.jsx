@@ -93,7 +93,7 @@ export default function NewItem({ initialData = {}, isUpdate = false }) {
 
   return (
     <div className="space-y-4">
-      <FormHeader title={isUpdate ? 'Update Item' : 'New Item'} href="/overview/inventory" />
+      <FormHeader title={isUpdate ? 'Update Item' : 'New Item'} href="/inventory" />
       <CreateItemForm
         initialData={initialData}
         isUpdate={isUpdate}

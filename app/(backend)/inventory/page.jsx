@@ -48,7 +48,7 @@ export default function Inventory() {
 
   return (
     <>
-      <FixedHeader newLink="/overview/items/new" title="Item" />
+      <FixedHeader newLink="/items/new" title="Item" />
       <div className="grid grid-cols-1 md:grid-cols-2 m-6 gap-6">
         {itemsCardOptions.map((item, index) => (
           <OptionCard key={index} optionData={item} />

@@ -181,7 +181,7 @@ export default function SupplierPage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Suppliers" newLink="/overview/supplier/new" />
+        <FixedHeader title="Suppliers" newLink="/supplier/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
@@ -196,7 +196,7 @@ export default function SupplierPage() {
   if (error) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Suppliers" newLink="/overview/supplier/new" />
+        <FixedHeader title="Suppliers" newLink="/supplier/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <Card className="p-6 max-w-md">
             <div className="text-center">
@@ -216,7 +216,7 @@ export default function SupplierPage() {
 
   return (
     <div className="space-y-6">
-      <FixedHeader title="Suppliers" newLink="/overview/supplier/new" />
+      <FixedHeader title="Suppliers" newLink="/supplier/new" />
 
       {/* Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4 md:p-8">
@@ -292,7 +292,7 @@ export default function SupplierPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Get started by adding your first supplier
                 </p>
-                <Button onClick={() => (window.location.href = '/overview/supplier/new')}>
+                <Button onClick={() => (window.location.href = '/supplier/new')}>
                   <Users className="mr-2 h-4 w-4" />
                   Add Supplier
                 </Button>

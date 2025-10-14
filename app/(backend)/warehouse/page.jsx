@@ -140,7 +140,7 @@ export default function WarehousePage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Warehouses" newLink="/overview/warehouse/new" />
+        <FixedHeader title="Warehouses" newLink="/warehouse/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
@@ -155,7 +155,7 @@ export default function WarehousePage() {
   if (error) {
     return (
       <div className="space-y-4">
-        <FixedHeader title="Warehouses" newLink="/overview/warehouse/new" />
+        <FixedHeader title="Warehouses" newLink="/warehouse/new" />
         <div className="flex items-center justify-center min-h-[400px]">
           <Card className="p-6 max-w-md">
             <div className="text-center">
@@ -175,7 +175,7 @@ export default function WarehousePage() {
 
   return (
     <div className="space-y-6">
-      <FixedHeader title="Warehouses" newLink="/overview/warehouse/new" />
+      <FixedHeader title="Warehouses" newLink="/warehouse/new" />
 
       {/* Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4 md:p-8">

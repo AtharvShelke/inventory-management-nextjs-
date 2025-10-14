@@ -70,7 +70,7 @@ export default async function AdjustmentPage() {
   if (adjustmentData.error) {
     return (
       <>
-        <FixedHeader title="Stock Adjustments" newLink="/overview/inventoryadjustment/new" />
+        <FixedHeader title="Stock Adjustments" newLink="/inventoryadjustment/new" />
         <div className="p-8">
           <Card className="p-6">
             <div className="text-center text-red-600">
@@ -85,7 +85,7 @@ export default async function AdjustmentPage() {
 
   return (
     <>
-      <FixedHeader title="Stock Adjustments" newLink="/overview/inventoryadjustment/new" />
+      <FixedHeader title="Stock Adjustments" newLink="/inventoryadjustment/new" />
       <Suspense fallback={<LoadingSkeleton />}>
         <AdjustmentContent
           addStock={adjustmentData.addStock}

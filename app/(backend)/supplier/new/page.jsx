@@ -28,7 +28,7 @@ export default function NewSupplier({ initialData = {}, isUpdate = false }) {
     try {
       const action = isUpdate ? updateRequest : makePostRequest;
       await action(reset, setLoading, `supplier${isUpdate ? `/${initialData.id}` : ''}`, 'Supplier', data);
-      router.push('/overview/supplier');
+      router.push('/supplier');
     } catch (error) {
       console.error('Error submitting form:', error);
       setLoading(false);
@@ -48,7 +48,7 @@ export default function NewSupplier({ initialData = {}, isUpdate = false }) {
 
   return (
     <>
-      <FormHeader title={isUpdate ? "Update Supplier" : "New Supplier"} href="/overview/supplier" />
+      <FormHeader title={isUpdate ? "Update Supplier" : "New Supplier"} href="/supplier" />
       <section className='my-8'>
         <div className="py-8 px-4 mx-auto max-w-3xl lg:py-16 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
           <h2 className="mb-4 text-xl font-bold text-gray-900">Add a new Supplier</h2>

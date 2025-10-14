@@ -23,7 +23,7 @@ export default async function InvoiceDetail({ params }) {
           <p className="text-gray-500">
             The requested invoice ({endpoint}) could not be found
           </p>
-          <Link href="/overview/invoice">
+          <Link href="/invoice">
             <Button variant="outline" className="mt-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Invoices
@@ -51,7 +51,7 @@ export default async function InvoiceDetail({ params }) {
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <FormHeader title="Invoice Details" href="/overview/invoice" />
+        <FormHeader title="Invoice Details" href="/invoice" />
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
             <Printer className="h-4 w-4 mr-2" />

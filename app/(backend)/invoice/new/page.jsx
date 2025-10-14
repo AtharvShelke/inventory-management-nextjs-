@@ -37,7 +37,7 @@ export default function NewInvoice() {
   return (
     <>
       {/* Header */}
-      <FormHeader title='New Invoice' href="/overview/invoice" />
+      <FormHeader title='New Invoice' href="/invoice" />
       {/* Form */}
       <CreateInvoiceForm items={items} />
     </>

@@ -88,59 +88,90 @@ export default function CreateItemForm({ warehouses, suppliers, initialData, isU
   }, [buyingPrice, sellingPrice, qty]);
 
   const onSubmit = async (data) => {
-    try {
-      setLoading(true);
-      setSubmitError(null);
+  try {
+    setLoading(true);
+    setSubmitError(null);
 
-      // Validation checks
-      if (!data.supplierId) {
-        setSubmitError('Please select a supplier');
+    // Validation checks
+    if (!data.supplierId) {
+      setSubmitError('Please select a supplier');
+      setLoading(false);
+      return;
+    }
+
+    if (role === 'ADMIN' && data.sellingPrice && data.buyingPrice) {
+      const selling = parseFloat(data.sellingPrice);
+      const buying = parseFloat(data.buyingPrice);
+      if (selling < buying) {
+        setSubmitError('Selling price cannot be less than buying price');
+        setLoading(false);
         return;
       }
-
-      if (role === 'ADMIN' && data.sellingPrice && data.buyingPrice) {
-        const selling = parseFloat(data.sellingPrice);
-        const buying = parseFloat(data.buyingPrice);
-        if (selling < buying) {
-          setSubmitError('Selling price cannot be less than buying price');
-          return;
-        }
-      }
-
-      // Prepare data
-      const submitData = { ...data };
-      submitData.username = username;
-
-      // Remove empty optional fields
-      Object.keys(submitData).forEach(key => {
-        if (submitData[key] === '' || submitData[key] === null) {
-          delete submitData[key];
-        }
-      });
-
-      if (isUpdate) {
-        delete submitData.id;
-      }
-
-      const requestAction = isUpdate ? updateRequest : makePostRequest;
-      const requestUrl = isUpdate ? `items/${initialData.id}` : 'items';
-      
-      const result = await requestAction(reset, setLoading, requestUrl, 'Item', submitData);
-      
-      if (result && result.success !== false) {
-        toast.success(isUpdate ? 'Item updated successfully!' : 'Item created successfully!');
-        router.push('/items');
-      } else {
-        throw new Error(result?.error || 'Failed to save item');
-      }
-    } catch (error) {
-      console.error('Form submission error:', error);
-      setSubmitError(error.message || 'Failed to save item. Please try again.');
-      toast.error(error.message || 'Failed to save item');
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // Prepare data with proper types
+    const submitData = {
+      title: data.title,
+      description: data.description || null,
+      qty: data.qty.toString(),
+      supplierId: data.supplierId,
+      username: username || 'Unknown',
+    };
+
+    // Add optional fields
+    if (data.buyingPrice) submitData.buyingPrice = data.buyingPrice.toString();
+    if (data.sellingPrice) submitData.sellingPrice = data.sellingPrice.toString();
+    if (data.warehouseId) submitData.warehouseId = data.warehouseId;
+    if (data.taxRate) submitData.taxRate = data.taxRate.toString();
+    if (data.category) submitData.category = data.category;
+    if (data.brand) submitData.brand = data.brand;
+    if (data.sku) submitData.sku = data.sku;
+    if (data.barcode) submitData.barcode = data.barcode;
+    if (data.dimensions) submitData.dimensions = data.dimensions;
+    
+    submitData.reorderPoint = data.reorderPoint ? parseInt(data.reorderPoint) : 30;
+    submitData.minStockLevel = data.minStockLevel ? parseInt(data.minStockLevel) : 10;
+    if (data.maxStockLevel) submitData.maxStockLevel = parseInt(data.maxStockLevel);
+
+    if (isUpdate) {
+      // Update existing item
+      await updateRequest(
+        null, // No reset needed for update
+        setLoading,
+        `items/${initialData.id}`,
+        'Item',
+        submitData
+      );
+      
+      // Navigate on success
+      router.push('/items');
+    } else {
+      // Create new item
+      await makePostRequest(
+        reset,
+        setLoading,
+        'items',
+        'Item',
+        submitData
+      );
+      
+      // Navigate on success
+      router.push('/items');
+    }
+  } catch (error) {
+    console.error('Form submission error:', error);
+    
+    // Extract and display error message
+    const errorMessage = error.message || 'Failed to save item. Please try again.';
+    setSubmitError(errorMessage);
+    
+    // Toast is already shown by apiRequest, no need to show again
+  } finally {
+    // setLoading is handled in apiRequest, but ensure it's false
+    setLoading(false);
+  }
+};
+
 
   const renderAdminFields = () => (
     <>

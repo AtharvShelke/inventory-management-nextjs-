@@ -28,6 +28,7 @@ const DataTable = ({
   loading = false,
   onDelete,
   onRefresh,
+  showStockStatus = true, // ✅ ADD THIS LINE - Default to true
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -92,7 +93,7 @@ const DataTable = ({
   // Handle search
   const handleSearch = useCallback((e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1);
   }, []);
 
   // Render cell value
@@ -108,10 +109,12 @@ const DataTable = ({
 
   // Get stock status badge
   const getStockStatusBadge = useCallback((status) => {
+    if (!status) return null;
+    
     const badges = {
       critical: <Badge variant="destructive">Critical</Badge>,
-      low: <Badge variant="warning" className="bg-yellow-500">Low Stock</Badge>,
-      good: <Badge variant="success" className="bg-green-500">In Stock</Badge>,
+      low: <Badge variant="warning" className="bg-yellow-500 text-yellow-900">Low Stock</Badge>,
+      good: <Badge variant="success" className="bg-green-500 text-white">In Stock</Badge>,
     };
     return badges[status] || null;
   }, []);
@@ -127,7 +130,7 @@ const DataTable = ({
     );
   }
 
-  if (!data.length) {
+  if (!data || data.length === 0) {
     return (
       <div className="text-center py-10 border border-dashed rounded-lg">
         <p className="text-gray-500 text-lg mb-2">No data available</p>
@@ -187,7 +190,7 @@ const DataTable = ({
       </div>
 
       {/* Table View (Desktop) */}
-       <div className="hidden md:block relative overflow-x-auto shadow-md sm:rounded-lg border">
+      <div className="hidden md:block relative overflow-x-auto shadow-md sm:rounded-lg border">
         <table className="w-full text-sm text-left text-gray-600">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
@@ -262,16 +265,18 @@ const DataTable = ({
                   </span>
                 </div>
               ))}
-              <div className="flex justify-between items-center pt-2 border-t">
-                <span className="font-medium text-gray-700 text-sm">Status:</span>
-                {getStockStatusBadge(item.stockStatus)}
-              </div>
+              {showStockStatus && item.stockStatus && (
+                <div className="flex justify-between items-center pt-2 border-t">
+                  <span className="font-medium text-gray-700 text-sm">Status:</span>
+                  {getStockStatusBadge(item.stockStatus)}
+                </div>
+              )}
             </div>
             <div className="bg-gray-50 px-4 py-3 border-t">
               <ActionCell
                 item={item}
                 resourceName={resourceName}
-                onDelete={() => onDelete(item.id)}
+                onDelete={() => onDelete?.(item.id)}
                 isTable={false}
               />
             </div>

@@ -22,18 +22,27 @@ export default function NewItem({ initialData = {}, isUpdate = false }) {
         setLoading(true);
         setError(null);
 
-        const [warehousesData, suppliersData] = await Promise.all([
+        const [warehousesResponse, suppliersResponse] = await Promise.all([
           getRequest('warehouse'),
           getRequest('supplier')
         ]);
 
         if (isMounted) {
+          // ✅ FIXED: Handle both array and object responses
+          const warehousesData = Array.isArray(warehousesResponse) 
+            ? warehousesResponse 
+            : warehousesResponse?.data || [];
+          
+          const suppliersData = Array.isArray(suppliersResponse) 
+            ? suppliersResponse 
+            : suppliersResponse?.data || [];
+
           // Validate data structure
           if (!Array.isArray(warehousesData) || !Array.isArray(suppliersData)) {
             throw new Error('Invalid data format received');
           }
 
-          // Check if data exists
+          // Warning logs (optional)
           if (warehousesData.length === 0) {
             console.warn('No warehouses found');
           }
@@ -93,7 +102,7 @@ export default function NewItem({ initialData = {}, isUpdate = false }) {
 
   return (
     <div className="space-y-4">
-      <FormHeader title={isUpdate ? 'Update Item' : 'New Item'} href="/inventory" />
+      <FormHeader title={isUpdate ? 'Update Item' : 'New Item'} href="/items" />
       <CreateItemForm
         initialData={initialData}
         isUpdate={isUpdate}

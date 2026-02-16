@@ -149,7 +149,7 @@ export default function Footer() {
         </motion.div>
 
         {/* Bottom Bar */}
-        {/* <motion.div
+        <motion.div
           initial="offscreen"
           whileInView="onscreen"
           variants={desVariants}
@@ -158,13 +158,14 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
             <p>&copy; {new Date().getFullYear()} Enrich Kitchen Studio. All rights reserved.</p>
             <Link 
-              href="https://atharv-portfolio-ivory.vercel.app/" 
+              href="https://atharv-shelke-portfolio.vercel.app/" 
               className="mt-4 md:mt-0 hover:text-white transition-colors"
+              target="_blank"
             >
-              Designed by Atharv Shelke
+              Designed and Developed by Atharv Shelke
             </Link>
           </div>
-        </motion.div> */}
+        </motion.div>
       </div>
     </footer>
   );

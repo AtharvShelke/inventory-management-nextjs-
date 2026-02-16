@@ -128,6 +128,13 @@ export default function Sidebar({ isOpen, onClose, isMobile }) {
             description: 'Vendor management',
           },
           {
+            title: 'Users',
+            icon: <Users className="w-5 h-5" />,
+            href: '/user',
+            badge: null,
+            description: 'System users',
+          },
+          {
             title: 'Invoices',
             icon: <FileText className="w-5 h-5" />,
             href: '/invoice',

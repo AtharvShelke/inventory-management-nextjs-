@@ -1,78 +1,116 @@
-import Image from 'next/image';
-import React from 'react';
-import { TbArrowNarrowRight } from 'react-icons/tb';
+'use client';
 
-const items = [
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+
+const collections = [
   {
-    id: "01",
-    category: "KITCHEN INTERIOR",
-    title: "Modern Kitchen Setup",
-    image: "/downloads/kitchen-17.jpg",
-    description: "Transform your kitchen into a modern masterpiece with sleek designs and premium finishes.",
+    title: 'Modular Kitchens',
+    subtitle: 'Sleek, functional, bespoke',
+    image: '/downloads/kitchen-10.jpg',
+    href: '/project',
   },
   {
-    id: "02",
-    category: "KITCHEN INTERIOR",
-    title: "Elegant Kitchen Design",
-    image: "/whatsapp/h3.jpeg",
-    description: "Experience elegance in your kitchen with designs tailored to perfection for every family.",
+    title: 'Wardrobes',
+    subtitle: 'Smart storage, refined design',
+    image: '/downloads/wardrobe.jpg',
+    href: '/project',
   },
   {
-    id: "03",
-    category: "KITCHEN INTERIOR",
-    title: "Functional Kitchen Layout",
-    image: "/whatsapp/n4.jpeg",
-    description: "Maximize functionality with an ergonomic kitchen layout designed for efficiency and style.",
+    title: 'Dining Islands',
+    subtitle: 'Where comfort meets craft',
+    image: '/downloads/kitchen-3.jpg',
+    href: '/project',
   },
   {
-    id: "04",
-    category: "KITCHEN INTERIOR",
-    title: "Luxurious Kitchen Setup",
-    image: "/whatsapp/a2.jpeg",
-    description: "Indulge in luxury with a kitchen setup that blends comfort and sophistication effortlessly.",
+    title: 'Custom Furniture',
+    subtitle: 'Tailored to your vision',
+    image: '/downloads/kitchen-20.jpg',
+    href: '/project',
   },
 ];
 
 export default function CatalogueSection() {
   return (
-    <div className="grid gap-8 lg:grid-cols-4 md:grid-cols-2 lg:gap-0 divide-gray-300 lg:divide-x">
-      {items.map((item) => (
-        <div key={item.id} className="relative overflow-hidden group">
-          {/* Image Section */}
-          <Image
-            src={item.image}
-            width={720}
-            height={1024}
-            alt={item.title}
-            quality={75}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-            placeholder="blur"
-            blurDataURL={item.image}
-            className="w-full sm:h-[400px] md:h-[600px] object-cover"
-          />
-
-          {/* Overlay Section */}
-          <div className="absolute top-0 p-8 bg-white text-black bg-opacity-60 backdrop-blur m-12">
-            <div className="flex justify-between pb-4">
-              <p className="text-sm">{item.category}</p>
-              <span className="text-sm">{item.id}</span>
-            </div>
-            <a href="#" className="block text-xl font-semibold">
-              {item.title}
-            </a>
-            <p className="py-4">{item.description}</p>
-            <a href="#" className="inline-flex items-center font-medium">
-              See Details <TbArrowNarrowRight className="ml-2" />
-            </a>
+    <section className="py-20 lg:py-28 bg-[hsl(36,20%,97%)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/70 mb-3"
+            >
+              Collections
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: 0.08 }}
+              className="text-3xl lg:text-4xl font-bold text-[hsl(24,15%,12%)] leading-tight tracking-tight"
+            >
+              Curated for every space
+            </motion.h2>
           </div>
-
-          {/* Category and ID Hover Section */}
-          <div className="absolute inset-0 bg-tertiary flex-col items-center justify-end md:flex gap-32 pb-16 text-xl transition duration-300 ease-in-out border-b-2 group-hover:translate-y-full md:border-b-0 hidden">
-            <p className="tracking-wider -rotate-90">{item.category}</p>
-            <span>{item.id}</span>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.18 }}
+          >
+            <Link
+              href="/gallery"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all duration-200"
+            >
+              View all <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </div>
-      ))}
-    </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {collections.map(({ title, subtitle, image, href }, i) => (
+            <motion.div
+              key={title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: i * 0.1 }}
+            >
+              <Link href={href} className="group block relative rounded-2xl overflow-hidden bg-[hsl(36,20%,92%)] shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div className="relative aspect-[4/5]">
+                  <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+                  {/* Text */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <h3 className="text-white font-semibold text-base leading-snug">{title}</h3>
+                    <p className="text-white/65 text-xs mt-1">{subtitle}</p>
+                  </div>
+
+                  {/* Arrow badge */}
+                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-2 group-hover:translate-x-0">
+                    <ArrowRight className="w-3.5 h-3.5 text-white" />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

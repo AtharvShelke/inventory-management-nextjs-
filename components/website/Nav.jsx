@@ -1,42 +1,44 @@
-'use client'
-import Link from 'next/link';
-import { usePathname } from 'next/navigation'
-import React from 'react'
-import { motion } from 'framer-motion'; 
-export default function ({ containerStyles, linkStyles, underlineStyles }) {
-    const pathName = usePathname();
-    console.log(pathName)
-    const links = [
-        {path:'/', name:'home'},
-        {path:'/about', name:'about'},
-        {path:'/gallery', name:'gallery'},
-        {path:'/project', name:'project'},
-        {path:'/contact', name:'contact'},
-        // {path:'/dashboard', name:'dashboard'},
-    ]
+'use client';
 
-  return (
-    <nav className={`${containerStyles}`}>
-        {
-            links.map((link, index)=>{
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
+
+const links = [
+    { path: '/', name: 'Home' },
+    { path: '/about', name: 'About' },
+    { path: '/gallery', name: 'Gallery' },
+    { path: '/project', name: 'Projects' },
+    { path: '/contact', name: 'Contact' },
+];
+
+export default function Nav({ containerStyles = '', linkStyles = '', activeStyles = '' }) {
+    const pathName = usePathname();
+
+    return (
+        <nav className={containerStyles} aria-label="Main navigation">
+            {links.map((link, index) => {
                 const isActive = link.path === pathName;
                 return (
-                    <Link href={link.path} key={index} className={`uppercase ${linkStyles}`}
+                    <Link
+                        href={link.path}
+                        key={index}
+                        className={`${linkStyles} ${isActive ? activeStyles : ''}`}
                         aria-current={isActive ? 'page' : undefined}
                     >
+                        {link.name}
                         {isActive && (
                             <motion.span
-                             initial={{ y:'-100%' }}
-                             animate={{ y:0 }}
-                             transition={{ type:'tween' }}
-                             layoutId='underline'
-                             className={`${underlineStyles}`}
-                             />
-                        )}{link.name}
+                                layoutId="nav-underline"
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                className="absolute left-0 -bottom-0.5 w-full h-[1.5px] bg-primary origin-left rounded-full"
+                            />
+                        )}
                     </Link>
-                )
-            })
-        }
-    </nav>
-  )
+                );
+            })}
+        </nav>
+    );
 }

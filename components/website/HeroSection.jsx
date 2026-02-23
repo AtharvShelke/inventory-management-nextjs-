@@ -1,111 +1,117 @@
 'use client';
 
 import React from 'react';
-import { Button } from '../ui/button';
-import { TbArrowUpRight } from "react-icons/tb";
 import Image from 'next/image';
-import { desVariants, tagVariants, titleVariants } from "@/utils/animation";
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 
-const motionSettings = {
-  initial: "offscreen",
-  whileInView: "onscreen",
-  viewport: { once: true, amount: 0.2 },
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94], delay },
+  }),
 };
 
-const HeroSection = () => {
-  const router = useRouter();
-  const handleRedirect = () => {
-    router.push('/contact');
-  };
-
+export default function HeroSection() {
   return (
-    <div className="relative mx-auto py-6 sm:py-12 lg:py-10 px-4 sm:px-6 lg:px-8">
-      {/* Background Decorative Elements */}
-      <div className="absolute -z-10 inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-primary/5 to-transparent"></div>
-        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 rounded-full bg-primary/5 blur-3xl"></div>
+    <section className="relative w-full min-h-screen overflow-hidden bg-[hsl(24,15%,10%)]">
+      {/* Hero Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/downloads/kitchen-10.jpg"
+          alt="Modern furniture in a bright, airy living space — Enrich Studio"
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Gradient overlays — stronger left-side vignette so text is always legible */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25" />
       </div>
-      
-      {/* Mobile: Stack Layout, Desktop: Side by Side */}
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-10">
-        
-        {/* Content Section */}
-        <div className="w-full lg:w-1/2 text-center lg:text-left space-y-4 lg:space-y-8 order-2 lg:order-1">
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col justify-center min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+        <div className="max-w-2xl">
+          {/* Eyebrow label */}
           <motion.p
-            {...motionSettings}
-            variants={titleVariants}
-            className="tracking-widest uppercase text-primary font-medium text-xs lg:text-base"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.15}
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/70 mb-6"
           >
-            Crafting Timeless Spaces
+            <span className="w-6 h-px bg-white/50" />
+            Premium Furniture Studio
           </motion.p>
 
+          {/* Headline */}
           <motion.h1
-            {...motionSettings}
-            variants={desVariants}
-            className="text-2xl sm:text-3xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.28}
+            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.08] tracking-tight mb-6"
           >
-            Elevate Your Kitchen Into a <span className="text-primary">Masterpiece</span>
+            Crafted for the
+            <br />
+            <span className="text-[hsl(36,55%,80%)]">way you live.</span>
           </motion.h1>
 
+          {/* Sub-headline — boosted opacity for dark-bg legibility */}
           <motion.p
-            {...motionSettings}
-            variants={tagVariants}
-            className="text-gray-600 text-sm lg:text-xl leading-relaxed"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.42}
+            className="text-base sm:text-lg text-white/85 leading-relaxed mb-10 max-w-xl"
           >
-            Transform your cooking space with our bespoke interior designs. We blend functionality with artistry to create kitchens that inspire creativity.
+            Bespoke furniture and interior solutions designed with precision — where warmth meets contemporary form.
           </motion.p>
 
-          <motion.div 
-            {...motionSettings} 
-            variants={tagVariants}
-            className="flex flex-col sm:flex-row gap-3 pt-4 justify-center lg:justify-start"
+          {/* CTAs */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.55}
+            className="flex flex-col sm:flex-row gap-4"
           >
-            <Button
-              onClick={handleRedirect}
-              className="px-6 py-3 lg:px-8 lg:py-6 text-white bg-primary rounded-full hover:bg-primary-dark transition-all duration-300 hover:shadow-xl text-sm lg:text-base"
+            <Link
+              href="/contact"
+              className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-[hsl(24,15%,12%)] font-semibold text-sm tracking-wide rounded-full hover:bg-[hsl(36,55%,86%)] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
-              <span className="flex items-center justify-center">
-                Book Consultation <TbArrowUpRight className="w-4 h-4 lg:w-5 lg:h-5 ml-2" />
-              </span>
-            </Button>
-            <Button
-              onClick={() => router.push('/project')}
-              variant="outline"
-              className="px-6 py-3 lg:px-8 lg:py-6 text-gray-900 border-gray-300 rounded-full hover:bg-gray-50 transition-all duration-300 hover:shadow-xl text-sm lg:text-base"
+              Book a Consultation
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+            </Link>
+            <Link
+              href="/project"
+              className="inline-flex items-center justify-center px-8 py-4 border border-white/40 text-white font-medium text-sm tracking-wide rounded-full hover:bg-white/10 transition-all duration-300 hover:-translate-y-0.5"
             >
-              View Portfolio
-            </Button>
+              View Our Projects
+            </Link>
           </motion.div>
         </div>
 
-        {/* Image Section */}
+        {/* Scroll indicator */}
         <motion.div
-          {...motionSettings}
-          variants={titleVariants}
-          className="w-full lg:w-1/2 max-w-xs sm:max-w-sm lg:max-w-2xl relative order-1 lg:order-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
-          <div className="relative aspect-square w-full">
-            <Image
-              src="/image/eb-1.png"
-              alt="Luxury Kitchen Design"
-              fill
-              priority
-              quality={90}
-              sizes="(max-width: 640px) 75vw, (max-width: 1024px) 50vw, 800px"
-              className="rounded-2xl object-cover shadow-2xl border-4 lg:border-8 border-white"
-            />
-            {/* Badge - Always visible but responsive */}
-            <div className="absolute -bottom-2 -right-2 lg:-bottom-6 lg:-right-6 bg-white p-2 lg:p-6 rounded-xl lg:rounded-2xl shadow-lg">
-              <div className="text-primary font-bold text-sm lg:text-2xl">15+ Years</div>
-              <div className="text-gray-600 text-xs lg:text-base">Of Excellence</div>
-            </div>
-          </div>
+          <span className="text-white/40 text-xs uppercase tracking-[0.15em]">Scroll</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent"
+          />
         </motion.div>
       </div>
-    </div>
+    </section>
   );
-};
-
-export default HeroSection;
+}

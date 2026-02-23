@@ -1,109 +1,108 @@
-"use client";
+'use client';
 
-import { TbArrowUpRight } from 'react-icons/tb';
-import { Button } from '../ui/button';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import { Autoplay } from 'swiper/modules';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { desVariants, tagVariants, titleVariants } from '@/utils/animation';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
-const swiperImages = [
-    "/whatsapp/a1.jpeg",
-    "/downloads/kitchen-2.jpg",
-    "/whatsapp/h1.jpeg",
-    "/whatsapp/n1.jpeg",
-    "/downloads/kitchen-19.jpg",
-    "/whatsapp/n2.jpeg",
-    "/downloads/kitchen-16.jpg",
-    "/downloads/kitchen-17.jpg",
-    "/downloads/kitchen-10.jpg",
+const projects = [
+    {
+        id: 1,
+        name: 'Modern Minimalist Kitchen',
+        tag: 'Kitchen',
+        image: '/whatsapp/h1.jpeg',
+    },
+    {
+        id: 2,
+        name: 'Rustic Farmhouse Kitchen',
+        tag: 'Kitchen',
+        image: '/downloads/kitchen-11.jpg',
+    },
+    {
+        id: 3,
+        name: 'Luxurious Modular Kitchen',
+        tag: 'Modular',
+        image: '/whatsapp/a2.jpeg',
+    },
 ];
 
 export default function CatalogSwiperSection() {
     return (
-        <div className="py-16">
-            <div className="container grid gap-12 pb-14 lg:grid-cols-1">
-                {/* Text Section */}
-                <div className="text-left">
-                    <motion.h1
-                        initial="offscreen"
-                        whileInView="onscreen"
-                        variants={titleVariants}
-                        className="py-4 text-4xl font-extrabold text-black lg:text-6xl lg:py-0"
+        <section className="py-20 lg:py-28 bg-[hsl(36,20%,97%)]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+                    <div>
+                        <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5 }}
+                            className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/70 mb-3"
+                        >
+                            Featured Work
+                        </motion.p>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 14 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.55, delay: 0.08 }}
+                            className="text-3xl lg:text-4xl font-bold text-[hsl(24,15%,12%)] leading-tight tracking-tight"
+                        >
+                            Projects we&apos;re proud of
+                        </motion.h2>
+                    </div>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
                     >
-                        Modern Classic
-                    </motion.h1>
-                    <motion.h2
-                        initial="offscreen"
-                        whileInView="onscreen"
-                        variants={desVariants}
-                        className="md:pb-6 text-lg font-semibold tracking-wide text-gray-600 lg:text-xl mt-5 leading-relaxed"
-                    >
-                        Luxury Decor to Create Comfort in Your Home
-                    </motion.h2>
+                        <Link
+                            href="/project"
+                            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all duration-200"
+                        >
+                            All projects <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </motion.div>
                 </div>
 
-                {/* Description Section */}
-                <motion.div
-                    initial="offscreen"
-                    whileInView="onscreen"
-                    variants={tagVariants}
-                    className=" text-gray-700 leading-relaxed"
-                >
-                    <p>
-                        Our kitchen interior solutions are designed with your lifestyle in mind, whether you're a home chef or a busy family. We prioritize layouts that maximize space, efficiency, and comfort, blending innovative storage solutions with modern aesthetics. From high-end materials to state-of-the-art appliances, every detail is carefully selected to enhance both functionality and elegance.
-                    </p>
-                </motion.div>
-
-                {/* Button */}
-                <div className="text-center lg:text-left">
-                    <a href="/gallery">
-                        <Button className="inline-flex items-center px-8 py-3 mt-6 text-white bg-primary rounded-full shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105">
-                            View Gallery <TbArrowUpRight className="w-5 h-5 ml-2" />
-                        </Button>
-                    </a>
-                </div>
-            </div>
-
-            {/* Swiper Section */}
-            <div className="container">
-                <Swiper
-                    slidesPerView={1}
-                    breakpoints={{
-                        640: {
-                            slidesPerView: 2,
-                            spaceBetween: 20,
-                        },
-                        1024: {
-                            slidesPerView: 3,
-                            spaceBetween: 40,
-                        },
-                    }}
-                    autoplay={{ delay: 1500, disableOnInteraction: false }}
-                    modules={[Autoplay]}
-                    className="py-8"
-                >
-                    {swiperImages.map((image, index) => (
-                        <SwiperSlide key={index} className="p-4">
-                            <div className="overflow-hidden rounded-lg shadow-lg transition-transform transform hover:scale-105">
-                                <Image
-                                    src={image}
-                                    alt={`Swiper Image ${index + 1}`}
-                                    width={564}
-                                    height={564}
-                                    quality={75}
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
-                                    
-                                    
-                                    className="w-full h-[400px] md:h-[300px] lg:h-[400px] object-cover"
-                                />
-                            </div>
-                        </SwiperSlide>
+                {/* Projects grid */}
+                <div className="grid md:grid-cols-3 gap-6">
+                    {projects.map(({ id, name, tag, image }, i) => (
+                        <motion.div
+                            key={id}
+                            initial={{ opacity: 0, y: 24 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.55, delay: i * 0.12 }}
+                        >
+                            <Link
+                                href="/project"
+                                className="group block relative rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-[hsl(36,20%,92%)]"
+                            >
+                                <div className="relative aspect-[3/4]">
+                                    <Image
+                                        src={image}
+                                        alt={name}
+                                        fill
+                                        sizes="(max-width:768px) 100vw, 33vw"
+                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                                        <span className="inline-block text-xs font-semibold uppercase tracking-wider text-white/60 mb-2">{tag}</span>
+                                        <h3 className="text-white font-semibold text-lg leading-snug group-hover:text-[hsl(36,55%,80%)] transition-colors">{name}</h3>
+                                    </div>
+                                    <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                        <ArrowRight className="w-4 h-4 text-white" />
+                                    </div>
+                                </div>
+                            </Link>
+                        </motion.div>
                     ))}
-                </Swiper>
+                </div>
             </div>
-        </div>
+        </section>
     );
 }

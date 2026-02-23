@@ -3,7 +3,7 @@ import "../styles/main.scss";
 import { Toaster } from "react-hot-toast";
 import AuthProvider from "@/context/AuthProvider";
 import { ThemeProvider } from "@/components/website/ThemesProvider";
-import { Sen } from 'next/font/google';
+
 import React from "react";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
@@ -19,18 +19,14 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-const Josef = Sen({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
+
 
 // ✅ SEO + Social Metadata
 export const metadata = {
   title: "Enrich Furniture",
   description:
-  "Enrich Furniture & Kitchen Studio in Chhatrapati Sambhajinagar (Aurangabad) specializes in modular kitchens, premium furniture, and customized interior solutions. Visit us to explore your dream living spaces.",
-keywords: [
+    "Enrich Furniture & Kitchen Studio in Chhatrapati Sambhajinagar (Aurangabad) specializes in modular kitchens, premium furniture, and customized interior solutions. Visit us to explore your dream living spaces.",
+  keywords: [
     "Enrich Furniture",
     "enrich kitchen",
     "enrich modular",
@@ -126,8 +122,8 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${Josef.className} antialiased`}>
-        
+      <body className={`${geistSans.variable} ${geistMono.variable} ${geistSans.className} antialiased`}>
+
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
             <Toaster position="top-center" reverseOrder={false} />

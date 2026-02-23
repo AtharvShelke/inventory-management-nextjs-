@@ -1,152 +1,104 @@
 'use client';
 
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { desVariants, tagVariants, titleVariants } from "@/utils/animation";
-import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { ArrowRight, Star } from 'lucide-react';
 
-// Sample of more reviews
-const posts = [
-    // More reviews with added details
+const testimonials = [
     {
-        id: 1,
-        title: "Transform Your Kitchen into a Culinary Haven",
-        href: '#',
-        description: 'Enrich Kitchen Studio offers an exceptional range of designs to transform your kitchen into a space that reflects your culinary passion.',
-        date: 'Dec 01, 2024',
-        datetime: '2024-12-01',
-        category: { title: '5.0', href: '#' },
-        author: { name: 'Aarav Kumar', location: 'Mumbai' },
+        rating: 5,
+        quote: 'Exceptional craftsmanship. The kitchen they designed for us has completely transformed how our family uses the space — functional and gorgeous.',
+        name: 'Aarav Kumar',
+        location: 'Mumbai',
     },
     {
-        id: 2,
-        title: "Innovative Storage Solutions for Every Kitchen",
-        href: '#',
-        description: 'At Enrich Kitchen Studio, we specialize in designing storage solutions that optimize space without compromising on style.',
-        date: 'Dec 05, 2024',
-        datetime: '2024-12-05',
-        category: { title: '4.8', href: '#' },
-        author: { name: 'Isha Patel', location: 'Chh. Sambhajinagar' },
+        rating: 5,
+        quote: 'The 3D preview process gave us total confidence before committing. The final result exceeded our expectations in every way.',
+        name: 'Isha Patel',
+        location: 'Chh. Sambhajinagar',
     },
     {
-        id: 3,
-        title: "Luxury Designs for Your Dream Kitchen",
-        href: '#',
-        description: 'With Enrich Kitchen Studio, you can bring your dream kitchen to life. We provide a range of luxurious design options, from premium finishes to custom cabinetry.',
-        date: 'Dec 10, 2024',
-        datetime: '2024-12-10',
-        category: { title: '4.9', href: '#' },
-        author: { name: 'Ravi Sharma', location: 'Jalna' },
-    },
-    {
-        id: 4,
-        title: "Expert Craftsmanship for Timeless Kitchens",
-        href: '#',
-        description: 'Enrich Kitchen Studio is known for its craftsmanship and attention to detail. Our kitchens are built to last with timeless appeal.',
-        date: 'Dec 15, 2024',
-        datetime: '2024-12-15',
-        category: { title: '4.7', href: '#' },
-        author: { name: 'Rajesh Yadav', location: 'Pune' },
-    },
-    {
-        id: 5,
-        title: "Customizable Kitchen Designs to Suit Every Need",
-        href: '#',
-        description: 'Our customizable kitchen designs ensure that every inch of your space is optimized, creating a kitchen that meets your exact needs and preferences.',
-        date: 'Dec 20, 2024',
-        datetime: '2024-12-20',
-        category: { title: '4.9', href: '#' },
-        author: { name: 'Anita Sharma', location: 'Nagpur' },
-    },
-    {
-        id: 6,
-        title: "Seamless Integration of Modern Technology in Kitchens",
-        href: '#',
-        description: 'Experience the future of kitchen design with our seamless integration of modern technology that enhances both function and aesthetics.',
-        date: 'Dec 25, 2024',
-        datetime: '2024-12-25',
-        category: { title: '5.0', href: '#' },
-        author: { name: 'Suresh Deshmukh', location: 'Kolhapur' },
+        rating: 5,
+        quote: 'From consultation to installation, the team was professional and attentive. Truly bespoke furniture that fits our home perfectly.',
+        name: 'Ravi Sharma',
+        location: 'Jalna',
     },
 ];
 
-
-// Post component for rendering each review
-const Post = React.memo(({ post }) => {
-    return (
-        <article key={post.id} className="flex max-w-xl flex-col items-start justify-between bg-white rounded-lg shadow-md transition-transform hover:scale-105 hover:shadow-xl p-6">
-            <div className="flex items-center gap-x-4 text-xs text-gray-600">
-                <time dateTime={post.datetime}>
-                    <Image src='/image/star.svg' alt="star icon" width={80} height={16} />
-                </time>
-                <a href={post.category.href} className="bg-primary text-white px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-gray-700 transition-all duration-200">
-                    {post.category.title}
-                </a>
-            </div>
-            <div className="group relative mt-4">
-                <h3 className="text-lg font-semibold leading-6 text-gray-900 group-hover:text-primary">
-                    <a href={post.href}>
-                        <span>{post.title}</span>
-                    </a>
-                </h3>
-                <p className="mt-3 text-sm text-gray-500 line-clamp-3">{post.description}</p>
-            </div>
-            <div className="mt-6 flex items-center gap-x-4 font-semibold text-gray-600">
-                <span>{post.author.name}</span>
-                <p className="text-sm">{post.author.location}</p>
-            </div>
-        </article>
-    );
-});
-
 export default function ContactSection() {
-    const [visiblePosts, setVisiblePosts] = useState(3); // Initially, show 3 posts
-
-    // Handle load more functionality
-    const loadMorePosts = () => {
-        setVisiblePosts(prev => Math.min(prev + 3, posts.length)); // Increase by 3 reviews
-    };
-
     return (
-        <div className="py-12 ">
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                <motion.h2
-                    initial="offscreen"
-                    whileInView="onscreen"
-                    variants={titleVariants}
-                    className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900">
-                    Customer Reviews
-                </motion.h2>
-                
-                <motion.p
-                    initial="offscreen"
-                    whileInView="onscreen"
-                    variants={desVariants}
-                    className="mt-2 text-lg text-gray-600">
-                    Hear from our happy customers about their experiences with our services.
-                </motion.p>
+        <section className="py-20 lg:py-28 bg-[hsl(40,35%,94%)]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="max-w-lg mb-14">
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/70 mb-3"
+                    >
+                        Testimonials
+                    </motion.p>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 14 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.55, delay: 0.08 }}
+                        className="text-3xl lg:text-4xl font-bold text-[hsl(24,15%,12%)] leading-tight tracking-tight"
+                    >
+                        Trusted by homeowners
+                    </motion.h2>
+                </div>
 
-                <motion.div
-                    initial="offscreen"
-                    whileInView="onscreen"
-                    variants={tagVariants}
-                    className="mx-auto mt-10 grid lg:grid-cols-3 gap-x-8 lg:max-w-none sm:grid-cols-1 gap-y-16 sm:py-16 py-10 border-b border-gray-200">
-                    {posts.slice(0, visiblePosts).map(post => (
-                        <Post key={post.id} post={post} />
+                {/* Reviews grid */}
+                <div className="grid md:grid-cols-3 gap-6 mb-14">
+                    {testimonials.map(({ rating, quote, name, location }, i) => (
+                        <motion.div
+                            key={name}
+                            initial={{ opacity: 0, y: 24 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.55, delay: i * 0.12 }}
+                            className="bg-white rounded-2xl p-7 shadow-sm border border-[hsl(32,18%,88%)] flex flex-col gap-5"
+                        >
+                            {/* Stars */}
+                            <div className="flex items-center gap-1">
+                                {Array.from({ length: rating }).map((_, j) => (
+                                    <Star key={j} className="w-3.5 h-3.5 fill-primary text-primary" />
+                                ))}
+                            </div>
+                            <p className="text-sm text-[hsl(24,12%,30%)] leading-relaxed flex-1">
+                                &ldquo;{quote}&rdquo;
+                            </p>
+                            <div className="pt-4 border-t border-[hsl(32,18%,91%)]">
+                                <p className="text-sm font-semibold text-[hsl(24,15%,14%)]">{name}</p>
+                                <p className="text-xs text-[hsl(25,10%,52%)] mt-0.5">{location}</p>
+                            </div>
+                        </motion.div>
                     ))}
-                </motion.div>
+                </div>
 
-                {/* Load more button */}
-                {visiblePosts < posts.length && (
-                    <div className="text-center mt-8">
-                        <button
-                            onClick={loadMorePosts}
-                            className="bg-primary text-white px-6 py-2 rounded-full text-lg font-medium hover:bg-gray-700 transition-all">
-                            Load More Reviews
-                        </button>
+                {/* CTA Banner */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="bg-[hsl(24,15%,10%)] rounded-2xl px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-6"
+                >
+                    <div>
+                        <h3 className="text-xl font-bold text-white mb-1">Ready to design your dream space?</h3>
+                        <p className="text-sm text-white/50">Schedule a free consultation and 3D design preview.</p>
                     </div>
-                )}
+                    <Link
+                        href="/contact"
+                        className="flex-shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[hsl(24,15%,12%)] font-semibold text-sm rounded-full hover:bg-[hsl(36,55%,86%)] transition-colors shadow-sm"
+                    >
+                        Get in Touch <ArrowRight className="w-4 h-4" />
+                    </Link>
+                </motion.div>
             </div>
-        </div>
+        </section>
     );
 }

@@ -19,17 +19,23 @@ export default function HeroSection() {
   return (
     <section className="relative w-full min-h-screen overflow-hidden bg-[hsl(24,15%,10%)]">
       {/* Hero Background Image */}
-      <div className="absolute inset-0">
-        <Image
-          src="/downloads/kitchen-10.jpg"
-          alt="Modern furniture in a bright, airy living space — Enrich Studio"
-          fill
-          priority
-          quality={90}
-          sizes="100vw"
-          className="object-cover object-center"
+      <div className="absolute inset-0 overflow-hidden">
+        <video
+          src="/video/kitchen-vid.mp4" // update to your video path
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="
+      absolute top-1/2 left-1/2 
+      min-w-full min-h-full 
+      w-auto h-auto 
+      -translate-x-1/2 -translate-y-1/2 
+      object-cover
+    "
         />
-        {/* Gradient overlays — stronger left-side vignette so text is always legible */}
+
+        {/* Gradient overlays — keep exactly as is */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/15" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25" />
       </div>

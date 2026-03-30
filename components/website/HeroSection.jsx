@@ -54,7 +54,7 @@ export default function HeroSection() {
             <span className="w-6 h-px bg-white/50" />
             Premium Furniture Studio
           </motion.p>
-
+          {/* hii */}
           {/* Headline */}
           <motion.h1
             variants={fadeUp}

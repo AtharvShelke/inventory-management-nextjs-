@@ -40,16 +40,25 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-export default function Sidebar({ isOpen, onClose, isMobile }) {
+export default function Sidebar({
+  isOpen,
+  onClose,
+  isMobile,
+  isCollapsed: controlledCollapsed,
+  setIsCollapsed: setControlledCollapsed,
+}) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [expandedSections, setExpandedSections] = useState({
     Overview: true,
     Inventory: true,
-    Management: true,
+    Operations: true,
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+
+  const isCollapsed = controlledCollapsed !== undefined ? controlledCollapsed : internalCollapsed;
+  const setIsCollapsed = setControlledCollapsed || setInternalCollapsed;
 
   // Auto-close sidebar on route change (mobile only)
   useEffect(() => {
@@ -70,7 +79,7 @@ export default function Sidebar({ isOpen, onClose, isMobile }) {
             icon: <House className="w-5 h-5" />,
             href: '/dashboard',
             badge: null,
-            description: 'Main overview',
+            description: 'Executive overview & KPIs',
           },
           {
             title: 'Analytics',
@@ -78,7 +87,7 @@ export default function Sidebar({ isOpen, onClose, isMobile }) {
             href: '/analytics',
             badge: 'New',
             badgeVariant: 'success',
-            description: 'Insights & reports',
+            description: 'Insights & sales trends',
           },
         ],
       },
@@ -87,32 +96,39 @@ export default function Sidebar({ isOpen, onClose, isMobile }) {
         icon: <Package className="w-4 h-4" />,
         items: [
           {
-            title: 'Items',
+            title: 'Inventory Hub',
+            icon: <Package className="w-5 h-5" />,
+            href: '/inventory',
+            badge: null,
+            description: 'Consolidated overview',
+          },
+          {
+            title: 'Items Catalog',
             icon: <Package className="w-5 h-5" />,
             href: '/items',
             badge: null,
-            description: 'All inventory items',
+            description: 'All inventory SKUs',
           },
           {
-            title: 'Add New',
-            icon: <Plus className="w-5 h-5" />,
-            href: '/inventory',
-            badge: null,
-            description: 'Create new item',
-          },
-          {
-            title: 'Adjustments',
+            title: 'Stock Adjustments',
             icon: <Truck className="w-5 h-5" />,
             href: '/inventoryadjustment',
             badge: null,
-            description: 'Stock movements',
+            description: 'Stock additions & transfers',
           },
         ],
       },
       {
-        title: 'Management',
+        title: 'Operations',
         icon: <Settings className="w-4 h-4" />,
         items: [
+          {
+            title: 'Invoices & Billing',
+            icon: <FileText className="w-5 h-5" />,
+            href: '/invoice',
+            badge: null,
+            description: 'Sales bills & receipts',
+          },
           {
             title: 'Warehouses',
             icon: <Warehouse className="w-5 h-5" />,
@@ -125,21 +141,14 @@ export default function Sidebar({ isOpen, onClose, isMobile }) {
             icon: <Users className="w-5 h-5" />,
             href: '/supplier',
             badge: null,
-            description: 'Vendor management',
+            description: 'Vendor partners',
           },
           {
-            title: 'Users',
+            title: 'System Users',
             icon: <Users className="w-5 h-5" />,
             href: '/user',
             badge: null,
-            description: 'System users',
-          },
-          {
-            title: 'Invoices',
-            icon: <FileText className="w-5 h-5" />,
-            href: '/invoice',
-            badge: null,
-            description: 'Sales documents',
+            description: 'Staff & admin accounts',
           },
         ],
       },
